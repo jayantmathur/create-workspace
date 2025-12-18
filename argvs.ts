@@ -185,7 +185,7 @@ async function main() {
 
       if (bump) await $`git push origin --tags`.cwd(__cwd).quiet();
 
-      console.log(`Pushed to origin/$main`);
+      console.log(`Pushed to origin/main`);
 
       break;
     default:
