@@ -196,12 +196,28 @@ async function syncRepositories(
     const sourceFileStat = await sourceFile.stat();
     const destFileStat = await destFile.stat().catch(() => undefined);
 
+    // console.log([
+    //   thisFile,
+    //   {
+    //     source: {
+    //       atimeMs: sourceFileStat?.atimeMs,
+    //       mtimeMs: sourceFileStat?.mtimeMs,
+    //       ctimeMs: sourceFileStat?.ctimeMs,
+    //     },
+    //     dest: {
+    //       atimeMs: destFileStat?.atimeMs,
+    //       mtimeMs: destFileStat?.mtimeMs,
+    //       ctimeMs: destFileStat?.ctimeMs,
+    //     },
+    //   },
+    // ]);
+
     if (!destFileStat)
       await write(
         resolve(destination, thisFile),
         await sourceFile.arrayBuffer(),
       ).then(() => counts.added++);
-    else if (destFileStat.mtimeMs < sourceFileStat.mtimeMs)
+    else if (destFileStat.atimeMs < sourceFileStat.mtimeMs)
       await write(
         resolve(destination, thisFile),
         await sourceFile.arrayBuffer(),
