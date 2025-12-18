@@ -1,0 +1,63 @@
+title: IDETC Template
+url: https://idetc.secure-platform.com/a/page/Help/author_resources/conference-specific-templates
+version: 0.1.0
+contributes:
+  formats:
+    common:
+      date-format: DD/MM/YYYY
+      fontsize: 10pt
+      papersize: letter
+      mainfont: Times New Roman
+      sansfont: Arial
+
+      number-sections: true
+
+      fig-width: 5.5
+      fig-height: 5.5
+
+      csl: idetc.csl
+
+    pdf:
+      classoption: [twocolumn]
+      geometry:
+        - left=0.5in
+        - right=0.5in
+        - top=0.5in
+        - bottom = 1in
+        - footskip=0.5in
+        - columnsep=0.38in
+
+      fig-pos: "!htb"
+      block-headings: false
+
+      pdf-engine: lualatex
+
+      template-partials:
+        - "partials/_authors.tex"
+        - "partials/_affiliations.tex"
+        - "partials/before-body.tex"
+        - "partials/tables.tex"
+        - "partials/title.tex"
+
+      include-in-header:
+        - "partials/_header.tex"
+
+      knitr:
+        opts_chunk:
+          out.width: "3.5in"
+# Note!
+#
+# Using tables for the twocolumn option is not supported by longtable
+#
+# So use the following format for code outputs (and even markdown)
+#
+# ```{r}
+# #| label: tbl-cognitive-load
+# #| tbl-cap: "Presenting the results of the cognitive load analysis"
+# #| output: asis
+# knitr::kable(
+#   cog_output,
+#   format="latex", # format = "latex" is not required for subtables but "asis" is
+#   booktabs = TRUE
+# )
+# ```

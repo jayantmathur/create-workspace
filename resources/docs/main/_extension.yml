@@ -1,0 +1,44 @@
+title: Blog Template
+version: 0.1.0
+contributes:
+  formats:
+    common:
+      date-format: long
+      mainfont: Calibri
+
+      fig-pos: "!htb"
+
+      csl: https://www.zotero.org/styles/chicago-author-date
+
+    typst:
+      fontsize: 10pt
+      papersize: us-letter
+      margin:
+        x: 1in
+        y: 1in
+
+      columns: 1
+      toc: false
+      template-partials:
+        - "partials/typst/biblio.typ"
+        # - 'partials/typst/definitions.typ'
+        # - 'partials/typst/notes.typ'
+        - "partials/typst/typst-show.typ"
+        - "partials/typst/typst-template.typ"
+
+    html:
+      fig-format: svg
+      #   format-links: false
+
+      template-partials:
+        # - 'partials/html/metadata.html'
+        - "partials/html/title-block.html"
+        # - 'partials/html/toc.html'
+      theme:
+        dark: darkly
+        light: flatly
+
+      output-file: digital
+
+      preload-iframes: true
+      embed-resources: true

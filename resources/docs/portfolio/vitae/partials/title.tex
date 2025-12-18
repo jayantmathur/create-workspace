@@ -1,0 +1,17 @@
+$if(title)$
+\title{\vspace*{-2\baselineskip}\textbf{\sffamily $for(authors/first)$$it.name.literal$$endfor$}}
+$endif$
+$if(subtitle)$
+$if(beamer)$
+$else$
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par\vspace*{-.25\baselineskip} {\small #1 \par\vspace*{-1.5\baselineskip}}}{}{}
+}
+\makeatother
+$endif$
+\subtitle{$subtitle$}
+$endif$
+\author{$for(authors/first)$\small \textbf{email:} \href{mailto:$it.email$}{$it.email$}, \textbf{phone:} \href{tel:$it.phone$}{$it.phone$} \and \small \textbf{linkedin:} \href{$it.fax$}{$it.fax$}, \textbf{website:} \href{$it.url$}{$it.url$}$endfor$}
+\date{\vspace*{-\baselineskip}}

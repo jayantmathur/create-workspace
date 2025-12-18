@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    // {
+    //   "label": "Check saved version in .backup and import changes if they exist",
+    //   "type": "shell",
+    //   "command": "cnwx sync --restore",
+    //   "runOptions": {
+    //     "runOn": "folderOpen"
+    //   }
+    // },
+    {
+      "label": "versionlens bun install",
+      "command": "bun",
+      "type": "shell",
+      "args": ["install"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    }
+  ]
+}

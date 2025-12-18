@@ -1,0 +1,25 @@
+import Image from "next/image";
+
+export const metadata = {
+  name: "My MDX Page",
+  date: "2021-01-01",
+  description:
+    "Next.js supports MDX, which allows developers to write Markdown content with embedded React components. This removes the separation between Markdown and React by allowing Markdown syntax inside .mdx files. With MDX, Next.js developers can build entire documentation sites or blogs with dynamic features alongside Markdown content, all within the same files. The combination provides a useful way to create content-heavy sites that integrate interactive elements seamlessly.",
+  keywords: ["mdx", "nextjs", "web development"],
+  image: {
+    src: "/vercel.svg",
+    alt: "Vercel Logo",
+  },
+};
+
+# Heading 1
+
+text
+
+## Heading 2
+
+other text
+
+Frontmatter is a YAML like key/value pairing that can be used to store data about a page. @next/mdx does not support _frontmatter_ by default, though there are many solutions for adding frontmatter to your MDX content, such as:
+
+<Image src="/next.svg" width={300} height={61} />

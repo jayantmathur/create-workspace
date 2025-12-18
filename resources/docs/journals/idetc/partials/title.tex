@@ -1,0 +1,38 @@
+\usepackage{advdate}
+$if(date)$
+\SetDate[$date$]
+\FixDate
+$endif$
+\newcommand{\daterange}{
+  \ifcase \the\month \or January\or February\or March\or %
+    April\or May \or June\or July\or August\or September\or October\or November\or %
+    December
+  \fi
+  ~\the\day -\AdvanceDate[3]\the\day
+  ,~\the\year
+}
+$if(title)$
+\title{
+  \bfseries\sffamily\normalsize
+  \begin{flushright}
+    \vspace*{-2\baselineskip}
+    {\fontsize{11pt}{12pt}\selectfont Proceedings of the ASME~\the\year\\International Design Engineering Technical Conference annd\\
+      Computers and Information in Engineering Conference\\
+      IDETC-CIE~\the\year\\
+      \daterange, $if(venue)$$venue$$else$City, ST, USA$endif$\\}
+
+    \vspace*{2\baselineskip}
+    {\LARGE DETC\the\year -$if(papernumber)$$papernumber$$else$xxxxx$endif$}\\
+    \vspace*{2.5\baselineskip}
+  \end{flushright}
+  \large\MakeUppercase{$title$}
+  $if(subtitle)$
+  \\\vspace*{\baselineskip}
+  \normalsize\MakeUppercase{$subtitle$}
+  $endif$
+}
+$endif$
+
+\author{${  by-author:_authors.tex()[, ] }\vspace{\baselineskip}\\ ${  by-affiliation:_affiliations.tex()[\\ ] }}
+
+\date{ }

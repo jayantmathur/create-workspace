@@ -1,0 +1,19 @@
+## jupyter stuff
+
+ipykernel
+ipywidgets
+
+## other example packages
+
+# numpy
+# pandas
+# matplotlib
+
+## huggingface and other AI packages
+
+# transformers
+# torch
+# huggingface_hub[hf_xet]
+# llama-cpp-python
+# langchain
+# langchain-huggingface

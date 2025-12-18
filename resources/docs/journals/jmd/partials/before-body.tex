@@ -1,0 +1,17 @@
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+$if(title)$
+$if(beamer)$
+\frame{\titlepage}
+$else$
+\begin{singlespace}
+    \maketitle
+\end{singlespace}
+$endif$
+$if(abstract)$
+\section*{Abstract}
+$abstract$
+$endif$
+$endif$
+\thispagestyle{fancy}

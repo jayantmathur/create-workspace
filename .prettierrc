@@ -1,0 +1,22 @@
+{
+  "overrides": [
+    {
+      "files": [
+        "*.tex"
+      ],
+      "options": {
+        "plugins": [
+          "prettier-plugin-latex"
+        ]
+      }
+    },
+    {
+      "files": [
+        "*.qmd"
+      ],
+      "options": {
+        "parser": "markdown"
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+title: Penn State Thesis/Dissertation Template
+version: 0.1.0
+contributes:
+    formats:
+        pdf: 
+            documentclass: book
+            classoption: 
+                - oneside
+                - openany
+            geometry: 
+                - left=1.4in
+                - right=0.9in
+                - top=0.9in
+                - bottom=0.9in
+                - includeheadfoot
+
+            linestretch: 1.5
+
+            date-format: DD/MM/YYYY
+
+            fontsize: 11pt
+
+            fig-pos: 'H'
+
+            table-of-contents: true
+            toc-depth: 4
+            lof: true
+            lot: true
+
+            csl: jmd.csl
+
+            pdf-engine: lualatex
+
+            block-headings: false
+            has-frontmatter: true
+
+            template-partials:
+                - 'partials/_authors.tex'
+                - 'partials/before-body.tex'
+                - 'partials/tables.tex'
+                - 'partials/title.tex'
+                - 'partials/toc.tex'
+
+            include-in-header: 'partials/_header.tex'

@@ -1,0 +1,46 @@
+---
+title: A title
+subtitle: A subtitle
+author:
+  - name: Your Name
+    orcid: 0000-0000-0000-0000
+    email: alias@email.com
+    affiliations: Your Institution
+date: last-modified
+---
+
+## Additional theme classes
+
+### Some extra things you can do with the clean theme
+
+Special classes for emphasis
+
+- `.alert` class for default emphasis, e.g. [important note]{.alert}.
+- `.fg` class for custom colour, e.g. [important note]{.fg style="--col: #e64173"}.
+- `.bg` class for custom background, e.g. [important note]{.bg style="--col: #e64173"}.
+
+Cross-references
+
+- `.button` class provides a Beamer-like button, e.g.
+  [[Summary]{.button}](#sec-summary)
+
+# THIS IS A BIG STATEMENT!
+
+## {{< lipsum 1 >}} {#sec-summary}
+
+### this is a subtitle
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>. Or see [@fig-example].
+
+::: {layout="[45,-10,45]"}
+
+![This is a figure with a citation[@example2023]](public/images/vscode-render.png){#fig-example}
+
+![This is not a figure](public/images/vscode-render.png)
+
+:::
+
+::: attribution
+
+This is an attribution for using Quarto.
+:::

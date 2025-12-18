@@ -1,0 +1,31 @@
+title: Letter Template
+version: 0.1.0
+contributes:
+    formats:
+        common:
+            date: today
+            date-format: long
+            colorlinks: true
+            urlcolor: cyan
+            linkcolor: cyan
+            fontsize: 11pt
+            papersize: letter
+            mainfont: Times New Roman
+            sansfont: Calibri
+
+            suppress-bibliography: true
+
+        pdf:
+            geometry:
+                - margin=1in
+
+            pdf-engine: lualatex
+
+            template: 'index.tex'
+
+            template-partials:
+                - 'partials/_authors.tex'
+                - 'partials/after-body.tex'
+                - 'partials/before-body.tex'
+
+            include-in-header: 'partials/_header.tex'

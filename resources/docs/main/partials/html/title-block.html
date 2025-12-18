@@ -1,0 +1,91 @@
+<div class="d-flex flex-column mb-5 pb-5 gap-5 border-bottom">
+    $if(title)$
+    <div>
+        <h1>$title$</h1>
+        $if(subtitle)$
+        <div class="fst-italic">$subtitle$</div>
+        $endif$
+    </div>
+    $endif$
+
+    $if(by-author)$
+    <div>
+        <div class="fw-bold">Author(s)</div>
+        <div class="d-flex flex-row flex-wrap gap-5">
+            $for(by-author)$
+            <div class="d-flex flex-column">
+                <div>
+                    $if(it.name.literal)$
+                    $it.name.literal$
+                    $endif$
+                </div>
+                <div class="fs-6">
+                    $if(by-author.affiliations)$
+                    <div>
+                        $for(by-author.affiliations)$
+                        <div class="d-flex flex-column">
+                            $if(it.name)$
+                            <div>$it.name$</div>
+                            $endif$
+                            $if(it.department)$
+                            <div>$it.department$</div>
+                            $endif$
+                            $if(it.city)$
+                            <div class="fst-italic">$it.city$, $it.region$, $it.postal-code$</div>
+                            $endif$
+                        </div>
+                        $endfor$
+                    </div>
+                    $endif$
+
+
+                    $if(by-author.email)$
+                    <div class="d-flex flex-column">
+                        <div class="d-flex flex-row gap-2">
+                            ✉️
+                            <a href="mailto:$by-author.email$">
+                                $by-author.email$
+                            </a>
+                        </div>
+
+                        $if(it.attributes.corresponding)$
+                        <div class="fst-italic">(corresponding)</div>
+                        $endif$
+                    </div>
+                    $endif$
+                </div>
+            </div>
+            $endfor$
+        </div>
+    </div>
+    $endif$
+
+    $if(date)$
+    <div>
+        <div class="fw-bold">Last Modified</div>
+        <div>
+            <div>$date$</div>
+        </div>
+    </div>
+    $endif$
+
+    $if(keywords)$
+    <div>
+        <div class="fw-bold pb-2">Keywords</div>
+        <div class="d-flex flex-row flex-wrap gap-2">
+            $for(keywords)$
+            <span class="border border-info rounded rounded-2 px-2 text-nowrap">
+                $it$
+            </span>
+            $endfor$
+        </div>
+    </div>
+    $endif$
+
+    $if(abstract)$
+    <div class="d-flex flex-column">
+        <div class="fw-bold">Abstract</div>
+        <div>$abstract$</div>
+    </div>
+    $endif$
+</div>

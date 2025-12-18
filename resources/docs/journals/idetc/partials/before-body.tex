@@ -1,0 +1,23 @@
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+$if(title)$
+$if(beamer)$
+\frame{\titlepage}
+$else$
+\maketitle
+$endif$
+$if(abstract)$
+\begin{abstract}
+    {\itshape $abstract$}\\
+    $if(keywords)$
+    {
+            \bfseries\sffamily Keywords:
+            $for(keywords)$$keywords$$sep$, $endfor$
+        }
+    $endif$
+\end{abstract}
+$endif$
+$endif$
+
+\thispagestyle{fancy}

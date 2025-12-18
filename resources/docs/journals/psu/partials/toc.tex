@@ -1,0 +1,66 @@
+$if(toc)$
+\pagebreak
+
+\setcounter{secnumdepth}{10} % \setcounter{tocdepth}{4}
+
+\newlength{\scratchlength}% a "scratch" length
+
+\renewcommand{\cftchappresnum}{Chapter }
+\settowidth{\scratchlength}{\bfseries\cftchappresnum\cftchapaftersnum}% extra space
+\addtolength{\cftchapnumwidth}{\scratchlength} % add the extra space
+
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+
+$if(toc-title)$
+\renewcommand*\contentsname{$toc-title$}
+$endif$
+$if(beamer)$
+\begin{frame}[allowframebreaks]
+  $if(toc-title)$
+  \frametitle{$toc-title$}
+  $endif$
+  \tableofcontents[hideallsubsections]
+\end{frame}
+$else$
+{
+    $if(colorlinks)$
+    \hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+    $endif$
+    \setcounter{tocdepth}{$toc-depth$}
+    \tableofcontents
+  }
+$endif$
+$endif$
+$if(lof)$
+
+\renewcommand{\cftfigpresnum}{Figure~}
+\setlength{\cftfignumwidth}{6em}
+\renewcommand{\cftfigaftersnum}{:}
+
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+$endif$
+$if(lot)$
+
+\renewcommand{\cfttabpresnum}{Table~}
+\setlength{\cfttabnumwidth}{6em}
+\renewcommand{\cfttabaftersnum}{:}
+
+\listoftables
+\addcontentsline{toc}{chapter}{List of Tables}
+$endif$
+
+$if(dedication)$
+\chapter*{}
+\thispagestyle{empty}
+\begin{center}
+  \textit{\large $dedication$}
+\end{center}
+$endif$
+
+$if(acknowledgements)$
+\chapter{Acknowledgements}
+\begin{doublespace}
+  $acknowledgements$
+\end{doublespace}
+$endif$

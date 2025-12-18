@@ -1,0 +1,23 @@
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+$if(title)$
+$if(beamer)$
+\frame{\titlepage}
+$else$
+\begin{singlespace}
+    \maketitle
+\end{singlespace}
+$endif$
+$if(abstract)$
+\section*{Abstract}
+$abstract$
+$endif$
+$if(keywords)$
+\\\\\textbf{Keywords:} $for(keywords)$\lowercase{$it$}$sep$, $endfor$
+$endif$
+$endif$
+\thispagestyle{plain}
+
+\fancyhead[LO]{\MakeUppercase{\textbf{$shorttitle$}}}
+\fancyhead[RE]{\MakeUppercase{\textbf{$for(authors/first)$$it.name.family$$endfor$~\textit{et al.}}}}
