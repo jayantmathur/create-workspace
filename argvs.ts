@@ -160,26 +160,25 @@ async function main() {
 
       await $`git add -A`.cwd(__cwd).quiet();
 
-      // only commit if there are changes
-      console.log("Checking for changes...");
       const statusResult = await $`git status --porcelain`.cwd(__cwd).quiet();
       const status = String(statusResult.stdout ?? "").trim();
 
+      // only commit if there are changes
       if (!status) {
         console.log("No changes to commit.");
         break;
       } else {
         await $`git commit -m "chore(update)"`.cwd(__cwd).quiet();
-        console.log("Committed changes.");
+        console.log("Found changes. Committed.");
       }
 
       if (bump) {
         const newVersion = bumpVersion(version, bump as BumpType);
         await editJson(resolve(__cwd, "package.json"), { version: newVersion });
-        console.log(`Updated version: ${version} -> ${newVersion}`);
+        console.log(`Updated version: ${version} -> ${newVersion}.`);
 
         await $`git tag v${newVersion}`.cwd(__cwd).quiet();
-        console.log(`Created tag v${newVersion}`);
+        console.log(`Created tag v${newVersion}.`);
       }
 
       // push current HEAD to origin main (or configured branch)
@@ -187,7 +186,7 @@ async function main() {
 
       if (bump) await $`git push origin --tags`.cwd(__cwd).quiet();
 
-      console.log(`Pushed to origin/main`);
+      console.log(`Pushed to origin/main.`);
 
       break;
     default:
