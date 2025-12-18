@@ -161,6 +161,7 @@ async function main() {
       await $`git add -A`.cwd(__cwd).quiet();
 
       // only commit if there are changes
+      console.log("Checking for changes...");
       const statusResult = await $`git status --porcelain`.cwd(__cwd).quiet();
       const status = String(statusResult.stdout ?? "").trim();
 
