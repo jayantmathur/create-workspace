@@ -167,6 +167,7 @@ async function main() {
 
       if (!status) {
         console.log("No changes to commit.");
+        break;
       } else {
         await $`git commit -m "chore(update)"`.cwd(__cwd).quiet();
         console.log("Committed changes.");
