@@ -74,7 +74,7 @@ const cliOptions: CLIOptions = {
           label: "Tanstack",
           hint: "👍 full-stack",
           callback: function (name: string) {
-            return `bun create @tanstack/start@latest ${name} --starter start-bare --tailwind --biome --add-ons shadcn`;
+            return `bun create @tanstack/start@latest ${name} --framework React --package-manager bun --toolchain biome --tailwind --no-git --add-ons shadcn,nitro`;
           },
         },
       ],
