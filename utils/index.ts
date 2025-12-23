@@ -95,11 +95,13 @@ async function initWorkspace(path: string) {
       private: true,
       workspaces: [],
       scripts: {
+        check:
+          'biome check --write --error-on-warnings --diagnostic-level=warn',
         do: 'bun run --filter',
         'do:all': "bun run --filter='*'",
         pull: 'cnwx sync --restore',
-        push: 'cnwx sync --backup',
-        prepush: 'biome check --write',
+        push: 'cnwx sync',
+        prepush: 'bun check',
       },
       devDependencies: {
         '@biomejs/biome': 'latest',

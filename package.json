@@ -10,11 +10,12 @@
     "cnwx": "argvs.ts"
   },
   "scripts": {
+    "check": "biome check --write --error-on-warnings --diagnostic-level=warn",
     "dev": "bun run --watch index.ts",
-    "pull": "bun run argvs.ts sync --restore",
-    "prepush": "biome check --write && bun run argvs.ts sync",
+    "pull": "cnwx sync --restore",
+    "prepush": "bun check && cnwx sync",
     "create-link": "npm link;bun link;bun link create-workspace",
-    "push": "bun run argvs.ts git"
+    "push": "cnwx git"
   },
   "devDependencies": {
     "@biomejs/biome": "latest",

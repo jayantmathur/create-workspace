@@ -368,7 +368,7 @@ async function main() {
                     resources: ['public'],
                   },
                   execute: { echo: false, output: false, enabled: true },
-                  bibliography: ['references.bib', 'extra-references.bib'],
+                  // bibliography: ['references.bib', 'extra-references.bib'],
                   colorlinks: true,
                   'number-sections': true,
                   crossref: {
@@ -380,25 +380,25 @@ async function main() {
                   'cite-method': 'citeproc',
                 })
 
-                if (projectRepo.includes('default')) {
+                if (
+                  projectRepo.includes('default') ||
+                  projectRepo.includes('revealjs')
+                ) {
                   await rename(
                     resolve(path, projectRepo, `${projectRepo}.qmd`),
                     resolve(path, projectRepo, 'index.qmd'),
                   )
-                }
 
-                if (projectRepo.includes('revealjs')) {
-                  await rename(
-                    resolve(path, projectRepo, `${projectRepo}.qmd`),
-                    resolve(path, projectRepo, 'index.qmd'),
-                  )
-                  await editYaml(resolve(path, projectRepo, '_quarto.yml'), {
-                    'revealjs-plugins': ['attribution'],
-                    format: 'rjs-revealjs',
-                  })
-                  await $`cnwx padd --project ${projectRepo} --pack rjs`
-                    .cwd(workspacePath)
-                    .quiet()
+                  // Add Quarto plugins and packages if revealjs
+                  if (projectRepo.includes('revealjs')) {
+                    await editYaml(resolve(path, projectRepo, '_quarto.yml'), {
+                      'revealjs-plugins': ['attribution'],
+                      format: 'rjs-revealjs',
+                    })
+                    await $`cnwx padd --project ${projectRepo} --pack rjs`
+                      .cwd(workspacePath)
+                      .quiet()
+                  }
                 }
               })
             }),
