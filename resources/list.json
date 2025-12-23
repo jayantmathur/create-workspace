@@ -1,4 +1,8 @@
 {
+  "gtie": {
+    "type": "doc",
+    "folder": "gtie"
+  },
   "rjs": {
     "type": "doc",
     "folder": "rjs",

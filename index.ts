@@ -346,12 +346,17 @@ async function main() {
                   }),
                 )
 
+                await $`quarto add mcanouil/quarto-highlight-text --quiet --no-prompt`
+                  .cwd(resolve(path, projectRepo))
+                  .quiet()
+
                 await editYaml(resolve(path, projectRepo, '_quarto.yml'), {
                   project: {
                     'execute-dir': 'file',
                     'output-dir': 'render',
                     // render: ["pages"],
                     resources: ['public'],
+                    filters: ['highlight-text'],
                   },
                   execute: { echo: false, output: false, enabled: true },
                   // bibliography: ['references.bib', 'extra-references.bib'],
