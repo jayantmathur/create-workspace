@@ -110,19 +110,19 @@ async function initWorkspace(path: string) {
 
     write(
       resolve(path, 'biome.json'),
-      await file(resolve(__dirname, '../', 'biome.json')).json(),
+      await file(resolve(__dirname, '../', 'biome.json')).text(),
     ),
 
     write(
       resolve(path, '.vscode', 'tasks.json'),
-      await file(resolve(__dirname, '../', '.vscode', 'tasks.json')).json(),
+      await file(resolve(__dirname, '../', '.vscode', 'tasks.json')).text(),
     ),
 
     write(
       resolve(path, '.vscode', '..code-workspace'),
       await file(
         resolve(__dirname, '../', '.vscode', '..code-workspace'),
-      ).json(),
+      ).text(),
     ),
 
     write(
