@@ -69,8 +69,8 @@ const cliOptions: CLIOptions = {
           value: 'tanstack',
           label: 'Tanstack',
           hint: '👍 full-stack',
-          callback: (name: string, addOns?: string) =>
-            `bun create @tanstack/start@latest ${name} --framework React --package-manager bun --toolchain biome --tailwind --no-git ${addOns ? `--addOns ${addOns}` : ''}`,
+          callback: (name: string) =>
+            `bun create @tanstack/start@latest ${name} --framework React --package-manager bun --toolchain biome --tailwind --no-git --add-ons shadcn,nitro`,
         },
       ],
     },
@@ -219,27 +219,6 @@ async function main() {
     { onCancel: handleCancel },
   )) as ResponseType
 
-  // Handle Tanstack addOns
-  const tanstackAddOns: string[] = []
-
-  if (projects?.apps?.includes('tanstack')) {
-    const addOns = (await multiselect({
-      message: 'Select additional Tanstack addOns',
-      options: [
-        { value: 'shadcn', label: 'ShadCN' },
-        { value: 'nitro', label: 'Nitro' },
-        { value: 'store', label: 'Store' },
-        { value: 'neon,drizzle', label: 'Neon + Drizzle' },
-      ],
-      required: false,
-      initialValues: ['shadcn', 'nitro', 'store'],
-    })) as string[]
-
-    if (isCancel(addOns)) handleCancel()
-
-    tanstackAddOns.push(...addOns)
-  }
-
   // Confirm workspace creation
   const proceed = await confirm({
     message: color.inverse(
@@ -316,18 +295,10 @@ async function main() {
 
               const projectRepo = getAvailableFolderName(path, entry)
 
-              const isTanstack = entry === 'tanstack'
-
-              const process = spawn(
-                callback(
-                  projectRepo,
-                  (isTanstack && tanstackAddOns.join(',')) || '',
-                ).split(' '),
-                {
-                  cwd: path,
-                  stdio: ['ignore', 'ignore', 'ignore'],
-                },
-              )
+              const process = spawn(callback(projectRepo).split(' '), {
+                cwd: path,
+                stdio: ['ignore', 'ignore', 'ignore'],
+              })
 
               await process.exited
             }),

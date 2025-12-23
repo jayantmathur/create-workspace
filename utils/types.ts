@@ -15,7 +15,7 @@ type ResponseType = {
 type CLIOptions = {
   [key: string]: (Option<string> & {
     types?: (Option<string> & {
-      callback?: (name: string, addOns?: string) => string
+      callback?: (name: string) => string
     })[]
   })[]
 }
