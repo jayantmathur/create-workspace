@@ -165,28 +165,39 @@ async function syncRepositories(
       : []
 
   if (type === 'backup') {
-    const hasIgnores = file(resolve(source, '.gitignore')).size > 0
+    // const hasIgnores = file(resolve(source, '.gitignore')).size > 0
 
-    if (!hasIgnores) files.push(...sourceFiles)
-    else {
-      const excludes = await file(resolve(source, '.gitignore'))
-        .text()
-        .then((text) =>
-          text
-            .split('\n')
-            .map((line) => line.replace(/[*\r\n]/g, ''))
-            .filter((line) => !line.startsWith('#') && line.trim() !== ''),
-        )
+    // if (!hasIgnores) files.push(...sourceFiles)
+    // else {
+    //   const excludes = await file(resolve(source, '.gitignore'))
+    //     .text()
+    //     .then((text) =>
+    //       text
+    //         .split('\n')
+    //         .map((line) => line.replace(/[*\r\n]/g, ''))
+    //         .filter((line) => !line.startsWith('#') && line.trim() !== ''),
+    //     )
 
-      const filteredFiles = sourceFiles.filter(
-        (file) =>
-          !excludes.some(
-            (exclusion) => file.includes(exclusion) && !file.includes('$'), // adjust for tanstack query syntax
-          ),
-      )
+    //   const filteredFiles = sourceFiles.filter(
+    //     (file) =>
+    //       !excludes.some(
+    //         (exclusion) => file.includes(exclusion) && !file.includes('$'), // adjust for tanstack query syntax
+    //       ),
+    //   )
 
-      files.push(...filteredFiles)
-    }
+    //   files.push(...filteredFiles)
+    // }
+
+    const excludes = ['node_modules', '.git', '.backup', '.venv', 'src-tauri']
+
+    const filteredFiles = sourceFiles.filter(
+      (file) =>
+        !excludes.some(
+          (exclusion) => file.includes(exclusion) && !file.includes('$'), // adjust for tanstack query syntax
+        ),
+    )
+
+    files.push(...filteredFiles)
   } else if (type === 'restore') {
     files.push(...sourceFiles)
   }
