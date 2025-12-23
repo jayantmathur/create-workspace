@@ -195,6 +195,7 @@ async function syncRepositories(
       '.venv',
       'src-tauri',
       '.lock',
+      '.vscode',
     ]
 
     const filteredFiles = sourceFiles.filter(
