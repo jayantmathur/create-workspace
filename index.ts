@@ -334,25 +334,24 @@ async function main() {
 
               await main.exited
 
-              const extra = spawn(
+              await Promise.all(
                 [
-                  'quarto',
-                  'add',
                   'mcanouil/quarto-highlight-text',
                   'mcanouil/quarto-external',
-                  'quarto-ext/fontawesome',
                   'jmgirard/honeypot',
-                  // 'coatless-quarto/custom-callout',
-                  '--quiet',
-                  '--no-prompt',
-                ],
-                {
-                  cwd: resolve(path, projectRepo),
-                  stdio: ['ignore', 'ignore', 'ignore'],
-                },
-              )
+                  'quarto-ext/fontawesome',
+                ].map(async (extension) => {
+                  const main = spawn(
+                    ['quarto', 'add', extension, '--quiet', '--no-prompt'],
+                    {
+                      cwd: resolve(path, projectRepo),
+                      stdio: ['ignore', 'ignore', 'ignore'],
+                    },
+                  )
 
-              await extra.exited
+                  await main.exited
+                }),
+              )
 
               await write(
                 resolve(path, projectRepo, 'package.json'),
