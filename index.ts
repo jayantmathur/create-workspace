@@ -353,6 +353,7 @@ async function main() {
               )
 
               await extra.exited
+
               await write(
                 resolve(path, projectRepo, 'package.json'),
                 JSON.stringify({
