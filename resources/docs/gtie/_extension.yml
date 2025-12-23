@@ -1,0 +1,29 @@
+title: GTI Energy Templates
+version: 0.1.0
+contributes:
+  formats:
+    common:
+      date-format: long
+      mainfont: Segoe UI
+
+      fig-pos: "!htb"
+
+      csl: https://www.zotero.org/styles/elsevier-with-titles
+
+      crossref:
+        fig-title: "Figure"
+        tbl-title: "Table"
+
+    docx:
+      fontsize: 10pt
+      reference-doc: "partials/docx/template.docx"
+      toc: true
+      table-of-contents: true
+      lof: true
+      lot: true
+      output-file: word
+
+    docx+letter:
+      fontsize: 10pt
+      reference-doc: "partials/docx+letter/template.docx"
+      output-file: word
