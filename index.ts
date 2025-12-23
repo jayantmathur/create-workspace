@@ -229,6 +229,7 @@ async function main() {
         { value: 'shadcn', label: 'ShadCN' },
         { value: 'nitro', label: 'Nitro' },
         { value: 'store', label: 'Store' },
+        { value: 'neon,drizzle', label: 'Neon + Drizzle' },
       ],
       required: false,
       initialValues: ['shadcn', 'nitro', 'store'],
