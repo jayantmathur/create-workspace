@@ -179,7 +179,10 @@ async function syncRepositories(
         )
 
       const filteredFiles = sourceFiles.filter(
-        (file) => !excludes.some((exclusion) => file.includes(exclusion)),
+        (file) =>
+          !excludes.some(
+            (exclusion) => file.includes(exclusion) && !file.includes('$'), // adjust for tanstack query syntax
+          ),
       )
 
       files.push(...filteredFiles)
