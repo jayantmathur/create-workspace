@@ -49,10 +49,24 @@
     "folder": "pyr",
     "destination": "./"
   },
-  "cloudinary": {
+  "auth": {
     "type": "app",
-    "folder": "cloudinary",
-    "dependencies": ["next-cloudinary", "cloudinary"]
+    "postinstalls": ["bun add @neondatabase/neon-js"]
+  },
+  "db": {
+    "type": "app",
+    "postinstalls": [
+      "bun add @tanstack/react-db @tanstack/query-db-collection"
+    ],
+    "extras": {
+      "postinstalls": [
+        "bun add @tanstack/query-db-collection @neondatabase/neon-js"
+      ]
+    }
+  },
+  "form": {
+    "type": "app",
+    "postinstalls": ["bun add @tanstack/react-form"]
   },
   "tauri": {
     "type": "app",
@@ -89,6 +103,13 @@
         "@react-three/postprocessing",
         "three-bvh-csg"
       ]
+    }
+  },
+  "ai": {
+    "type": "app",
+    "postinstalls": ["bun add @tanstack/ai @tanstack/ai-react"],
+    "extras": {
+      "postinstalls": ["bun add @tanstack/ai-ollama @tanstack/ai-gemini"]
     }
   }
 }
