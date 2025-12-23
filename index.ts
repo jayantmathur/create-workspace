@@ -295,12 +295,12 @@ async function main() {
 
               const projectRepo = getAvailableFolderName(path, entry)
 
-              const process = spawn(callback(projectRepo).split(' '), {
+              const main = spawn(callback(projectRepo).split(' '), {
                 cwd: path,
                 stdio: ['ignore', 'ignore', 'ignore'],
               })
 
-              await process.exited
+              await main.exited
             }),
           )
         }
@@ -327,71 +327,96 @@ async function main() {
 
               const projectRepo = getAvailableFolderName(path, entry)
 
-              const process = spawn(callback(projectRepo).split(' '), {
+              const main = spawn(callback(projectRepo).split(' '), {
                 cwd: path,
                 stdio: ['ignore', 'ignore', 'ignore'],
               })
 
-              await process.exited.then(async () => {
-                await write(
-                  resolve(path, projectRepo, 'package.json'),
-                  JSON.stringify({
-                    name: projectRepo,
-                    version: '0.0.1',
-                    description: 'A quarto project',
-                    scripts: {
-                      dev: 'quarto preview index.qmd',
-                      render: 'quarto render',
-                    },
-                  }),
+              await main.exited
+
+              const extra = spawn(
+                [
+                  'quarto',
+                  'add',
+                  'mcanouil/quarto-highlight-text',
+                  'mcanouil/quarto-external',
+                  'quarto-ext/fontawesome',
+                  'jmgirard/honeypot',
+                  // 'coatless-quarto/custom-callout',
+                  '--quiet',
+                  '--no-prompt',
+                ],
+                {
+                  cwd: resolve(path, projectRepo),
+                  stdio: ['ignore', 'ignore', 'ignore'],
+                },
+              )
+
+              await extra.exited
+              await write(
+                resolve(path, projectRepo, 'package.json'),
+                JSON.stringify({
+                  name: projectRepo,
+                  version: '0.0.1',
+                  description: 'A quarto project',
+                  scripts: {
+                    dev: 'quarto preview index.qmd',
+                    render: 'quarto render',
+                  },
+                }),
+              )
+
+              await editYaml(resolve(path, projectRepo, '_quarto.yml'), {
+                project: {
+                  'execute-dir': 'file',
+                  'output-dir': 'render',
+                  // render: ["pages"],
+                  resources: ['public'],
+                },
+                execute: { echo: false, output: false, enabled: true },
+                // bibliography: ['references.bib', 'extra-references.bib'],
+                'cite-method': 'citeproc',
+                crossref: {
+                  'thm-prefix': 'RQ',
+                  'thm-title': 'Research Question',
+                },
+                filters: [
+                  // 'custom-callout',
+                  'highlight-text',
+                ],
+                'callout-appearance': 'simple',
+                // 'custom-callout': {
+                //   todo: {
+                //     title: 'TODO',
+                //     'icon-symbol': 'fa-note-sticky',
+                //     color: '#ffc400ff',
+                //   },
+                // },
+                colorlinks: true,
+                'number-sections': true,
+                mermaid: { theme: 'neutral' },
+              })
+
+              if (
+                projectRepo.includes('default') ||
+                projectRepo.includes('revealjs')
+              ) {
+                await rename(
+                  resolve(path, projectRepo, `${projectRepo}.qmd`),
+                  resolve(path, projectRepo, 'index.qmd'),
                 )
 
-                await $`quarto add mcanouil/quarto-highlight-text --quiet --no-prompt`
-                  .cwd(resolve(path, projectRepo))
-                  .quiet()
-
-                await editYaml(resolve(path, projectRepo, '_quarto.yml'), {
-                  project: {
-                    'execute-dir': 'file',
-                    'output-dir': 'render',
-                    // render: ["pages"],
-                    resources: ['public'],
-                  },
-                  filters: ['highlight-text'],
-                  execute: { echo: false, output: false, enabled: true },
-                  // bibliography: ['references.bib', 'extra-references.bib'],
-                  colorlinks: true,
-                  'number-sections': true,
-                  crossref: {
-                    'thm-prefix': 'RQ',
-                    'thm-title': 'Research Question',
-                  },
-                  mermaid: { theme: 'neutral' },
-                  'callout-appearance': 'simple',
-                  'cite-method': 'citeproc',
-                })
-
-                if (
-                  projectRepo.includes('default') ||
-                  projectRepo.includes('revealjs')
-                ) {
-                  await rename(
-                    resolve(path, projectRepo, `${projectRepo}.qmd`),
-                    resolve(path, projectRepo, 'index.qmd'),
-                  )
-
-                  // Add Quarto plugins and packages if revealjs
-                  if (projectRepo.includes('revealjs')) {
-                    await editYaml(resolve(path, projectRepo, '_quarto.yml'), {
-                      'revealjs-plugins': ['attribution'],
-                      format: 'rjs-revealjs',
-                    })
-                    await $`cnwx padd --project ${projectRepo} --pack rjs`
-                      .cwd(workspacePath)
-                      .quiet()
-                  }
+                // Add Quarto plugins and packages if revealjs
+                if (projectRepo.includes('revealjs')) {
+                  await editYaml(resolve(path, projectRepo, '_quarto.yml'), {
+                    'revealjs-plugins': ['attribution'],
+                    format: 'rjs-revealjs',
+                  })
+                  await $`cnwx padd --project ${projectRepo} --pack rjs`
+                    .cwd(workspacePath)
+                    .quiet()
                 }
-              })
+              }
             }),
           )
         }
