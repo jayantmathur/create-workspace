@@ -1,2 +1,0 @@
-supabase start
-supabase gen types typescript --local > lib/database.types.ts

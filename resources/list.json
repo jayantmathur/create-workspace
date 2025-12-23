@@ -2,9 +2,7 @@
   "rjs": {
     "type": "doc",
     "folder": "rjs",
-    "postinstalls": [
-      "quarto add quarto-ext/attribution --quiet --no-prompt"
-    ]
+    "postinstalls": ["quarto add quarto-ext/attribution --quiet --no-prompt"]
   },
   "main": {
     "type": "doc",
@@ -51,113 +49,20 @@
     "folder": "pyr",
     "destination": "./"
   },
-  "ui": {
-    "type": "app",
-    "folder": "ui",
-    "dependencies": [
-      "framer-motion",
-      "next-themes",
-      "tailwindcss-animate",
-      "class-variance-authority",
-      "clsx",
-      "tailwind-merge",
-      "lucide-react"
-    ],
-    "devDependencies": [
-      "@tailwindcss/typography"
-    ],
-    "scripts": {
-      "shad": "bunx --bun shadcn@latest"
-    },
-    "postinstalls": [
-      "bunx --bun shadcn@latest add button tabs aspect-ratio sheet --yes --overwrite"
-    ]
-  },
-  "forms": {
-    "type": "app",
-    "dependencies": [
-      "react-dropzone",
-      "react-hook-form"
-    ]
-  },
   "cloudinary": {
     "type": "app",
     "folder": "cloudinary",
-    "dependencies": [
-      "next-cloudinary",
-      "cloudinary"
-    ]
-  },
-  "auth": {
-    "type": "app",
-    "folder": "auth",
-    "dependencies": [
-      "next-auth"
-    ]
-  },
-  "database": {
-    "type": "app",
-    "folder": "supabase",
-    "dependencies": [
-      "@supabase/supabase-js",
-      "@prisma/client"
-    ],
-    "devDependencies": [
-      "supabase",
-      "prisma",
-      "encoding"
-    ],
-    "scripts": {
-      "update-supatypes": "supabase gen types typescript --schema public > supabase\\types.ts"
-    }
-  },
-  "pwa": {
-    "type": "app",
-    "dependencies": [
-      "@vercel/analytics",
-      "@vercel/speed-insights"
-    ],
-    "devDependencies": [
-      "vercel"
-    ],
-    "postinstalls": [
-      "bun exec next telemetry disable"
-    ],
-    "scripts": {
-      "prepush": "git add . & git commit -m \"save work\"",
-      "push": "npm version",
-      "postpush": "git push"
-    }
+    "dependencies": ["next-cloudinary", "cloudinary"]
   },
   "tauri": {
     "type": "app",
-    "devDependencies": [
-      "@tauri-apps/cli"
-    ],
+    "devDependencies": ["@tauri-apps/cli"],
     "postinstalls": [
       "bunx --bun tauri init && bunx --bun tauri icon .\\public\\icons\\icon.ico"
     ],
     "scripts": {
       "taurize": "bun exec tauri build"
     }
-  },
-  "api": {
-    "type": "app",
-    "dependencies": [
-      "axios",
-      "swr"
-    ]
-  },
-  "mdx": {
-    "type": "app",
-    "folder": "mdx",
-    "dependencies": [
-      "@next/mdx",
-      "next-mdx-remote",
-      "@mdx-js/loader",
-      "@mdx-js/react",
-      "@types/mdx"
-    ]
   },
   "r3f": {
     "type": "app",

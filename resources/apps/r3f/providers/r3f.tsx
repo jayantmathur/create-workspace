@@ -1,30 +1,28 @@
-"use client";
-
 import {
-  HTMLAttributes,
-  ReactNode,
-  useRef,
-  useMemo,
-  useState,
-  MutableRefObject,
-} from "react";
-import { Canvas, PerspectiveCameraProps } from "@react-three/fiber";
-import {
-  Preload,
   CameraControls,
-  View as ViewImpl,
-  Stage,
   PerspectiveCamera,
-} from "@react-three/drei";
+  Preload,
+  Stage,
+  View as ViewImpl,
+} from '@react-three/drei'
+import { Canvas, type PerspectiveCameraProps } from '@react-three/fiber'
+import {
+  type HTMLAttributes,
+  type MutableRefObject,
+  type ReactNode,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils'
 
 type ViewProps = HTMLAttributes<HTMLDivElement> & {
-  orbit?: boolean;
-  camera?: PerspectiveCameraProps;
-};
+  orbit?: boolean
+  camera?: PerspectiveCameraProps
+}
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const View = ({
   children,
@@ -33,39 +31,39 @@ const View = ({
   camera = undefined,
   ...props
 }: ViewProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<CameraControls>(null);
+  const ref = useRef<HTMLDivElement>(null)
+  const controlsRef = useRef<CameraControls>(null)
 
-  const [isMounted, setMounted] = useState(false);
+  const [isMounted, setMounted] = useState(false)
 
-  let timeout: NodeJS.Timeout | undefined = undefined;
+  let timeout: NodeJS.Timeout | undefined
 
   const handleActive = () => {
-    if (!timeout) return;
+    if (!timeout) return
     // console.log("active");
-    clearTimeout(timeout);
-    timeout = undefined;
-  };
+    clearTimeout(timeout)
+    timeout = undefined
+  }
 
   const handleInActive = () => {
-    if (timeout) return;
-    timeout = setTimeout(() => controlsRef?.current?.reset(true), 3000);
+    if (timeout) return
+    timeout = setTimeout(() => controlsRef?.current?.reset(true), 3000)
     // console.log("inactive");
-  };
+  }
 
   useMemo(async () => {
-    await sleep(500);
-    setMounted(true);
-  }, []);
+    await sleep(500)
+    setMounted(true)
+  }, [])
 
-  if (!isMounted) return null;
+  if (!isMounted) return null
 
   return (
     <ViewImpl
       ref={ref}
       track={ref as MutableRefObject<HTMLElement>}
       className={cn(
-        "relative w-full h-full pointer-events-auto touch-auto",
+        'relative w-full h-full pointer-events-auto touch-auto',
         className,
       )}
       onPointerDown={handleActive}
@@ -98,23 +96,23 @@ const View = ({
         />
       </Stage>
     </ViewImpl>
-  );
-};
+  )
+}
 
 const Provider = ({ children }: { children: ReactNode }) => {
-  const ref = useRef<any>();
+  const ref = useRef()
   return (
     <>
       {children}
       <div ref={ref}>
         <Canvas
           style={{
-            position: "fixed",
+            position: 'fixed',
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            pointerEvents: "none",
+            pointerEvents: 'none',
           }}
           eventSource={ref}
           dpr={[1, 2]}
@@ -124,9 +122,9 @@ const Provider = ({ children }: { children: ReactNode }) => {
         </Canvas>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Provider;
-export type { ViewProps };
-export { View };
+export default Provider
+export type { ViewProps }
+export { View }

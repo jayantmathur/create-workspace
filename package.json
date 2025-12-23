@@ -12,13 +12,13 @@
   "scripts": {
     "dev": "bun run --watch index.ts",
     "pull": "bun run argvs.ts sync --restore",
-    "prepush": "bun run argvs.ts sync",
+    "prepush": "biome check --write && bun run argvs.ts sync",
     "create-link": "npm link;bun link;bun link create-workspace",
     "push": "bun run argvs.ts git"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "prettier": "latest"
+    "@biomejs/biome": "latest",
+    "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
