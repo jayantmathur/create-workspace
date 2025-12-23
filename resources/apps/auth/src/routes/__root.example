@@ -1,0 +1,13 @@
+//*/ import { NeonAuthUIProvider } from '@neondatabase/neon-js/auth/react';
+//*/ import { authClient } from '../auth';
+
+// export const Route = createRootRoute({
+//   component: () => (
+//*/     <NeonAuthUIProvider authClient={authClient}>
+//       ...
+//       <TanStackDevtools
+//         ...
+//       />
+//*/     </NeonAuthUIProvider>
+//   ),
+// });

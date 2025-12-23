@@ -51,6 +51,7 @@
   },
   "auth": {
     "type": "app",
+    "folder": "auth",
     "postinstalls": ["bun add @neondatabase/neon-js"]
   },
   "db": {
