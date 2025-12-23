@@ -188,7 +188,14 @@ async function syncRepositories(
     //   files.push(...filteredFiles)
     // }
 
-    const excludes = ['node_modules', '.git', '.backup', '.venv', 'src-tauri']
+    const excludes = [
+      'node_modules',
+      '.git',
+      '.backup',
+      '.venv',
+      'src-tauri',
+      '.lock',
+    ]
 
     const filteredFiles = sourceFiles.filter(
       (file) =>
