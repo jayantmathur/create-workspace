@@ -248,7 +248,7 @@ async function runPadd(project: string, pack: PaddType, withExtras = false) {
       (type === 'doc' && folder) || '',
     )
 
-    await syncRepositories('backup', resourcePath, copyPath)
+    await syncRepositories('restore', resourcePath, copyPath)
       .then(() =>
         console.log(DIM('Copied components from ') + BOLD(color.green(folder))),
       )
