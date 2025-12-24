@@ -1,4 +1,4 @@
-// import { createFileRoute } from '@tanstack/start';
+// import { createFileRoute } from '@tanstack/react-router';
 //*/ import { AuthView } from '@neondatabase/neon-js/auth/react/ui';
 
 // export const Route = createFileRoute('/auth/$pathname')({

@@ -157,37 +157,16 @@ async function syncRepositories(
   }
   const files = [] as string[]
 
-  const sourceFiles = await Array.fromAsync(glob.scan({ cwd: source }))
+  const sourceFiles = await Array.fromAsync(
+    glob.scan({ cwd: source, dot: true }),
+  )
 
   const destFiles =
     file(destination).size > 0
-      ? await Array.fromAsync(glob.scan({ cwd: destination }))
+      ? await Array.fromAsync(glob.scan({ cwd: destination, dot: true }))
       : []
 
   if (type === 'backup') {
-    // const hasIgnores = file(resolve(source, '.gitignore')).size > 0
-
-    // if (!hasIgnores) files.push(...sourceFiles)
-    // else {
-    //   const excludes = await file(resolve(source, '.gitignore'))
-    //     .text()
-    //     .then((text) =>
-    //       text
-    //         .split('\n')
-    //         .map((line) => line.replace(/[*\r\n]/g, ''))
-    //         .filter((line) => !line.startsWith('#') && line.trim() !== ''),
-    //     )
-
-    //   const filteredFiles = sourceFiles.filter(
-    //     (file) =>
-    //       !excludes.some(
-    //         (exclusion) => file.includes(exclusion) && !file.includes('$'), // adjust for tanstack query syntax
-    //       ),
-    //   )
-
-    //   files.push(...filteredFiles)
-    // }
-
     const excludes = [
       'node_modules',
       '.git',
@@ -196,13 +175,11 @@ async function syncRepositories(
       'src-tauri',
       '.lock',
       '.vscode',
+      '.luarc',
     ]
 
     const filteredFiles = sourceFiles.filter(
-      (file) =>
-        !excludes.some(
-          (exclusion) => file.includes(exclusion) && !file.includes('$'), // adjust for tanstack query syntax
-        ),
+      (file) => !excludes.some((exclusion) => file.includes(exclusion)),
     )
 
     files.push(...filteredFiles)
@@ -265,7 +242,11 @@ async function runPadd(project: string, pack: PaddType, withExtras = false) {
 
   if (folder) {
     const resourcePath = resolve(src, folder)
-    const copyPath = resolve(dest, destination || '_extensions', folder)
+    const copyPath = resolve(
+      dest,
+      !destination ? (type === 'doc' ? '_extensions' : './') : destination,
+      folder,
+    )
 
     await syncRepositories('backup', resourcePath, copyPath)
       .then(() =>

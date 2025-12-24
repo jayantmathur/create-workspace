@@ -338,7 +338,7 @@ async function main() {
                 [
                   'mcanouil/quarto-highlight-text',
                   'mcanouil/quarto-external',
-                  'jmgirard/honeypot',
+                  // 'jmgirard/honeypot',
                   'quarto-ext/fontawesome',
                 ].map(async (extension) => {
                   const main = spawn(
