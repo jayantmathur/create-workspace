@@ -96,7 +96,7 @@ async function initWorkspace(path: string) {
       workspaces: [],
       scripts: {
         check:
-          'biome check --write --error-on-warnings --diagnostic-level=warn',
+          'biome migrate --write;biome check --write --error-on-warnings --diagnostic-level=warn',
         do: 'bun run --filter',
         'do:all': "bun run --filter='*'",
         pull: 'cnwx sync --restore',
@@ -245,7 +245,7 @@ async function runPadd(project: string, pack: PaddType, withExtras = false) {
     const copyPath = resolve(
       dest,
       !destination ? (type === 'doc' ? '_extensions' : './') : destination,
-      folder,
+      (type === 'doc' && folder) || '',
     )
 
     await syncRepositories('backup', resourcePath, copyPath)

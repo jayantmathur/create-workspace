@@ -3,7 +3,7 @@
   "description": "A CLI tool to create a new workspace or update an existing one. Allows creating new web applications and documentation or manuscripts",
   "module": "index.ts",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "bin": {
     "create-workspace": "index.ts",
     "cnw": "index.ts",
