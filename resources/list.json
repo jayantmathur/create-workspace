@@ -56,16 +56,7 @@
   "auth": {
     "type": "app",
     "folder": "auth",
-    "postinstalls": [
-      "bun add better-auth",
-      "bun add drizzle-orm @neondatabase/serverless dotenv",
-      "bun add --dev drizzle-kit tsx"
-    ],
-    "scripts": {
-      "db:generate": "bun drizzle-kit generate",
-      "db:migrate": "bun drizzle-kit migrate",
-      "db:studio": "bun drizzle-kit studio"
-    }
+    "postinstalls": ["bun add @neondatabase/neon-js"]
   },
   "db": {
     "type": "app",
