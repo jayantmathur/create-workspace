@@ -56,7 +56,7 @@
   "auth": {
     "type": "app",
     "folder": "auth",
-    "postinstalls": ["bun add @neondatabase/neon-js"]
+    "postinstalls": ["bun add better-auth"]
   },
   "db": {
     "type": "app",

@@ -15,7 +15,7 @@ import type { BumpType, PaddType } from './utils/types'
 
 const {
   bold: BOLD,
-  // italic: ITALIC,
+  italic: ITALIC,
   underline: UNDERLINE,
   dim: DIM,
   // strikethrough: STRIKE,
@@ -38,6 +38,7 @@ async function main() {
     options: {
       restore: {
         type: 'boolean',
+        short: 'r',
         default: false,
       },
       version: {
@@ -50,14 +51,14 @@ async function main() {
         short: 'c',
         default: 'chore(update)',
       },
-      project: {
-        type: 'string',
-        short: 'p',
-        default: undefined,
+      withExtras: {
+        type: 'boolean',
+        short: 'e',
+        default: false,
       },
       pack: {
         type: 'string',
-        short: 'k',
+        short: 'p',
         default: undefined,
         multiple: true,
       },
@@ -81,9 +82,9 @@ async function main() {
 
   switch (command) {
     case 'padd': {
-      const { project, pack: packs } = flags
+      const { pack: packs, withExtras } = flags
 
-      if (!project || !packs) {
+      if (!packs) {
         console.error(`${BOLD('Error')}: Missing required flags.`)
         process.exit(1)
       }
@@ -96,15 +97,17 @@ async function main() {
         }
 
         const checkProjectPath = await file(
-          resolve(__cwd, `${packData.type}s`, project, 'package.json'),
+          resolve(__cwd, 'package.json'),
         ).exists()
 
         if (!checkProjectPath) {
-          console.error(`${BOLD('Error')}: Project ${project} does not exist.`)
+          console.error(
+            `${BOLD('Error')}: This workspace is not a ${ITALIC('paddable')} project.`,
+          )
           process.exit(1)
         }
 
-        await runPadd(project, packData).finally(() =>
+        await runPadd(packData, withExtras).finally(() =>
           console.log(`Package add process finished.`),
         )
       }

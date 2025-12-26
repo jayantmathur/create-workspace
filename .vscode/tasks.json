@@ -7,18 +7,6 @@
       "runOptions": {
         "runOn": "folderOpen"
       }
-    },
-    {
-      "label": "versionlens bun install",
-      "command": "bun",
-      "type": "shell",
-      "args": ["install"],
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "panel": "shared",
-        "clear": true
-      }
     }
   ]
 }

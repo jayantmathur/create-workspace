@@ -88,52 +88,6 @@ async function editYaml(path: string, data: { [key: string]: any }) {
   return true
 }
 
-async function initWorkspace(path: string) {
-  const tasks = [
-    await editJson(resolve(path, 'package.json'), {
-      version: '0.1.0',
-      private: true,
-      workspaces: [],
-      scripts: {
-        check:
-          'biome migrate --write;biome check --write --error-on-warnings --diagnostic-level=warn',
-        do: 'bun run --filter',
-        'do:all': "bun run --filter='*'",
-        pull: 'cnwx sync --restore',
-        push: 'cnwx sync',
-        prepush: 'bun check',
-      },
-      devDependencies: {
-        '@biomejs/biome': 'latest',
-      },
-    }),
-
-    write(
-      resolve(path, 'biome.json'),
-      await file(resolve(__dirname, '../', 'biome.json')).text(),
-    ),
-
-    write(
-      resolve(path, '.vscode', 'tasks.json'),
-      await file(resolve(__dirname, '../', '.vscode', 'tasks.json')).text(),
-    ),
-
-    write(
-      resolve(path, '.vscode', '..code-workspace'),
-      await file(
-        resolve(__dirname, '../', '.vscode', '..code-workspace'),
-      ).text(),
-    ),
-
-    write(
-      resolve(path, '.gitignore'),
-      await file(resolve(__dirname, '../', '.gitignore')).text(),
-    ),
-  ]
-
-  await Promise.all(tasks)
-}
-
 function getAvailableFolderName(path: string, name: string): string {
   let nextName = `${name}${1}`
   let i = 2
@@ -225,7 +179,7 @@ async function syncRepositories(
   return counts
 }
 
-async function runPadd(project: string, pack: PaddType, withExtras = false) {
+async function runPadd(pack: PaddType, withExtras = false) {
   const {
     type,
     folder,
@@ -238,7 +192,7 @@ async function runPadd(project: string, pack: PaddType, withExtras = false) {
   } = pack
 
   const src = resolve(__dirname, '../', 'resources', `${type}s`)
-  const dest = resolve(__cwd, `${type}s`, project)
+  const dest = __cwd
 
   if (folder) {
     const resourcePath = resolve(src, folder)
@@ -323,7 +277,6 @@ export {
   deepMerge,
   editJson,
   editYaml,
-  initWorkspace,
   getAvailableFolderName,
   syncRepositories,
   runPadd,

@@ -22,7 +22,6 @@ import {
   editYaml,
   getAvailableFolderName,
   handleCancel,
-  initWorkspace,
 } from './utils'
 
 import type { CLIOptions, ResponseType } from './utils/types'
@@ -260,10 +259,54 @@ async function main() {
       task: async () => {
         await write(
           resolve(workspacePath, 'package.json'),
-          JSON.stringify({ name: name }),
-        )
-          .then(async () => await initWorkspace(workspacePath))
-          .finally(async () => await sleep(1000))
+          JSON.stringify({
+            name: name,
+            version: '0.1.0',
+            private: true,
+            // workspaces: [],
+            scripts: {
+              // check: 'biome migrate --write;biome check --write --error-on-warnings --diagnostic-level=warn',
+              // do: 'bun run --filter',
+              // 'do:all': "bun run --filter='*'",
+              pull: 'cnwx sync --restore',
+              push: 'cnwx sync',
+              // prepush: 'bun check',
+            },
+            // devDependencies: {
+            //   '@biomejs/biome': 'latest',
+            // },
+          }),
+        ).then(async () => {
+          const tasks = [
+            // write(
+            //   resolve(workspacePath, 'biome.json'),
+            //   await file(resolve(__dirname, 'biome.json')).text(),
+            // ).finally(async () => await sleep(1000)),
+
+            write(
+              resolve(workspacePath, '.gitignore'),
+              await file(resolve(__dirname, '.gitignore')).text(),
+            ),
+
+            write(
+              resolve(workspacePath, '.vscode', 'tasks.json'),
+              await file(resolve(__dirname, '.vscode', 'tasks.json')).text(),
+            ).finally(async () => await sleep(1000)),
+
+            write(
+              resolve(workspacePath, '.vscode', `${name}.code-workspace`),
+              JSON.stringify(
+                {
+                  folders: [{ path: '..' }],
+                  settings: {},
+                },
+                null,
+                2,
+              ),
+            ).finally(async () => await sleep(1000)),
+          ]
+          await Promise.all(tasks)
+        })
 
         return 'Workspace initialized.'
       },
@@ -281,9 +324,6 @@ async function main() {
 
           const path = resolve(workspacePath, 'apps')
           await mkdir(path, { recursive: true })
-          await editJson(resolve(workspacePath, 'package.json'), {
-            workspaces: ['apps/*'],
-          })
 
           await Promise.all(
             apps.map(async (entry) => {
@@ -300,7 +340,14 @@ async function main() {
                 stdio: ['ignore', 'ignore', 'ignore'],
               })
 
-              await main.exited
+              await main.exited.then(async () => {
+                await editJson(
+                  resolve(workspacePath, '.vscode', `${name}.code-workspace`),
+                  {
+                    folders: [{ path: `../apps/${projectRepo}` }],
+                  },
+                )
+              })
             }),
           )
         }
@@ -313,9 +360,6 @@ async function main() {
 
           const path = resolve(workspacePath, 'docs')
           await mkdir(path, { recursive: true })
-          await editJson(resolve(workspacePath, 'package.json'), {
-            workspaces: ['docs/*'],
-          })
 
           await Promise.all(
             docs.map(async (entry) => {
@@ -332,7 +376,14 @@ async function main() {
                 stdio: ['ignore', 'ignore', 'ignore'],
               })
 
-              await main.exited
+              await main.exited.then(async () => {
+                await editJson(
+                  resolve(workspacePath, '.vscode', `${name}.code-workspace`),
+                  {
+                    folders: [{ path: `../docs/${projectRepo}` }],
+                  },
+                )
+              })
 
               await Promise.all(
                 [
@@ -441,7 +492,7 @@ async function main() {
   // End of CLI process
   outro(`Your workspace is ready! Opening in ${color.blue('VSCode')}.`)
 
-  await $`code ${workspacePath}`.quiet()
+  await $`code ${workspacePath}/.vscode/${name}.code-workspace`.quiet()
 }
 
 //
