@@ -56,18 +56,28 @@
   "auth": {
     "type": "app",
     "folder": "auth",
-    "postinstalls": ["bun add better-auth"]
+    "postinstalls": [
+      "bun add better-auth",
+      "bun add @daveyplate/better-auth-ui@latest",
+      "bun add drizzle-orm",
+      "bun add @neondatabase/serverless",
+      "bun add dotenv",
+      "bun add -D drizzle-kit",
+      "bun add -D tsx"
+    ],
+    "scripts": {
+      "db:generate": "bunx @better-auth/cli generate",
+      "db:migrate": "bunx @better-auth/cli migrate",
+      "db:studio": "bun drizzle-kit studio"
+    }
   },
   "db": {
     "type": "app",
     "postinstalls": [
-      "bun add @tanstack/react-db @tanstack/query-db-collection"
-    ],
-    "extras": {
-      "postinstalls": [
-        "bun add @tanstack/query-db-collection @neondatabase/neon-js"
-      ]
-    }
+      "bun add @tanstack/react-db",
+      "bun add @tanstack/query-db-collection",
+      "bun add @tanstack/electric-db-collection"
+    ]
   },
   "form": {
     "type": "app",
