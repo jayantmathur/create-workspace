@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { mkdir, rename, rm } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { basename, resolve } from 'node:path'
 import {
   confirm,
   group,
@@ -231,6 +231,7 @@ async function main() {
   ;(isCancel(proceed) || !proceed) && handleCancel()
 
   const workspacePath = resolve(__cwd, name)
+  const workspaceName = basename(workspacePath)
 
   // Create workspace
   const taskExecutions = await tasks([
@@ -294,7 +295,11 @@ async function main() {
             ).finally(async () => await sleep(1000)),
 
             write(
-              resolve(workspacePath, '.vscode', `${name}.code-workspace`),
+              resolve(
+                workspacePath,
+                '.vscode',
+                `${workspaceName}.code-workspace`,
+              ),
               JSON.stringify(
                 {
                   folders: [{ path: '..' }],
@@ -342,7 +347,11 @@ async function main() {
 
               await main.exited.then(async () => {
                 await editJson(
-                  resolve(workspacePath, '.vscode', `${name}.code-workspace`),
+                  resolve(
+                    workspacePath,
+                    '.vscode',
+                    `${workspaceName}.code-workspace`,
+                  ),
                   {
                     folders: [{ path: `../apps/${projectRepo}` }],
                   },
@@ -378,7 +387,11 @@ async function main() {
 
               await main.exited.then(async () => {
                 await editJson(
-                  resolve(workspacePath, '.vscode', `${name}.code-workspace`),
+                  resolve(
+                    workspacePath,
+                    '.vscode',
+                    `${workspaceName}.code-workspace`,
+                  ),
                   {
                     folders: [{ path: `../docs/${projectRepo}` }],
                   },
@@ -492,7 +505,7 @@ async function main() {
   // End of CLI process
   outro(`Your workspace is ready! Opening in ${color.blue('VSCode')}.`)
 
-  await $`code ${workspacePath}/.vscode/${name}.code-workspace`.quiet()
+  await $`code ${workspacePath}/.vscode/${workspaceName}.code-workspace`.quiet()
 }
 
 //
