@@ -56,32 +56,42 @@
   "auth": {
     "type": "app",
     "folder": "auth",
-    "postinstalls": [
-      "bun add better-auth",
-      "bun add @daveyplate/better-auth-ui@latest",
-      "bun add drizzle-orm",
-      "bun add @neondatabase/serverless",
-      "bun add dotenv",
-      "bun add -D drizzle-kit",
-      "bun add -D tsx"
+    "dependencies": [
+      "better-auth",
+      "@daveyplate/better-auth-ui",
+      "drizzle-orm",
+      "@neondatabase/serverless",
+      "dotenv"
     ],
+    "devDependencies": ["drizzle-kit", "tsx"],
     "scripts": {
-      "db:generate": "bunx @better-auth/cli generate",
-      "db:migrate": "bunx @better-auth/cli migrate",
+      "auth:db:generate": "bunx @better-auth/cli generate",
+      "auth:db:migrate": "bunx @better-auth/cli migrate",
       "db:studio": "bun drizzle-kit studio"
     }
   },
   "db": {
     "type": "app",
-    "postinstalls": [
-      "bun add @tanstack/react-db",
-      "bun add @tanstack/query-db-collection",
-      "bun add @tanstack/electric-db-collection"
-    ]
-  },
-  "form": {
-    "type": "app",
-    "postinstalls": ["bun add @tanstack/react-form"]
+    "folder": "db",
+    "dependencies": [
+      "@tanstack/react-query",
+      "drizzle-orm",
+      "@neondatabase/serverless",
+      "dotenv"
+    ],
+    "devDependencies": ["drizzle-kit", "tsx"],
+    "scripts": {
+      "db:generate": "bun drizzle-kit generate",
+      "db:migrate": "bun drizzle-kit migrate",
+      "db:studio": "bun drizzle-kit studio"
+    },
+    "extras": {
+      "dependencies": [
+        "@tanstack/react-db",
+        "@tanstack/query-db-collection",
+        "@tanstack/electric-db-collection"
+      ]
+    }
   },
   "tauri": {
     "type": "app",

@@ -8,3 +8,5 @@ export const todos = pgTable('todos', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })
+
+export type Todo = typeof todos.$inferInsert
