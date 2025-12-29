@@ -216,13 +216,11 @@ async function runPadd(pack: PaddType, withExtras = false) {
 
     withExtras && extras.dependencies && packs.push(...extras.dependencies)
 
-    const process = spawn(['bun', 'add', ...packs], {
+    await spawn(['bun', 'add', ...packs], {
       cwd: dest,
       stdio: ['ignore', 'ignore', 'ignore'],
     })
-
-    await process.exited
-      .then(() => console.log(DIM('Installed dependencies')))
+      .exited.then(() => console.log(DIM('Installed dependencies')))
       .catch(() => console.warn('Failed to install some dependencies'))
   }
 
@@ -233,13 +231,11 @@ async function runPadd(pack: PaddType, withExtras = false) {
       extras.devDependencies &&
       packs.push(...extras.devDependencies)
 
-    const process = spawn(['bun', 'add', '--dev', ...packs], {
+    await spawn(['bun', 'add', '--dev', ...packs], {
       cwd: dest,
       stdio: ['ignore', 'ignore', 'ignore'],
     })
-
-    await process.exited
-      .then(() => console.log(DIM('Installed dev dependencies')))
+      .exited.then(() => console.log(DIM('Installed dev dependencies')))
       .catch(() => console.warn('Failed to install some dev dependencies'))
   }
 
@@ -247,11 +243,10 @@ async function runPadd(pack: PaddType, withExtras = false) {
     let successes = 0
     for (const installation of postinstalls) {
       const commands = installation.split(' ')
-      const process = spawn(commands, {
+      await spawn(commands, {
         cwd: dest,
         stdio: ['ignore', 'ignore', 'ignore'],
-      })
-      await process.exited.then(() => successes++)
+      }).exited.then(() => successes++)
     }
 
     if (successes === postinstalls.length)

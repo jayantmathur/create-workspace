@@ -15,7 +15,7 @@ import type { BumpType, PaddType } from './utils/types'
 
 const {
   bold: BOLD,
-  italic: ITALIC,
+  // italic: ITALIC,
   underline: UNDERLINE,
   dim: DIM,
   // strikethrough: STRIKE,
@@ -93,17 +93,6 @@ async function main() {
 
         if (!listOfPadds[pack] || !packData) {
           console.error(`${BOLD('Error')}: Package ${pack} not found.`)
-          process.exit(1)
-        }
-
-        const checkProjectPath = await file(
-          resolve(__cwd, 'package.json'),
-        ).exists()
-
-        if (!checkProjectPath) {
-          console.error(
-            `${BOLD('Error')}: This workspace is not a ${ITALIC('paddable')} project.`,
-          )
           process.exit(1)
         }
 

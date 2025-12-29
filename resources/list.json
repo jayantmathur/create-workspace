@@ -53,6 +53,13 @@
     "folder": "pyr",
     "destination": "./"
   },
+  "shadcn": {
+    "type": "app",
+    "folder": "shadcn",
+    "scripts": {
+      "shadd": "bunx --bun shadcn@latest add --overwrite --yes --silent"
+    }
+  },
   "auth": {
     "type": "app",
     "folder": "auth",
@@ -92,6 +99,11 @@
         "@tanstack/electric-db-collection"
       ]
     }
+  },
+  "form": {
+    "type": "app",
+    "folder": "form",
+    "dependencies": ["@tanstack/react-form", "sonner", "zod"]
   },
   "tauri": {
     "type": "app",

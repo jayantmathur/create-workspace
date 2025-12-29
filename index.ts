@@ -14,7 +14,7 @@ import {
   tasks,
   text,
 } from '@clack/prompts'
-import { $, file, sleep, spawn, write } from 'bun'
+import { file, sleep, spawn, write } from 'bun'
 import color from 'picocolors'
 import { description, version } from './package.json'
 import {
@@ -55,21 +55,60 @@ const cliOptions: CLIOptions = {
           value: 'react',
           label: 'React',
           hint: '👍 minimal',
-          callback: (name: string) => `bun init --react=shadcn ${name}`,
+          callback: async (name: string, path: string) => {
+            await spawn(['bun', 'init', '--react=shadcn', name], {
+              cwd: path,
+              // stdio: ['ignore', 'ignore', 'ignore'],
+            }).exited
+          },
         },
         {
           value: 'vite',
           label: 'Vite',
           hint: '👍 WebXR',
-          callback: (name: string) =>
-            `bun create vite ${name} --template react-ts`,
+          callback: async (name: string, path: string) => {
+            await spawn(
+              ['bun', 'create', 'vite', name, '--template', 'react-ts'],
+              {
+                cwd: path,
+                // stdio: ['ignore', 'ignore', 'ignore'],
+              },
+            ).exited
+          },
         },
         {
           value: 'tanstack',
           label: 'Tanstack',
           hint: '👍 full-stack',
-          callback: (name: string) =>
-            `bun create @tanstack/start@latest ${name} --framework React --package-manager bun --toolchain biome --tailwind --no-git --add-ons shadcn,nitro`,
+          callback: async (name: string, path: string) => {
+            await spawn(
+              [
+                'bun',
+                'create',
+                '@tanstack/start@latest',
+                name,
+                '--framework',
+                'React',
+                '--package-manager',
+                'bun',
+                '--toolchain',
+                'biome',
+                '--tailwind',
+                '--no-git',
+                '--add-ons',
+                'shadcn,nitro',
+              ],
+              {
+                cwd: path,
+                // stdio: ['ignore', 'ignore', 'ignore'],
+              },
+            ).exited.then(async () => {
+              await spawn(['cnwx', 'padd', '--pack', 'shadcn'], {
+                cwd: resolve(path, name),
+                // stdio: ['ignore', 'ignore', 'ignore'],
+              }).exited
+            })
+          },
         },
       ],
     },
@@ -82,38 +121,136 @@ const cliOptions: CLIOptions = {
           value: 'default',
           label: 'Default',
           hint: '👍 minimal document',
-          callback: (name: string) =>
-            `quarto create project default ${name} --no-open --no-prompt --quiet`,
+          callback: async (name: string, path: string) => {
+            await spawn(
+              [
+                'quarto',
+                'create',
+                'project',
+                'default',
+                name,
+                '--no-open',
+                '--no-prompt',
+                '--quiet',
+              ],
+              {
+                cwd: path,
+                // stdio: ['ignore', 'ignore', 'ignore'],
+              },
+            ).exited.then(async () => {
+              await rename(
+                resolve(path, name, `${name}.qmd`),
+                resolve(path, name, 'index.qmd'),
+              )
+            })
+          },
         },
         {
           value: 'manuscript',
           label: 'Manuscript',
           hint: '👍 for print',
-          callback: (name: string) =>
-            `quarto create project manuscript ${name} --no-open --no-prompt --quiet`,
+          callback: async (name: string, path: string) => {
+            await spawn(
+              [
+                'quarto',
+                'create',
+                'project',
+                'manuscript',
+                name,
+                '--no-open',
+                '--no-prompt',
+                '--quiet',
+              ],
+              {
+                cwd: path,
+                // stdio: ['ignore', 'ignore', 'ignore'],
+              },
+            ).exited
+          },
         },
         // {
-        //   value: "book",
-        //   label: "Booklet",
-        //   hint: "👍 for web docs",
-        //   callback: function (name: string) {
-        //     return `quarto create project book ${name} --no-open --no-prompt --quiet`;
+        //   value: 'book',
+        //   label: 'Booklet',
+        //   hint: '👍 for web docs',
+        //   callback: async (name: string, path: string) => {
+        //     await spawn(
+        //       [
+        //         'quarto',
+        //         'create',
+        //         'project',
+        //         'book',
+        //         name,
+        //         '--no-open',
+        //         '--no-prompt',
+        //         '--quiet',
+        //       ],
+        //       {
+        //         cwd: path,
+        //         // stdio: ['ignore', 'ignore', 'ignore'],
+        //       },
+        //     ).exited
         //   },
         // },
         // {
-        //   value: "blog",
-        //   label: "Blogs",
-        //   hint: "👍 for blog sites",
-        //   callback: function (name: string) {
-        //     return `quarto create project blog ${name} --no-open --no-prompt --quiet`;
+        //   value: 'blog',
+        //   label: 'Blogs',
+        //   hint: '👍 for blog sites',
+        //   callback: async (name: string, path: string) => {
+        //     await spawn(
+        //       [
+        //         'quarto',
+        //         'create',
+        //         'project',
+        //         'blog',
+        //         name,
+        //         '--no-open',
+        //         '--no-prompt',
+        //         '--quiet',
+        //       ],
+        //       {
+        //         cwd: path,
+        //         // stdio: ['ignore', 'ignore', 'ignore'],
+        //       },
+        //     ).exited
         //   },
         // },
         {
           value: 'revealjs',
           label: 'Reveal.js',
           hint: '👍 for presentations',
-          callback: (name: string) =>
-            `quarto create project default ${name} --no-open --no-prompt --quiet`,
+          callback: async (name: string, path: string) => {
+            await spawn(
+              [
+                'quarto',
+                'create',
+                'project',
+                'default',
+                name,
+                '--no-open',
+                '--no-prompt',
+                '--quiet',
+              ],
+              {
+                cwd: path,
+                // stdio: ['ignore', 'ignore', 'ignore'],
+              },
+            ).exited.then(async () => {
+              await rename(
+                resolve(path, name, `${name}.qmd`),
+                resolve(path, name, 'index.qmd'),
+              )
+
+              await editYaml(resolve(path, name, '_quarto.yml'), {
+                'revealjs-plugins': ['attribution'],
+                format: 'rjs-revealjs',
+              })
+
+              await spawn(['cnwx', 'padd', '--pack', 'rjs'], {
+                cwd: resolve(path, name),
+                // stdio: ['ignore', 'ignore', 'ignore'],
+              }).exited
+            })
+          },
         },
       ],
     },
@@ -340,12 +477,7 @@ async function main() {
 
               const projectRepo = getAvailableFolderName(path, entry)
 
-              const main = spawn(callback(projectRepo).split(' '), {
-                cwd: path,
-                stdio: ['ignore', 'ignore', 'ignore'],
-              })
-
-              await main.exited.then(async () => {
+              await callback(projectRepo, path).then(async () => {
                 await editJson(
                   resolve(
                     workspacePath,
@@ -380,12 +512,7 @@ async function main() {
 
               const projectRepo = getAvailableFolderName(path, entry)
 
-              const main = spawn(callback(projectRepo).split(' '), {
-                cwd: path,
-                stdio: ['ignore', 'ignore', 'ignore'],
-              })
-
-              await main.exited.then(async () => {
+              await callback(projectRepo, path).then(async () => {
                 await editJson(
                   resolve(
                     workspacePath,
@@ -405,15 +532,13 @@ async function main() {
                   // 'jmgirard/honeypot',
                   'quarto-ext/fontawesome',
                 ].map(async (extension) => {
-                  const main = spawn(
+                  await spawn(
                     ['quarto', 'add', extension, '--quiet', '--no-prompt'],
                     {
                       cwd: resolve(path, projectRepo),
-                      stdio: ['ignore', 'ignore', 'ignore'],
+                      // stdio: ['ignore', 'ignore', 'ignore'],
                     },
-                  )
-
-                  await main.exited
+                  ).exited
                 }),
               )
 
@@ -460,27 +585,6 @@ async function main() {
                 'number-sections': true,
                 mermaid: { theme: 'neutral' },
               })
-
-              if (
-                projectRepo.includes('default') ||
-                projectRepo.includes('revealjs')
-              ) {
-                await rename(
-                  resolve(path, projectRepo, `${projectRepo}.qmd`),
-                  resolve(path, projectRepo, 'index.qmd'),
-                )
-
-                // Add Quarto plugins and packages if revealjs
-                if (projectRepo.includes('revealjs')) {
-                  await editYaml(resolve(path, projectRepo, '_quarto.yml'), {
-                    'revealjs-plugins': ['attribution'],
-                    format: 'rjs-revealjs',
-                  })
-                  await $`cnwx padd --project ${projectRepo} --pack rjs`
-                    .cwd(workspacePath)
-                    .quiet()
-                }
-              }
             }),
           )
         }
@@ -500,12 +604,20 @@ async function main() {
 
   // Run final `bun install` task
 
-  await $`bun install`.cwd(workspacePath).quiet()
+  await spawn(['bun', 'install'], {
+    cwd: workspacePath,
+    // stdio: ['ignore', 'ignore', 'ignore'],
+  }).exited
 
   // End of CLI process
   outro(`Your workspace is ready! Opening in ${color.blue('VSCode')}.`)
 
-  await $`code ${workspacePath}/.vscode/${workspaceName}.code-workspace`.quiet()
+  await spawn(
+    ['code', `${workspacePath}/.vscode/${workspaceName}.code-workspace`],
+    {
+      // stdio: ['ignore', 'ignore', 'ignore'],
+    },
+  ).exited
 }
 
 //
