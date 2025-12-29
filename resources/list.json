@@ -56,6 +56,9 @@
   "shadcn": {
     "type": "app",
     "folder": "shadcn",
+    "postinstalls": [
+      "bunx --bun shadcn@latest add --overwrite --yes --silent button dropdown-menu"
+    ],
     "scripts": {
       "shadd": "bunx --bun shadcn@latest add --overwrite --yes --silent"
     }
@@ -103,7 +106,10 @@
   "form": {
     "type": "app",
     "folder": "form",
-    "dependencies": ["@tanstack/react-form", "sonner", "zod"]
+    "dependencies": ["@tanstack/react-form", "zod"],
+    "postinstalls": [
+      "bunx --bun shadcn@latest add --overwrite --yes --silent sonner button card field input input-group"
+    ]
   },
   "tauri": {
     "type": "app",
