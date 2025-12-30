@@ -66,18 +66,12 @@
   "auth": {
     "type": "app",
     "folder": "auth",
-    "dependencies": [
-      "better-auth",
-      "@daveyplate/better-auth-ui",
-      "drizzle-orm",
-      "postgres",
-      "dotenv"
-    ],
+    "dependencies": ["better-auth", "drizzle-orm", "postgres", "dotenv"],
     "devDependencies": ["drizzle-kit", "tsx"],
     "scripts": {
-      "auth:db:generate": "bunx @better-auth/cli generate",
       "db:studio": "bun drizzle-kit studio"
-    }
+    },
+    "postinstalls": ["cnwx padd --pack form"]
   },
   "db": {
     "type": "app",
