@@ -1,6 +1,7 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { username } from 'better-auth/plugins'
+import { tanstackStartCookies } from 'better-auth/tanstack-start'
 import { db } from '@/db/drizzle' // your drizzle instance
 import * as schema from '@/db/schema/auth'
 
@@ -12,7 +13,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  plugins: [username()],
+  plugins: [username(), tanstackStartCookies()], // make sure tanstackStartCookies() is the last plugin in the array],
   //   socialProviders: {
   //     github: {
   //       clientId: process.env.GITHUB_CLIENT_ID as string,
