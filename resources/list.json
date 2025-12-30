@@ -57,10 +57,10 @@
     "type": "app",
     "folder": "shadcn",
     "postinstalls": [
-      "bunx --bun shadcn@latest add --overwrite --yes --silent button dropdown-menu"
+      "bunx --bun shadcn@latest add --silent button dropdown-menu"
     ],
     "scripts": {
-      "shadd": "bunx --bun shadcn@latest add --overwrite --yes --silent"
+      "shadd": "bunx --bun shadcn@latest add --silent"
     }
   },
   "auth": {
@@ -70,13 +70,12 @@
       "better-auth",
       "@daveyplate/better-auth-ui",
       "drizzle-orm",
-      "@neondatabase/serverless",
+      "postgres",
       "dotenv"
     ],
     "devDependencies": ["drizzle-kit", "tsx"],
     "scripts": {
       "auth:db:generate": "bunx @better-auth/cli generate",
-      "auth:db:migrate": "bunx @better-auth/cli migrate",
       "db:studio": "bun drizzle-kit studio"
     }
   },
@@ -86,7 +85,7 @@
     "dependencies": [
       "@tanstack/react-query",
       "drizzle-orm",
-      "@neondatabase/serverless",
+      "postgres",
       "dotenv"
     ],
     "devDependencies": ["drizzle-kit", "tsx"],
@@ -106,9 +105,9 @@
   "form": {
     "type": "app",
     "folder": "form",
-    "dependencies": ["@tanstack/react-form", "zod"],
+    "dependencies": ["@tanstack/react-form"],
     "postinstalls": [
-      "bunx --bun shadcn@latest add --overwrite --yes --silent sonner button card field input input-group"
+      "bunx --bun shadcn@latest add --silent sonner button card field input input-group"
     ]
   },
   "tauri": {

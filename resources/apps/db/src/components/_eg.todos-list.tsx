@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type { Todo } from '@/db/schema/todos'
-import { getAllTodos, insertTodo } from '@/db/serverfns/todos'
+import { getAllTodos, insertTodo } from '@/lib/todos'
+import { Button } from './ui/button'
 
 export function TodosList() {
   const { data: todosList, refetch } = useQuery<Todo[]>({
@@ -22,10 +23,9 @@ export function TodosList() {
           <li key={todo.id}>{todo.title}</li>
         ))}
       </ul>
-      {/** biome-ignore lint/a11y/useButtonType: this is a placeholder button component, meant to be replaced */}
-      <button className="mt-4" onClick={() => addTodo({ title: 'New todo' })}>
+      <Button className="mt-4" onClick={() => addTodo({ title: 'New todo' })}>
         Add todo
-      </button>
+      </Button>
     </section>
   )
 }
