@@ -378,17 +378,17 @@ async function main() {
         await rm(workspacePath, { recursive: true, force: true }).finally(
           async () => await sleep(1000),
         )
-        return 'Workspace deleted.'
+        return 'Old workspace deleted.'
       },
       enabled: objective === 'create' && overwrite,
     },
     {
-      title: 'Creating workspace repository',
+      title: 'Creating new workspace repository',
       task: async () => {
         await mkdir(workspacePath, { recursive: true }).finally(
           async () => await sleep(1000),
         )
-        return 'Repository created.'
+        return 'New workspace repository created.'
       },
       enabled: objective === 'create',
     },
