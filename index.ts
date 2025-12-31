@@ -58,7 +58,7 @@ const cliOptions: CLIOptions = {
           callback: async (name: string, path: string) => {
             await spawn(['bun', 'init', '--react=shadcn', name], {
               cwd: path,
-              // stdio: ['ignore', 'ignore', 'ignore'],
+              stdio: ['ignore', 'ignore', 'ignore'],
             }).exited
           },
         },
@@ -71,7 +71,7 @@ const cliOptions: CLIOptions = {
               ['bun', 'create', 'vite', name, '--template', 'react-ts'],
               {
                 cwd: path,
-                // stdio: ['ignore', 'ignore', 'ignore'],
+                stdio: ['ignore', 'ignore', 'ignore'],
               },
             ).exited
           },
@@ -100,12 +100,12 @@ const cliOptions: CLIOptions = {
               ],
               {
                 cwd: path,
-                // stdio: ['ignore', 'ignore', 'ignore'],
+                stdio: ['ignore', 'ignore', 'ignore'],
               },
             ).exited.then(async () => {
               await spawn(['cnwx', 'padd', '--pack', 'shadcn'], {
                 cwd: resolve(path, name),
-                // stdio: ['ignore', 'ignore', 'ignore'],
+                stdio: ['ignore', 'ignore', 'ignore'],
               }).exited
             })
           },
@@ -135,7 +135,7 @@ const cliOptions: CLIOptions = {
               ],
               {
                 cwd: path,
-                // stdio: ['ignore', 'ignore', 'ignore'],
+                stdio: ['ignore', 'ignore', 'ignore'],
               },
             ).exited.then(async () => {
               await rename(
@@ -163,7 +163,7 @@ const cliOptions: CLIOptions = {
               ],
               {
                 cwd: path,
-                // stdio: ['ignore', 'ignore', 'ignore'],
+                stdio: ['ignore', 'ignore', 'ignore'],
               },
             ).exited
           },
@@ -186,7 +186,7 @@ const cliOptions: CLIOptions = {
         //       ],
         //       {
         //         cwd: path,
-        //         // stdio: ['ignore', 'ignore', 'ignore'],
+        //         stdio: ['ignore', 'ignore', 'ignore'],
         //       },
         //     ).exited
         //   },
@@ -209,7 +209,7 @@ const cliOptions: CLIOptions = {
         //       ],
         //       {
         //         cwd: path,
-        //         // stdio: ['ignore', 'ignore', 'ignore'],
+        //         stdio: ['ignore', 'ignore', 'ignore'],
         //       },
         //     ).exited
         //   },
@@ -232,7 +232,7 @@ const cliOptions: CLIOptions = {
               ],
               {
                 cwd: path,
-                // stdio: ['ignore', 'ignore', 'ignore'],
+                stdio: ['ignore', 'ignore', 'ignore'],
               },
             ).exited.then(async () => {
               await rename(
@@ -247,7 +247,7 @@ const cliOptions: CLIOptions = {
 
               await spawn(['cnwx', 'padd', '--pack', 'rjs'], {
                 cwd: resolve(path, name),
-                // stdio: ['ignore', 'ignore', 'ignore'],
+                stdio: ['ignore', 'ignore', 'ignore'],
               }).exited
             })
           },
@@ -536,7 +536,7 @@ async function main() {
                     ['quarto', 'add', extension, '--quiet', '--no-prompt'],
                     {
                       cwd: resolve(path, projectRepo),
-                      // stdio: ['ignore', 'ignore', 'ignore'],
+                      stdio: ['ignore', 'ignore', 'ignore'],
                     },
                   ).exited
                 }),
@@ -606,7 +606,7 @@ async function main() {
 
   await spawn(['bun', 'install'], {
     cwd: workspacePath,
-    // stdio: ['ignore', 'ignore', 'ignore'],
+    stdio: ['ignore', 'ignore', 'ignore'],
   }).exited
 
   // End of CLI process
@@ -615,7 +615,7 @@ async function main() {
   await spawn(
     ['code', `${workspacePath}/.vscode/${workspaceName}.code-workspace`],
     {
-      // stdio: ['ignore', 'ignore', 'ignore'],
+      stdio: ['ignore', 'ignore', 'ignore'],
     },
   ).exited
 }
