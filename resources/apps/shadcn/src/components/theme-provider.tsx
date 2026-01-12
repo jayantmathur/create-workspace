@@ -1,6 +1,15 @@
 import { useRouter } from '@tanstack/react-router'
+import { Moon, Sun } from 'lucide-react'
 import { createContext, type PropsWithChildren, use } from 'react'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { setThemeServerFn, type Theme } from '@/lib/theme'
+import { cn } from '@/lib/utils'
 
 type ThemeContextVal = { theme: Theme; setTheme: (value: Theme) => void }
 type Props = PropsWithChildren<{ theme: Theme }>
@@ -21,6 +30,44 @@ export function ThemeProvider({ children, theme }: Props) {
   }
 
   return <ThemeContext value={{ theme, setTheme }}>{children}</ThemeContext>
+}
+
+export function ThemeToggle({
+  className,
+  ...props
+}: React.ComponentProps<typeof Button>) {
+  const { setTheme } = useTheme()
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        asChild
+        className={cn(
+          // 'absolute right-4 top-4',
+          // 'm-4',
+          className,
+        )}
+        {...props}
+      >
+        <Button variant="outline" size="icon">
+          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme('light')}>
+          Light
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('dark')}>
+          Dark
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('system')}>
+          System
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 /*
@@ -45,7 +92,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-*       <ThemeProvider theme={theme}>{children}</ThemeProvider>
+*       <ThemeProvider theme={theme}>
+*         <ThemeToggle />      
+*         {children}
+*       </ThemeProvider>
         <Scripts />
       </body>
     </html>

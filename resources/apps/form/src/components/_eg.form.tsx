@@ -1,5 +1,4 @@
 import { useForm } from '@tanstack/react-form'
-import { toast } from 'sonner'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import {
@@ -48,12 +47,7 @@ export function FormComponent() {
       onSubmit: formSchema,
     },
     onSubmit: async () => {
-      toast('Form submitted.', {
-        // position: "top-center",
-        duration: 3000,
-        // richColors: true,
-        invert: true,
-      })
+      console.log('Form submitted')
       form.reset()
     },
   })
@@ -87,8 +81,8 @@ export function FormComponent() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       aria-invalid={isInvalid}
-                      placeholder="This is a placeholder title"
-                      // autoComplete="off"
+                      placeholder={`Enter ${field.name} here.`}
+                      autoComplete="off"
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -111,7 +105,7 @@ export function FormComponent() {
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="This is a placeholder description for the form."
+                        placeholder={`Enter ${field.name} here.`}
                         rows={6}
                         className="min-h-24 resize-none"
                         aria-invalid={isInvalid}

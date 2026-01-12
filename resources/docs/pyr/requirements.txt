@@ -11,9 +11,8 @@ ipywidgets
 
 ## huggingface and other AI packages
 
-# transformers
-# torch
 # huggingface_hub[hf_xet]
 # llama-cpp-python
+# llama-cpp-python @ git+https://github.com/JamePeng/llama-cpp-python.git
 # langchain
 # langchain-huggingface
