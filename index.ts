@@ -408,6 +408,7 @@ async function main() {
               // 'do:all': "bun run --filter='*'",
               pull: 'cnwx sync --restore',
               push: 'cnwx sync',
+              init: 'cnw',
               // prepush: 'bun check',
             },
             // devDependencies: {
