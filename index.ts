@@ -83,9 +83,11 @@ const cliOptions: CLIOptions = {
           callback: async (name: string, path: string) => {
             await spawn(
               [
-                'bun',
+                // 'bun',
+                // 'create',
+                // '@tanstack/start@latest',
+                'tanstack',
                 'create',
-                '@tanstack/start@latest',
                 name,
                 '--framework',
                 'React',
@@ -93,10 +95,12 @@ const cliOptions: CLIOptions = {
                 'bun',
                 '--toolchain',
                 'biome',
+                '--deployment',
+                'nitro',
                 '--tailwind',
                 '--no-git',
                 '--add-ons',
-                'shadcn,nitro',
+                'shadcn',
               ],
               {
                 cwd: path,
@@ -563,18 +567,23 @@ async function main() {
                   // render: ["pages"],
                   resources: ['public'],
                 },
+
                 execute: { echo: false, output: false, enabled: true },
                 // bibliography: ['references.bib', 'extra-references.bib'],
                 'cite-method': 'citeproc',
+
                 crossref: {
                   'thm-prefix': 'RQ',
                   'thm-title': 'Research Question',
                 },
+
                 filters: [
                   // 'custom-callout',
                   'highlight-text',
                 ],
+
                 'callout-appearance': 'simple',
+
                 // 'custom-callout': {
                 //   todo: {
                 //     title: 'TODO',
@@ -582,8 +591,11 @@ async function main() {
                 //     color: '#ffc400ff',
                 //   },
                 // },
+
                 colorlinks: true,
+
                 'number-sections': true,
+
                 mermaid: { theme: 'neutral' },
               })
             }),
