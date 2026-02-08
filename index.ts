@@ -83,10 +83,8 @@ const cliOptions: CLIOptions = {
           callback: async (name: string, path: string) => {
             await spawn(
               [
-                // 'bun',
-                // 'create',
-                // '@tanstack/start@latest',
-                'tanstack',
+                'bunx',
+                '@tanstack/cli',
                 'create',
                 name,
                 '--framework',
@@ -565,25 +563,20 @@ async function main() {
                   'execute-dir': 'file',
                   'output-dir': 'render',
                   // render: ["pages"],
-                  resources: ['public'],
+                  // resources: ['public'],
                 },
-
                 execute: { echo: false, output: false, enabled: true },
                 // bibliography: ['references.bib', 'extra-references.bib'],
                 'cite-method': 'citeproc',
-
                 crossref: {
                   'thm-prefix': 'RQ',
                   'thm-title': 'Research Question',
                 },
-
                 filters: [
                   // 'custom-callout',
                   'highlight-text',
                 ],
-
                 'callout-appearance': 'simple',
-
                 // 'custom-callout': {
                 //   todo: {
                 //     title: 'TODO',
@@ -591,11 +584,8 @@ async function main() {
                 //     color: '#ffc400ff',
                 //   },
                 // },
-
                 colorlinks: true,
-
                 'number-sections': true,
-
                 mermaid: { theme: 'neutral' },
               })
             }),
