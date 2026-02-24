@@ -87,7 +87,6 @@ const cliOptions: CLIOptions = {
                 '@tanstack/cli',
                 'create',
                 name,
-                '--router-only', // I.e., only SPA (no SSR)
                 '--framework',
                 'React',
                 '--package-manager',
