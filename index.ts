@@ -51,21 +51,21 @@ const cliOptions: CLIOptions = {
       label: 'Create new web apps.',
       // hint: "React, Vite, Tanstack",
       types: [
-        {
-          value: 'react',
-          label: 'React',
-          hint: '👍 minimal',
-          callback: async (name: string, path: string) => {
-            await spawn(['bun', 'init', '--react=shadcn', name], {
-              cwd: path,
-              stdio: ['ignore', 'ignore', 'ignore'],
-            }).exited
-          },
-        },
+        // {
+        //   value: 'react',
+        //   label: 'React',
+        //   hint: '👍 minimal',
+        //   callback: async (name: string, path: string) => {
+        //     await spawn(['bun', 'init', '--react=shadcn', name], {
+        //       cwd: path,
+        //       stdio: ['ignore', 'ignore', 'ignore'],
+        //     }).exited
+        //   },
+        // },
         {
           value: 'vite',
           label: 'Vite',
-          hint: '👍 WebXR',
+          hint: 'SPA 👍 for minimal and WebXR',
           callback: async (name: string, path: string) => {
             await spawn(
               ['bun', 'create', 'vite', name, '--template', 'react-ts'],
@@ -79,26 +79,27 @@ const cliOptions: CLIOptions = {
         {
           value: 'tanstack',
           label: 'Tanstack',
-          hint: '👍 full-stack',
+          hint: 'SSR 👍 full-stack',
           callback: async (name: string, path: string) => {
             await spawn(
               [
-                'bunx',
-                '@tanstack/cli',
+                // 'bunx',
+                // '@tanstack/cli',
+                'tanstack',
                 'create',
                 name,
-                '--framework',
-                'React',
+                '--add-ons',
+                'shadcn',
                 '--package-manager',
                 'bun',
+                '--framework',
+                'React',
                 '--toolchain',
                 'biome',
                 '--deployment',
                 'nitro',
-                '--tailwind',
                 '--no-git',
-                '--add-ons',
-                'shadcn',
+                '--no-examples',
               ],
               {
                 cwd: path,
