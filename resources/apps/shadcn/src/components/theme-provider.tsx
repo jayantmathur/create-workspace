@@ -1,15 +1,15 @@
 import { useRouter } from '@tanstack/react-router'
 import { Moon, Sun } from 'lucide-react'
 import { createContext, type PropsWithChildren, use } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '#/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { setThemeServerFn, type Theme } from '@/lib/theme'
-import { cn } from '@/lib/utils'
+} from '#/components/ui/dropdown-menu'
+import { setThemeServerFn, type Theme } from '#/lib/theme'
+import { cn } from '#/lib/utils'
 
 type ThemeContextVal = { theme: Theme; setTheme: (value: Theme) => void }
 type Props = PropsWithChildren<{ theme: Theme }>
@@ -75,8 +75,8 @@ export function ThemeToggle({
 Example usage
 
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-*import { ThemeProvider } from "@/components/theme-provider";
-*import { getThemeServerFn } from "@/lib/theme";
+*import { ThemeProvider } from "#/components/theme-provider";
+*import { getThemeServerFn } from "#/lib/theme";
 
 export const Route = createRootRoute({
   ...

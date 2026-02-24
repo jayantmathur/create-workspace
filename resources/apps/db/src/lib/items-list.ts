@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { eq } from 'drizzle-orm'
-import { db } from '@/db/drizzle'
-import { itemsList, type Listitem } from '@/db/schema/items-list'
+import { db } from '#/db/drizzle'
+import { itemsList, type Listitem } from '#/db/schema/items-list'
 
 export const getAllItems = createServerFn({ method: 'GET' }).handler(
   async () => await db.select().from(itemsList).orderBy(itemsList.createdAt),

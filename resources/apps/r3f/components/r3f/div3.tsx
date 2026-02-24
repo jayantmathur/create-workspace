@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils'
-import { View, type ViewProps } from '@/providers/r3f'
+import { cn } from '#/lib/utils'
+import { View, type ViewProps } from '#/providers/r3f'
 
 const Component = ({ children, className, ...props }: ViewProps) => (
   <div

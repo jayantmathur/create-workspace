@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import type { Listitem } from '@/db/schema/items-list'
-import { getAllItems, useListMutations } from '@/lib/items-list'
+import type { Listitem } from '#/db/schema/items-list'
+import { getAllItems, useListMutations } from '#/lib/items-list'
 import { Button } from './ui/button'
 
 export function ItemsList() {

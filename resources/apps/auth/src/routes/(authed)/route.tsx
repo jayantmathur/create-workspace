@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { authMiddleware, checkAuth } from '@/middleware/auth'
+import { authMiddleware, checkAuth } from '#/middleware/auth'
 
 export const Route = createFileRoute('/(authed)')({
   component: RouteComponent,
