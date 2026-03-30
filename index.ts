@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { mkdir, rename, rm } from 'node:fs/promises'
+import { exists, mkdir, rename, rm } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 import {
   confirm,
@@ -469,7 +469,7 @@ async function main() {
           message('Creating web app(s)')
 
           const path = resolve(workspacePath, 'apps')
-          await mkdir(path, { recursive: true })
+          ;(await exists(path)) || (await mkdir(path, { recursive: true }))
 
           await Promise.all(
             apps.map(async (entry) => {
@@ -504,7 +504,7 @@ async function main() {
           message('Creating documentation')
 
           const path = resolve(workspacePath, 'docs')
-          await mkdir(path, { recursive: true })
+          ;(await exists(path)) || (await mkdir(path, { recursive: true }))
 
           await Promise.all(
             docs.map(async (entry) => {
