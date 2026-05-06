@@ -556,16 +556,16 @@ async function main() {
                     dev: 'quarto preview index.qmd',
                     render: 'quarto render',
                   },
-                  "prettier": {
-        "overrides": [
-            {
-                "files": "*.qmd",
-                "options": {
-                    "parser": "markdown"
-                }
-            }
-        ]
-    }
+                  prettier: {
+                    overrides: [
+                      {
+                        files: '*.qmd',
+                        options: {
+                          parser: 'markdown',
+                        },
+                      },
+                    ],
+                  },
                 }),
               )
 

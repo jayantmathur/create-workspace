@@ -1,10 +1,11 @@
 ## jupyter stuff
 
-ipykernel
-ipywidgets
+# ipykernel
+# ipywidgets
 
-## other example packages
+## stats packages
 
+# rpy2
 # numpy
 # pandas
 # matplotlib
