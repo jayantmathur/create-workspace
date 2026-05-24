@@ -148,29 +148,29 @@ const cliOptions: CLIOptions = {
             })
           },
         },
-        {
-          value: 'manuscript',
-          label: 'Manuscript',
-          hint: '👍 for print',
-          callback: async (name: string, path: string) => {
-            await spawn(
-              [
-                'quarto',
-                'create',
-                'project',
-                'manuscript',
-                name,
-                '--no-open',
-                '--no-prompt',
-                '--quiet',
-              ],
-              {
-                cwd: path,
-                stdio: ['ignore', 'ignore', 'ignore'],
-              },
-            ).exited
-          },
-        },
+        // {
+        //   value: "manuscript",
+        //   label: "Manuscript",
+        //   hint: "👍 for print",
+        //   callback: async (name: string, path: string) => {
+        //     await spawn(
+        //       [
+        //         "quarto",
+        //         "create",
+        //         "project",
+        //         "manuscript",
+        //         name,
+        //         "--no-open",
+        //         "--no-prompt",
+        //         "--quiet",
+        //       ],
+        //       {
+        //         cwd: path,
+        //         stdio: ["ignore", "ignore", "ignore"],
+        //       },
+        //     ).exited;
+        //   },
+        // },
         // {
         //   value: 'book',
         //   label: 'Booklet',
