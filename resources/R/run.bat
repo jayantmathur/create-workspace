@@ -4,7 +4,7 @@ REM Batch script to install jupyter in a venv using uv and run an R script
 setlocal enabledelayedexpansion
 
 REM Configuration
-set R_SCRIPT=setup.R
+set R_SCRIPT=resources/R/setup.R
 
 echo Creating virtual environment with uv...
 uv venv .venv
@@ -40,8 +40,8 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo Deactivating virtual environment...
-deactivate
+echo Removing Python virtual environment .venv...
+rmdir /s /q .venv
 
 echo Done!
 exit /b 0

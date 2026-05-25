@@ -10,6 +10,7 @@
     "cnwx": "argvs.ts"
   },
   "scripts": {
+    "setup-r": "./resources/R/run.bat",
     "check": "biome check --write --error-on-warnings --diagnostic-level=warn",
     "dev": "bun run --watch index.ts",
     "pull": "cnwx sync --restore",

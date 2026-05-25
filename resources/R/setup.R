@@ -2,21 +2,29 @@
 # Install essential packages
 #
 
+packages_check <- function(packages) {
+    lapply(
+        packages,
+        FUN = function(x) {
+            if (!require(x, character.only = TRUE)) {
+                install.packages(
+                    x,
+                    dependencies = TRUE,
+                    repos = "https://cran.r-project.org/",
+                    # type = "source"
+                )
+            }
+        }
+    )
+}
+
 min_packages <- c(
     "languageserver",
     "jsonlite",
-    "IRkernel",
-    "tidyverse",
-    "ggpubr",
-    "devtools",
-    "emmeans",
-    "stringi"
+    "IRkernel"
 )
 
-install.packages(
-    min_packages,
-    repos = "https://cloud.r-project.org"
-)
+packages_check(min_packages)
 
 IRkernel::installspec()
 
