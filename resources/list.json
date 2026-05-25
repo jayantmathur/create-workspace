@@ -48,9 +48,9 @@
     "type": "doc",
     "folder": "portfolio/letter"
   },
-  "pyr": {
+  "juvpyr": {
     "type": "doc",
-    "folder": "pyr",
+    "folder": "juvpyr",
     "destination": "./"
   },
   "shadcn": {

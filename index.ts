@@ -148,75 +148,49 @@ const cliOptions: CLIOptions = {
             })
           },
         },
-        // {
-        //   value: "manuscript",
-        //   label: "Manuscript",
-        //   hint: "👍 for print",
-        //   callback: async (name: string, path: string) => {
-        //     await spawn(
-        //       [
-        //         "quarto",
-        //         "create",
-        //         "project",
-        //         "manuscript",
-        //         name,
-        //         "--no-open",
-        //         "--no-prompt",
-        //         "--quiet",
-        //       ],
-        //       {
-        //         cwd: path,
-        //         stdio: ["ignore", "ignore", "ignore"],
-        //       },
-        //     ).exited;
-        //   },
-        // },
-        // {
-        //   value: 'book',
-        //   label: 'Booklet',
-        //   hint: '👍 for web docs',
-        //   callback: async (name: string, path: string) => {
-        //     await spawn(
-        //       [
-        //         'quarto',
-        //         'create',
-        //         'project',
-        //         'book',
-        //         name,
-        //         '--no-open',
-        //         '--no-prompt',
-        //         '--quiet',
-        //       ],
-        //       {
-        //         cwd: path,
-        //         stdio: ['ignore', 'ignore', 'ignore'],
-        //       },
-        //     ).exited
-        //   },
-        // },
-        // {
-        //   value: 'blog',
-        //   label: 'Blogs',
-        //   hint: '👍 for blog sites',
-        //   callback: async (name: string, path: string) => {
-        //     await spawn(
-        //       [
-        //         'quarto',
-        //         'create',
-        //         'project',
-        //         'blog',
-        //         name,
-        //         '--no-open',
-        //         '--no-prompt',
-        //         '--quiet',
-        //       ],
-        //       {
-        //         cwd: path,
-        //         stdio: ['ignore', 'ignore', 'ignore'],
-        //       },
-        //     ).exited
-        //   },
-        // },
+        {
+          value: 'juvpyr',
+          label: 'JuvPyR',
+          hint: '👍 for data science',
+          callback: async (name: string, path: string) => {
+            await spawn(
+              [
+                'quarto',
+                'create',
+                'project',
+                'default',
+                name,
+                '--no-open',
+                '--no-prompt',
+                '--quiet',
+              ],
+              {
+                cwd: path,
+                stdio: ['ignore', 'ignore', 'ignore'],
+              },
+            ).exited.then(async () => {
+              await rename(
+                resolve(path, name, `${name}.qmd`),
+                resolve(path, name, 'index.qmd'),
+              ).then(async () => {
+                await spawn(['quarto', 'convert', 'index.qmd'], {
+                  cwd: resolve(path, name),
+                  stdio: ['ignore', 'ignore', 'ignore'],
+                }).exited
+              })
+
+              await spawn(['uv', 'init'], {
+                cwd: resolve(path, name),
+                stdio: ['ignore', 'ignore', 'ignore'],
+              }).exited.then(async () => {
+                await spawn(['uv', 'add', '--dev', 'ipykernel'], {
+                  cwd: resolve(path, name),
+                  stdio: ['ignore', 'ignore', 'ignore'],
+                }).exited
+              })
+            })
+          },
+        },
         {
           value: 'revealjs',
           label: 'Reveal.js',
