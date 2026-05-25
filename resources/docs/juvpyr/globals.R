@@ -11,16 +11,16 @@ packages_check <- function(packages) {
                     repos = "https://cran.r-project.org/",
                     # type = "source"
                 )
-                # library(x, character.only = TRUE)
+                library(x, character.only = TRUE)
             }
         }
     )
 }
 
 packages <- c(
-    "tidyverse",
+    # "tidyverse",
     # "tinytable",
-    "ggpubr",
+    # "ggpubr",
     # "ggeffects",
     # "lmerTest",
     # "easystats",

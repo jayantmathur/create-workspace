@@ -18,19 +18,12 @@ packages_check <- function(packages) {
     )
 }
 
-min_packages <- c(
+packages <- c(
     "languageserver",
     "jsonlite",
     "IRkernel"
 )
 
-packages_check(min_packages)
+packages_check(packages)
 
 IRkernel::installspec()
-
-# conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main;
-# conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r;
-# conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/msys2;
-
-# conda init powershell;
-# conda install jupyter -y;

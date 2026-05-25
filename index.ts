@@ -179,7 +179,7 @@ const cliOptions: CLIOptions = {
                 }).exited
               })
 
-              await spawn(['uv', 'init'], {
+              await spawn(['uv', 'init', '--bare'], {
                 cwd: resolve(path, name),
                 stdio: ['ignore', 'ignore', 'ignore'],
               }).exited.then(async () => {
@@ -188,6 +188,11 @@ const cliOptions: CLIOptions = {
                   stdio: ['ignore', 'ignore', 'ignore'],
                 }).exited
               })
+
+              await spawn(['cnwx', 'padd', '--pack', 'juvpyr'], {
+                cwd: resolve(path, name),
+                stdio: ['ignore', 'ignore', 'ignore'],
+              }).exited
             })
           },
         },
@@ -406,7 +411,19 @@ async function main() {
 
             write(
               resolve(workspacePath, '.vscode', 'tasks.json'),
-              await file(resolve(__dirname, '.vscode', 'tasks.json')).text(),
+              JSON.stringify({
+                tasks: [
+                  {
+                    label:
+                      'Check saved version in .backup and import changes if they exist',
+                    type: 'shell',
+                    command: 'cnwx sync --restore',
+                    runOptions: {
+                      runOn: 'folderOpen',
+                    },
+                  },
+                ],
+              }),
             ).finally(async () => await sleep(1000)),
 
             write(
