@@ -97,7 +97,7 @@ const cliOptions: CLIOptions = {
                 '--toolchain',
                 'biome',
                 '--deployment',
-                'nitro',
+                'cloudflare',
                 '--no-git',
                 '--no-examples',
               ],

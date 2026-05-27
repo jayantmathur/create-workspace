@@ -143,9 +143,14 @@
   },
   "ai": {
     "type": "app",
-    "postinstalls": ["bun add @tanstack/ai @tanstack/ai-react"],
+    "postinstalls": [
+      "bun add @tanstack/ai @tanstack/ai-react",
+      "@tanstack/ai-openrouter"
+    ],
     "extras": {
-      "postinstalls": ["bun add @tanstack/ai-ollama @tanstack/ai-gemini"]
+      "postinstalls": [
+        "bun add langchain deepagents @langchain/core @langchain/openrouter"
+      ]
     }
   }
 }
