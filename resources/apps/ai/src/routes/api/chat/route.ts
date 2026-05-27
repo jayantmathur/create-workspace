@@ -28,7 +28,8 @@ export const Route = createFileRoute('/api/chat')({
           // `threadId` for devtools correlation when available.
 
           const adapter = createOpenRouterText(
-            'arcee-ai/trinity-large-thinking:free',
+            // @ts-expect-error
+            'openrouter/free', // Model name (with optional variant suffix, e.g. ":free", ":thinking"). openrouter/auto autoselects from the list of available OpenRouter models.
             !process.env.OPENROUTER_API_KEY,
             // {
             //   serverURL: "https://openrouter.ai/api/v1", // Optional
