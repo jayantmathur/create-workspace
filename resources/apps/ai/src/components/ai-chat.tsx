@@ -1,47 +1,47 @@
-import { useMemo } from "react";
 import {
-  useStream as useLegacyStream,
   FetchStreamTransport,
-} from "@langchain/langgraph-sdk/react";
-import { HumanMessage, AIMessage } from "langchain";
+  useStream as useLegacyStream,
+} from '@langchain/langgraph-sdk/react'
+import type { AIMessage, HumanMessage } from 'langchain'
+import { useMemo } from 'react'
 
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
-} from "#/components/ai-elements/conversation";
+} from '#/components/ai-elements/conversation'
 import {
   Message,
   MessageContent,
   MessageResponse,
-} from "#/components/ai-elements/message";
-import {
-  Tool,
-  ToolHeader,
-  ToolContent,
-  ToolInput,
-  ToolOutput,
-} from "#/components/ai-elements/tool";
-import {
-  Reasoning,
-  ReasoningTrigger,
-  ReasoningContent,
-} from "#/components/ai-elements/reasoning";
+} from '#/components/ai-elements/message'
 import {
   PromptInput,
   PromptInputBody,
-  PromptInputTextarea,
   PromptInputFooter,
   PromptInputSubmit,
-} from "#/components/ai-elements/prompt-input";
-import { extractTextContent, isAIMessage, isHumanMessage } from "#/lib/utils";
+  PromptInputTextarea,
+} from '#/components/ai-elements/prompt-input'
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from '#/components/ai-elements/reasoning'
+import {
+  Tool,
+  ToolContent,
+  ToolHeader,
+  ToolInput,
+  ToolOutput,
+} from '#/components/ai-elements/tool'
+import { extractTextContent, isAIMessage, isHumanMessage } from '#/lib/ai-utils'
 
 function getReasoningText(msg: AIMessage) {
-  return msg.additional_kwargs.reasoning_content ?? "";
+  return msg.additional_kwargs.reasoning_content ?? ''
 }
 
 function getTextContent(msg: AIMessage) {
-  return msg.text;
+  return msg.text
 }
 
 function getToolCalls(msg: AIMessage) {
@@ -49,23 +49,23 @@ function getToolCalls(msg: AIMessage) {
     id: tc.id,
     name: tc.name,
     args: tc.args,
-    state: "input-available" as const,
-  }));
+    state: 'input-available' as const,
+  }))
 }
 
 export function AIChat() {
   const legacyTransport = useMemo(() => {
     return new FetchStreamTransport({
-      apiUrl: "/api/chat",
-    });
-  }, []);
+      apiUrl: '/api/chat',
+    })
+  }, [])
 
   const stream = useLegacyStream({
     transport: legacyTransport,
     // assistantId: "assistant",
-  });
+  })
 
-  const { messages, isLoading, submit: sendMessage, stop } = stream;
+  const { messages, isLoading, submit: sendMessage, stop } = stream
 
   return (
     <div className="flex flex-col p-8 h-dvh">
@@ -79,7 +79,7 @@ export function AIChat() {
                     {extractTextContent(msg.content)}
                   </MessageContent>
                 </Message>
-              );
+              )
             }
             if (isAIMessage(msg)) {
               return (
@@ -117,7 +117,7 @@ export function AIChat() {
                     </MessageContent>
                   </Message>
                 </div>
-              );
+              )
             }
           })}
         </ConversationContent>
@@ -129,7 +129,7 @@ export function AIChat() {
           isLoading
             ? stop()
             : sendMessage({
-                messages: [{ type: "human", content: text }],
+                messages: [{ type: 'human', content: text }],
               })
         }
       >
@@ -137,9 +137,9 @@ export function AIChat() {
           <PromptInputTextarea placeholder="Ask me something..." />
         </PromptInputBody>
         <PromptInputFooter>
-          <PromptInputSubmit status={isLoading ? "streaming" : "ready"} />
+          <PromptInputSubmit status={isLoading ? 'streaming' : 'ready'} />
         </PromptInputFooter>
       </PromptInput>
     </div>
-  );
+  )
 }
