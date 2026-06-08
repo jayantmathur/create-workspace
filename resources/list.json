@@ -171,6 +171,9 @@
       "@langchain/langgraph-sdk",
       "deepagents"
     ],
+    "postinstalls": [
+      "bunx --bun ai-elements@latest add conversation message prompt-input tool reasoning suggestion"
+    ],
     "extras": {
       "dependencies": [
         "@tanstack/ai",
