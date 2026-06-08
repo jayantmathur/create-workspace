@@ -3,12 +3,10 @@ import { MemorySaver } from '@langchain/langgraph'
 import { ChatOpenRouter } from '@langchain/openrouter'
 import { createDeepAgent, FilesystemBackend } from 'deepagents'
 
-const __dirname = import.meta.dirname
-
 const checkpointer = new MemorySaver()
 const config = { configurable: { thread_id: crypto.randomUUID() } }
 const backend = new FilesystemBackend({
-  rootDir: __dirname,
+  rootDir: import.meta.dirname,
   virtualMode: true,
 })
 
@@ -42,17 +40,17 @@ export const agent = async (body: { input: Record<string, unknown> }) => {
     model: model,
     systemPrompt: SYSTEM_PROMPT,
     checkpointer: checkpointer,
-    skills: [`${__dirname}/skills`],
-    memory: [`${__dirname}/AGENTS.md`],
+    skills: ["/skills"],
+    memory: ["/AGENTS.md"],
     // middleware: [summarizationMiddleware, todoListMiddleware],
     backend: backend,
-    // permissions: [
-    //   {
-    //     operations: ["write"],
-    //     paths: [`${__dirname}/skills`],
-    //     mode: "deny",
-    //   },
-    // ],
+    permissions: [
+      {
+        operations: ["write"],
+        paths: ["/skills/**"],
+        mode: "deny",
+      },
+    ],
   })
 
   const stream = await agent.stream(

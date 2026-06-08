@@ -1,43 +1,47 @@
 import {
   FetchStreamTransport,
   useStream as useLegacyStream,
-} from '@langchain/langgraph-sdk/react'
-import type { AIMessage } from 'langchain'
-import { useMemo } from 'react'
+} from "@langchain/langgraph-sdk/react";
+import type { AIMessage } from "langchain";
+import { useMemo } from "react";
 
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
-} from '#/components/ai-elements/conversation'
+} from "#/components/ai-elements/conversation";
 import {
   Message,
   MessageContent,
   MessageResponse,
-} from '#/components/ai-elements/message'
+} from "#/components/ai-elements/message";
 import {
   PromptInput,
   PromptInputBody,
   PromptInputFooter,
   PromptInputSubmit,
   PromptInputTextarea,
-} from '#/components/ai-elements/prompt-input'
+} from "#/components/ai-elements/prompt-input";
 import {
   Reasoning,
   ReasoningContent,
   ReasoningTrigger,
-} from '#/components/ai-elements/reasoning'
+} from "#/components/ai-elements/reasoning";
 import {
   Tool,
   ToolContent,
   ToolHeader,
   ToolInput,
   ToolOutput,
-} from '#/components/ai-elements/tool'
-import { extractTextContent, isAIMessage, isHumanMessage } from '#/lib/ai-utils'
+} from "#/components/ai-elements/tool";
+import {
+  extractTextContent,
+  isAIMessage,
+  isHumanMessage,
+} from "#/lib/ai-utils";
 
 function getReasoningText(msg: AIMessage) {
-  return msg.additional_kwargs.reasoning_content ?? ''
+  return msg.additional_kwargs.reasoning_content ?? "";
 }
 
 function getToolCalls(msg: AIMessage) {
@@ -45,26 +49,26 @@ function getToolCalls(msg: AIMessage) {
     id: tc.id,
     name: tc.name,
     args: tc.args,
-    state: 'input-available' as const,
-  }))
+    state: "input-available" as const,
+  }));
 }
 
 export function AIChat() {
   const legacyTransport = useMemo(() => {
     return new FetchStreamTransport({
-      apiUrl: '/api/chat',
-    })
-  }, [])
+      apiUrl: "/api/agents/basic",
+    });
+  }, []);
 
   const stream = useLegacyStream({
     transport: legacyTransport,
     // assistantId: "assistant",
-  })
+  });
 
-  const { messages, isLoading, submit: sendMessage, stop } = stream
+  const { messages, isLoading, submit: sendMessage, stop } = stream;
 
   return (
-    <div className="flex flex-col p-8 h-dvh">
+    <div className="flex flex-col h-dvh">
       <Conversation className="flex-1">
         <ConversationContent>
           {messages.map((msg, i) => {
@@ -75,7 +79,7 @@ export function AIChat() {
                     {extractTextContent(msg.content)}
                   </MessageContent>
                 </Message>
-              )
+              );
             }
             if (isAIMessage(msg)) {
               return (
@@ -94,12 +98,12 @@ export function AIChat() {
                       <ToolHeader type={`tool-${tc.name}`} state={tc.state} />
                       <ToolContent>
                         <ToolInput input={tc.args} />
-                        {tc.output && (
+                        {/* {tc.output && (
                           <ToolOutput
                             output={tc.output}
                             errorText={undefined}
                           />
-                        )}
+                        )} */}
                       </ToolContent>
                     </Tool>
                   ))}
@@ -113,9 +117,8 @@ export function AIChat() {
                     </MessageContent>
                   </Message>
                 </div>
-              )
+              );
             }
-            return null
           })}
         </ConversationContent>
         <ConversationScrollButton />
@@ -126,7 +129,7 @@ export function AIChat() {
           isLoading
             ? stop()
             : sendMessage({
-                messages: [{ type: 'human', content: text }],
+                messages: [{ type: "human", content: text }],
               })
         }
       >
@@ -134,9 +137,9 @@ export function AIChat() {
           <PromptInputTextarea placeholder="Ask me something..." />
         </PromptInputBody>
         <PromptInputFooter>
-          <PromptInputSubmit status={isLoading ? 'streaming' : 'ready'} />
+          <PromptInputSubmit status={isLoading ? "streaming" : "ready"} />
         </PromptInputFooter>
       </PromptInput>
     </div>
-  )
+  );
 }

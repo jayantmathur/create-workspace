@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { agent } from '#/agents/basic/agent'
+import { agent } from '#/routes/api/agents/basic/-agent'
 
-export const Route = createFileRoute('/api/chat')({
+export const Route = createFileRoute('/api/agents/basic')({
   server: {
     handlers: {
       POST: async ({ request }) => {
