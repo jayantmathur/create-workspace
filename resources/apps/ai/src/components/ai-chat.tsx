@@ -2,7 +2,7 @@ import {
   FetchStreamTransport,
   useStream as useLegacyStream,
 } from '@langchain/langgraph-sdk/react'
-import type { AIMessage, HumanMessage } from 'langchain'
+import type { AIMessage } from 'langchain'
 import { useMemo } from 'react'
 
 import {
@@ -38,10 +38,6 @@ import { extractTextContent, isAIMessage, isHumanMessage } from '#/lib/ai-utils'
 
 function getReasoningText(msg: AIMessage) {
   return msg.additional_kwargs.reasoning_content ?? ''
-}
-
-function getTextContent(msg: AIMessage) {
-  return msg.text
 }
 
 function getToolCalls(msg: AIMessage) {
@@ -98,12 +94,12 @@ export function AIChat() {
                       <ToolHeader type={`tool-${tc.name}`} state={tc.state} />
                       <ToolContent>
                         <ToolInput input={tc.args} />
-                        {/* {tc.output && (
+                        {tc.output && (
                           <ToolOutput
                             output={tc.output}
                             errorText={undefined}
                           />
-                        )} */}
+                        )}
                       </ToolContent>
                     </Tool>
                   ))}
@@ -119,6 +115,7 @@ export function AIChat() {
                 </div>
               )
             }
+            return null
           })}
         </ConversationContent>
         <ConversationScrollButton />

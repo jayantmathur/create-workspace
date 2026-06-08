@@ -57,10 +57,10 @@
     "type": "app",
     "folder": "shadcn",
     "postinstalls": [
-      "bunx --bun shadcn@latest add --silent button dropdown-menu"
+      "bunx --bun shadcn@latest add --silent --overwrite button dropdown-menu"
     ],
     "scripts": {
-      "shadd": "bunx --bun shadcn@latest add --silent"
+      "shadd": "bunx --bun shadcn@latest add --silent --overwrite"
     }
   },
   "auth": {
@@ -101,7 +101,7 @@
     "folder": "form",
     "dependencies": ["@tanstack/react-form"],
     "postinstalls": [
-      "bunx --bun shadcn@latest add --silent sonner button card field input input-group"
+      "bunx --bun shadcn@latest add --silent --overwrite sonner button card field input input-group"
     ]
   },
   "tauri": {
@@ -153,7 +153,7 @@
       "deepagents"
     ],
     "postinstalls": [
-      "bunx --bun ai-elements@latest add --silent conversation message prompt-input tool reasoning suggestion"
+      "bunx --bun shadcn@latest add --silent --overwrite @ai-elements/conversation @ai-elements/message @ai-elements/prompt-input @ai-elements/tool @ai-elements/reasoning @ai-elements/suggestion"
     ],
     "extras": {
       "dependencies": [
