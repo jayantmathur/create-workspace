@@ -1,77 +1,145 @@
-import { fetchServerSentEvents, useChat } from '@tanstack/ai-react'
-import { useState } from 'react'
+import { useMemo } from "react";
+import {
+  useStream as useLegacyStream,
+  FetchStreamTransport,
+} from "@langchain/langgraph-sdk/react";
+import { HumanMessage, AIMessage } from "langchain";
+
+import {
+  Conversation,
+  ConversationContent,
+  ConversationScrollButton,
+} from "#/components/ai-elements/conversation";
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from "#/components/ai-elements/message";
+import {
+  Tool,
+  ToolHeader,
+  ToolContent,
+  ToolInput,
+  ToolOutput,
+} from "#/components/ai-elements/tool";
+import {
+  Reasoning,
+  ReasoningTrigger,
+  ReasoningContent,
+} from "#/components/ai-elements/reasoning";
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputTextarea,
+  PromptInputFooter,
+  PromptInputSubmit,
+} from "#/components/ai-elements/prompt-input";
+import { extractTextContent, isAIMessage, isHumanMessage } from "#/lib/utils";
+
+function getReasoningText(msg: AIMessage) {
+  return msg.additional_kwargs.reasoning_content ?? "";
+}
+
+function getTextContent(msg: AIMessage) {
+  return msg.text;
+}
+
+function getToolCalls(msg: AIMessage) {
+  return (msg.tool_calls ?? []).map((tc) => ({
+    id: tc.id,
+    name: tc.name,
+    args: tc.args,
+    state: "input-available" as const,
+  }));
+}
 
 export function AIChat() {
-  const [input, setInput] = useState('')
+  const legacyTransport = useMemo(() => {
+    return new FetchStreamTransport({
+      apiUrl: "/api/chat",
+    });
+  }, []);
 
-  const { messages, sendMessage, isLoading } = useChat({
-    connection: fetchServerSentEvents('/api/chat'),
-  })
+  const stream = useLegacyStream({
+    transport: legacyTransport,
+    // assistantId: "assistant",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (input.trim() && !isLoading) {
-      sendMessage(input)
-      setInput('')
-    }
-  }
+  const { messages, isLoading, submit: sendMessage, stop } = stream;
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`mb-4 ${
-              message.role === 'assistant' ? 'text-blue-600' : 'text-gray-800'
-            }`}
-          >
-            <div className="font-semibold mb-1">
-              {message.role === 'assistant' ? 'Assistant' : 'You'}
-            </div>
-            <div>
-              {message.parts.map((part, idx) => {
-                if (part.type === 'thinking') {
-                  return (
-                    <div
-                      key={idx}
-                      className="text-sm text-gray-500 italic mb-2"
-                    >
-                      💭 Thinking: {part.content}
-                    </div>
-                  )
-                }
-                if (part.type === 'text') {
-                  return <div key={idx}>{part.content}</div>
-                }
-                return null
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="flex flex-col p-8 h-dvh">
+      <Conversation className="flex-1">
+        <ConversationContent>
+          {messages.map((msg, i) => {
+            if (isHumanMessage(msg)) {
+              return (
+                <Message key={i} from="user">
+                  <MessageContent>
+                    {extractTextContent(msg.content)}
+                  </MessageContent>
+                </Message>
+              );
+            }
+            if (isAIMessage(msg)) {
+              return (
+                <div key={i}>
+                  {/* Reasoning block (shows when model emits thinking tokens) */}
+                  <Reasoning>
+                    <ReasoningTrigger />
+                    <ReasoningContent>
+                      {getReasoningText(msg as AIMessage)}
+                    </ReasoningContent>
+                  </Reasoning>
 
-      {/* Input */}
-      <form onSubmit={handleSubmit} className="p-4 border-t">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message..."
-            className="flex-1 px-4 py-2 border rounded-lg"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50"
-          >
-            Send
-          </button>
-        </div>
-      </form>
+                  {/* Inline tool calls with input/output display */}
+                  {getToolCalls(msg as AIMessage).map((tc) => (
+                    <Tool key={tc.id} defaultOpen>
+                      <ToolHeader type={`tool-${tc.name}`} state={tc.state} />
+                      <ToolContent>
+                        <ToolInput input={tc.args} />
+                        {/* {tc.output && (
+                          <ToolOutput
+                            output={tc.output}
+                            errorText={undefined}
+                          />
+                        )} */}
+                      </ToolContent>
+                    </Tool>
+                  ))}
+
+                  {/* Streamed text response */}
+                  <Message from="assistant">
+                    <MessageContent>
+                      <MessageResponse>
+                        {extractTextContent(msg.content)}
+                      </MessageResponse>
+                    </MessageContent>
+                  </Message>
+                </div>
+              );
+            }
+          })}
+        </ConversationContent>
+        <ConversationScrollButton />
+      </Conversation>
+
+      <PromptInput
+        onSubmit={({ text }) =>
+          isLoading
+            ? stop()
+            : sendMessage({
+                messages: [{ type: "human", content: text }],
+              })
+        }
+      >
+        <PromptInputBody>
+          <PromptInputTextarea placeholder="Ask me something..." />
+        </PromptInputBody>
+        <PromptInputFooter>
+          <PromptInputSubmit status={isLoading ? "streaming" : "ready"} />
+        </PromptInputFooter>
+      </PromptInput>
     </div>
-  )
+  );
 }

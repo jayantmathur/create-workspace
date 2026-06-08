@@ -6,7 +6,9 @@
   "rjs": {
     "type": "doc",
     "folder": "rjs",
-    "postinstalls": ["quarto add quarto-ext/attribution --quiet --no-prompt"]
+    "postinstalls": [
+      "quarto add quarto-ext/attribution --quiet --no-prompt"
+    ]
   },
   "main": {
     "type": "doc",
@@ -66,12 +68,22 @@
   "auth": {
     "type": "app",
     "folder": "auth",
-    "dependencies": ["better-auth", "drizzle-orm", "postgres", "dotenv"],
-    "devDependencies": ["drizzle-kit", "tsx"],
+    "dependencies": [
+      "better-auth",
+      "drizzle-orm",
+      "postgres",
+      "dotenv"
+    ],
+    "devDependencies": [
+      "drizzle-kit",
+      "tsx"
+    ],
     "scripts": {
       "db:studio": "bun drizzle-kit studio"
     },
-    "postinstalls": ["cnwx padd --pack form"]
+    "postinstalls": [
+      "cnwx padd --pack form"
+    ]
   },
   "db": {
     "type": "app",
@@ -82,7 +94,10 @@
       "postgres",
       "dotenv"
     ],
-    "devDependencies": ["drizzle-kit", "tsx"],
+    "devDependencies": [
+      "drizzle-kit",
+      "tsx"
+    ],
     "scripts": {
       "db:generate": "bun drizzle-kit generate",
       "db:migrate": "bun drizzle-kit migrate",
@@ -99,14 +114,18 @@
   "form": {
     "type": "app",
     "folder": "form",
-    "dependencies": ["@tanstack/react-form"],
+    "dependencies": [
+      "@tanstack/react-form"
+    ],
     "postinstalls": [
       "bunx --bun shadcn@latest add --silent sonner button card field input input-group"
     ]
   },
   "tauri": {
     "type": "app",
-    "devDependencies": ["@tauri-apps/cli"],
+    "devDependencies": [
+      "@tauri-apps/cli"
+    ],
     "postinstalls": [
       "bunx --bun tauri init && bunx --bun tauri icon .\\public\\icons\\icon.ico"
     ],
@@ -145,16 +164,18 @@
     "type": "app",
     "folder": "ai",
     "dependencies": [
-      "@tanstack/ai",
-      "@tanstack/ai-react",
-      "@tanstack/ai-openrouter"
+      "langchain",
+      "@langchain/core",
+      "@langchain/openrouter",
+      "@langchain/langgraph",
+      "@langchain/langgraph-sdk",
+      "deepagents"
     ],
     "extras": {
       "dependencies": [
-        "langchain",
-        "@langchain/core",
-        "@langchain/openrouter",
-        "deepagents"
+        "@tanstack/ai",
+        "@tanstack/ai-react",
+        "@tanstack/ai-openrouter"
       ]
     }
   }
