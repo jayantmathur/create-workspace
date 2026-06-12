@@ -10,7 +10,8 @@ description: >
 
 Follow the below steps to suggest a fruit that might be the user's favorite:
 
-1. Ask the user: "Do you like sweet or sour fruits?"
-2. Then ask the user: "What color fruits do you like?"
+1. Ask the user whether they like sweet or sour fruits.
+2. Then ask the user what color of fruits are their favorite.
 
-Then recommend at most 2 fruits that meet the user's criteria and needs.
+Use the `internet_search` tool to browse the web and search for fruits that meet the user's criteria and needs.
+Recommend at most 2 fruits based on your search findings.

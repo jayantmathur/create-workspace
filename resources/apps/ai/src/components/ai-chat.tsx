@@ -2,8 +2,10 @@ import {
   FetchStreamTransport,
   useStream as useLegacyStream,
 } from "@langchain/langgraph-sdk/react";
-import type { AIMessage } from "langchain";
+import type { AIMessage, BaseMessage, HITLResponse } from "langchain";
 import { useMemo } from "react";
+import { CheckIcon, XIcon } from "lucide-react";
+import { nanoid } from "nanoid";
 
 import {
   Conversation,
@@ -35,23 +37,21 @@ import {
   ToolOutput,
 } from "#/components/ai-elements/tool";
 import {
+  Confirmation,
+  ConfirmationAccepted,
+  ConfirmationAction,
+  ConfirmationActions,
+  ConfirmationRejected,
+  ConfirmationRequest,
+  ConfirmationTitle,
+} from "#/components/ai-elements/confirmation";
+import {
+  getReasoningText,
+  getToolCalls,
   extractTextContent,
   isAIMessage,
   isHumanMessage,
 } from "#/lib/ai-utils";
-
-function getReasoningText(msg: AIMessage) {
-  return msg.additional_kwargs.reasoning_content ?? "";
-}
-
-function getToolCalls(msg: AIMessage) {
-  return (msg.tool_calls ?? []).map((tc) => ({
-    id: tc.id,
-    name: tc.name,
-    args: tc.args,
-    state: "input-available" as const,
-  }));
-}
 
 export function AIChat() {
   const legacyTransport = useMemo(() => {
@@ -65,7 +65,32 @@ export function AIChat() {
     // assistantId: "assistant",
   });
 
-  const { messages, isLoading, submit: sendMessage, stop } = stream;
+  const { messages, isLoading, submit, stop, interrupt } = stream;
+
+  const handleSubmit = (text: string) =>
+    submit({
+      messages: [{ type: "human" as const, content: text }] as BaseMessage[],
+    });
+
+  const handleReject = () =>
+    submit({
+      resume: {
+        decisions: [
+          {
+            type: "reject",
+            message:
+              "User rejected this action. Do not retry this tool call and do not continue with next steps. Inform the user that you will stop as per their request. Clarify that this is because the action was rejected.",
+          },
+        ],
+      } as HITLResponse,
+    });
+
+  const handleApprove = () =>
+    submit({
+      resume: {
+        decisions: [{ type: "approve" }],
+      } as HITLResponse,
+    });
 
   return (
     <div className="flex flex-col h-dvh">
@@ -85,7 +110,7 @@ export function AIChat() {
               return (
                 <div key={i}>
                   {/* Reasoning block (shows when model emits thinking tokens) */}
-                  <Reasoning>
+                  <Reasoning defaultOpen>
                     <ReasoningTrigger />
                     <ReasoningContent>
                       {getReasoningText(msg as AIMessage)}
@@ -98,12 +123,12 @@ export function AIChat() {
                       <ToolHeader type={`tool-${tc.name}`} state={tc.state} />
                       <ToolContent>
                         <ToolInput input={tc.args} />
-                        {/* {tc.output && (
+                        {tc.output && (
                           <ToolOutput
                             output={tc.output}
                             errorText={undefined}
                           />
-                        )} */}
+                        )}
                       </ToolContent>
                     </Tool>
                   ))}
@@ -120,18 +145,44 @@ export function AIChat() {
               );
             }
           })}
+          {interrupt && (
+            <Confirmation
+              approval={{ id: nanoid() }}
+              state="approval-requested"
+            >
+              <ConfirmationTitle>
+                <ConfirmationRequest>
+                  This tool wants to delete the file{" "}
+                  <code className="inline rounded bg-muted px-1.5 py-0.5 text-sm">
+                    /tmp/example.txt
+                  </code>
+                  . Do you approve this action?
+                </ConfirmationRequest>
+                <ConfirmationAccepted>
+                  <CheckIcon className="size-4 text-green-600 dark:text-green-400" />
+                  <span>You approved this tool execution</span>
+                </ConfirmationAccepted>
+                <ConfirmationRejected>
+                  <XIcon className="size-4 text-destructive" />
+                  <span>You rejected this tool execution</span>
+                </ConfirmationRejected>
+              </ConfirmationTitle>
+              <ConfirmationActions>
+                <ConfirmationAction onClick={handleReject} variant="outline">
+                  Reject
+                </ConfirmationAction>
+                <ConfirmationAction onClick={handleApprove} variant="default">
+                  Approve
+                </ConfirmationAction>
+              </ConfirmationActions>
+            </Confirmation>
+          )}
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
 
       <PromptInput
-        onSubmit={({ text }) =>
-          isLoading
-            ? stop()
-            : sendMessage({
-                messages: [{ type: "human", content: text }],
-              })
-        }
+        onSubmit={({ text }) => (isLoading ? stop() : handleSubmit(text))}
       >
         <PromptInputBody>
           <PromptInputTextarea placeholder="Ask me something..." />
