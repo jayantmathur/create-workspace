@@ -1,41 +1,11 @@
 import {
   FetchStreamTransport,
   useStream as useLegacyStream,
-} from "@langchain/langgraph-sdk/react";
-import type { AIMessage, BaseMessage, HITLResponse } from "langchain";
-import { useMemo } from "react";
-import { CheckIcon, XIcon } from "lucide-react";
-import { nanoid } from "nanoid";
-
-import {
-  Conversation,
-  ConversationContent,
-  ConversationScrollButton,
-} from "#/components/ai-elements/conversation";
-import {
-  Message,
-  MessageContent,
-  MessageResponse,
-} from "#/components/ai-elements/message";
-import {
-  PromptInput,
-  PromptInputBody,
-  PromptInputFooter,
-  PromptInputSubmit,
-  PromptInputTextarea,
-} from "#/components/ai-elements/prompt-input";
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-} from "#/components/ai-elements/reasoning";
-import {
-  Tool,
-  ToolContent,
-  ToolHeader,
-  ToolInput,
-  ToolOutput,
-} from "#/components/ai-elements/tool";
+} from '@langchain/langgraph-sdk/react'
+import type { AIMessage, BaseMessage, HITLResponse } from 'langchain'
+import { CheckIcon, XIcon } from 'lucide-react'
+import { nanoid } from 'nanoid'
+import { useMemo } from 'react'
 import {
   Confirmation,
   ConfirmationAccepted,
@@ -44,53 +14,82 @@ import {
   ConfirmationRejected,
   ConfirmationRequest,
   ConfirmationTitle,
-} from "#/components/ai-elements/confirmation";
+} from '#/components/ai-elements/confirmation'
 import {
+  Conversation,
+  ConversationContent,
+  ConversationScrollButton,
+} from '#/components/ai-elements/conversation'
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from '#/components/ai-elements/message'
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputFooter,
+  PromptInputSubmit,
+  PromptInputTextarea,
+} from '#/components/ai-elements/prompt-input'
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from '#/components/ai-elements/reasoning'
+import {
+  Tool,
+  ToolContent,
+  ToolHeader,
+  ToolInput,
+  ToolOutput,
+} from '#/components/ai-elements/tool'
+import {
+  extractTextContent,
   getReasoningText,
   getToolCalls,
-  extractTextContent,
   isAIMessage,
   isHumanMessage,
-} from "#/lib/ai-utils";
+} from '#/lib/ai-utils'
 
 export function AIChat() {
   const legacyTransport = useMemo(() => {
     return new FetchStreamTransport({
-      apiUrl: "/api/agents/basic",
-    });
-  }, []);
+      apiUrl: '/api/agents/basic',
+    })
+  }, [])
 
   const stream = useLegacyStream({
     transport: legacyTransport,
     // assistantId: "assistant",
-  });
+  })
 
-  const { messages, isLoading, submit, stop, interrupt } = stream;
+  const { messages, isLoading, submit, stop, interrupt } = stream
 
   const handleSubmit = (text: string) =>
     submit({
-      messages: [{ type: "human" as const, content: text }] as BaseMessage[],
-    });
+      messages: [{ type: 'human' as const, content: text }] as BaseMessage[],
+    })
 
   const handleReject = () =>
     submit({
       resume: {
         decisions: [
           {
-            type: "reject",
+            type: 'reject',
             message:
-              "User rejected this action. Do not retry this tool call and do not continue with next steps. Inform the user that you will stop as per their request. Clarify that this is because the action was rejected.",
+              'User rejected this action. Do not retry this tool call and do not continue with next steps. Inform the user that you will stop as per their request. Clarify that this is because the action was rejected.',
           },
         ],
       } as HITLResponse,
-    });
+    })
 
   const handleApprove = () =>
     submit({
       resume: {
-        decisions: [{ type: "approve" }],
+        decisions: [{ type: 'approve' }],
       } as HITLResponse,
-    });
+    })
 
   return (
     <div className="flex flex-col h-dvh">
@@ -104,7 +103,7 @@ export function AIChat() {
                     {extractTextContent(msg.content)}
                   </MessageContent>
                 </Message>
-              );
+              )
             }
             if (isAIMessage(msg)) {
               return (
@@ -142,8 +141,10 @@ export function AIChat() {
                     </MessageContent>
                   </Message>
                 </div>
-              );
+              )
             }
+
+            return null
           })}
           {interrupt && (
             <Confirmation
@@ -152,7 +153,7 @@ export function AIChat() {
             >
               <ConfirmationTitle>
                 <ConfirmationRequest>
-                  This tool wants to delete the file{" "}
+                  This tool wants to delete the file{' '}
                   <code className="inline rounded bg-muted px-1.5 py-0.5 text-sm">
                     /tmp/example.txt
                   </code>
@@ -188,9 +189,9 @@ export function AIChat() {
           <PromptInputTextarea placeholder="Ask me something..." />
         </PromptInputBody>
         <PromptInputFooter>
-          <PromptInputSubmit status={isLoading ? "streaming" : "ready"} />
+          <PromptInputSubmit status={isLoading ? 'streaming' : 'ready'} />
         </PromptInputFooter>
       </PromptInput>
     </div>
-  );
+  )
 }

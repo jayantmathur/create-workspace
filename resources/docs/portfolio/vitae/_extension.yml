@@ -1,17 +1,15 @@
-title: Curriculum Vitae Template
+title: Resume/Curriculum Vitae Template
 version: 0.1.0
 contributes:
     formats:
         common:
-            title: Jayant Mathur's Curriculum Vitae
-            subtitle: Curriculum Vitae
+            title: Jayant Mathur
 
             date-format: long
             colorlinks: true
             # urlcolor: cyan
             # linkcolor: cyan
             fontsize: 11pt
-            papersize: letter
             mainfont: Calibri
             sansfont: Calibri
 
@@ -20,16 +18,11 @@ contributes:
             nocite: |
                 @*
 
-        pdf:
-            geometry:
-                - margin=.7in
-
-            pdf-engine: lualatex
-
-            block-headings: false
-
+        typst:
+            margin: 
+                x: 0.75in
+                y: 0.5in
+            papersize: us-letter
             template-partials:
-                - 'partials/before-body.tex'
-                - 'partials/title.tex'
-
-            include-in-header: 'partials/_header.tex'
+                - partials/typst/typst-template.typ
+                - partials/typst/typst-show.typ

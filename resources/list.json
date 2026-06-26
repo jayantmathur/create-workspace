@@ -38,15 +38,7 @@
   },
   "resume": {
     "type": "doc",
-    "folder": "portfolio/resume"
-  },
-  "vitae": {
-    "type": "doc",
-    "folder": "portfolio/vitae"
-  },
-  "letter": {
-    "type": "doc",
-    "folder": "portfolio/letter"
+    "folder": "portfolio"
   },
   "juvpyr": {
     "type": "doc",
