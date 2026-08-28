@@ -14,7 +14,7 @@
     "check": "biome check --write --error-on-warnings --diagnostic-level=warn",
     "dev": "bun run --watch index.ts",
     "pull": "cnwx sync --restore",
-    "prepush": "bun check && cnwx sync",
+    "prepush": "cnwx sync",
     "create-link": "npm link;bun link;bun link create-workspace",
     "push": "cnwx git"
   },

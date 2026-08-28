@@ -139,13 +139,16 @@
     "dependencies": [
       "langchain",
       "@langchain/core",
-      "@langchain/openrouter",
       "@langchain/langgraph",
       "@langchain/langgraph-sdk",
+      "@langchain/react",
+      "@langchain/protocol",
+      "@langchain/openrouter",
+      "@langchain/tavily",
       "deepagents"
     ],
     "postinstalls": [
-      "bunx --bun shadcn@latest add --silent --overwrite @ai-elements/conversation @ai-elements/message @ai-elements/prompt-input @ai-elements/tool @ai-elements/reasoning @ai-elements/suggestion"
+      "bunx --bun shadcn@latest add --silent --overwrite @ai-elements/conversation @ai-elements/message @ai-elements/prompt-input @ai-elements/tool @ai-elements/reasoning @ai-elements/suggestion @ai-elements/confirmation"
     ],
     "extras": {
       "dependencies": [
