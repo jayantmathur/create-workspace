@@ -1,6 +1,6 @@
-import { agent, checkpointer } from '#/agents/basic/agent'
-import { LocalThreadSession } from './session'
-import type { LocalProtocolGraph } from './threads'
+import { agent, checkpointer } from "#/agents/basic/agent";
+import { LocalThreadSession } from "./session";
+import type { LocalProtocolGraph } from "./threads";
 
 /**
  * Process-local registry for the agent and its per-thread sessions.
@@ -12,44 +12,44 @@ import type { LocalProtocolGraph } from './threads'
  * in `~/agent.ts` and this store change.
  */
 type Registry = {
-  sessions: Map<string, LocalThreadSession>
-}
+  sessions: Map<string, LocalThreadSession>;
+};
 
 const globalForRegistry = globalThis as unknown as {
-  __agentRegistry?: Registry
-}
+  __agentRegistry?: Registry;
+};
 
 const registry: Registry = (globalForRegistry.__agentRegistry ??= {
   sessions: new Map(),
-})
+});
 
 /** The shared, compiled agent (and its checkpointer). */
 export function getAgent() {
-  return agent
+  return agent;
 }
 
 /** Graph handle typed for thread checkpoint routes. */
 export function getAgentGraph(): LocalProtocolGraph {
-  return agent.graph
+  return agent.graph;
 }
 
 /** The shared checkpointer — the single source of truth for threads. */
 export function getCheckpointer() {
-  return checkpointer
+  return checkpointer;
 }
 
 /** Get or create the process-local session for a thread. */
 export function getSession(threadId: string): LocalThreadSession {
-  let session = registry.sessions.get(threadId)
+  let session = registry.sessions.get(threadId);
   if (session == null) {
-    session = new LocalThreadSession(agent, threadId)
-    registry.sessions.set(threadId, session)
+    session = new LocalThreadSession(agent, threadId);
+    registry.sessions.set(threadId, session);
   }
-  return session
+  return session;
 }
 
 /** Delete a thread: remove its session and its checkpointed state. */
 export async function deleteThread(threadId: string): Promise<void> {
-  registry.sessions.delete(threadId)
-  await checkpointer.deleteThread(threadId)
+  registry.sessions.delete(threadId);
+  await checkpointer.deleteThread(threadId);
 }

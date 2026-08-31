@@ -1,4 +1,5 @@
 import type { ThreadSummary } from '#/lib/ai/chat/threads-client'
+import { Trash2Icon } from 'lucide-react'
 import { Button } from './ui/button'
 
 function formatTime(updatedAt: string | null) {
@@ -46,24 +47,23 @@ export function ThreadHistory({
             }`}
             key={thread.id}
           >
-            <button
-              className="thread-open"
+            <Button
+              variant={"secondary"}
               onClick={() => onSelect(thread.id)}
-              type="button"
+              
             >
               <span className="thread-title">{thread.title}</span>
               <span className="thread-time">
                 {formatTime(thread.updatedAt)}
               </span>
-            </button>
-            <button
-              aria-label="Delete conversation"
-              className="thread-delete"
+            </Button>
+            <Button
+              size={"icon"}
+              variant={"destructive"}
               onClick={() => onDelete(thread.id)}
-              type="button"
             >
-              ×
-            </button>
+              <Trash2Icon/>
+            </Button>
           </li>
         ))}
       </ul>
