@@ -1,3 +1,6 @@
+import { MemorySaver } from "@langchain/langgraph";
+import { ChatOpenRouter } from "@langchain/openrouter";
+import { createDeepAgent, StateBackend } from "deepagents";
 import {
   ClearToolUsesEdit,
   contextEditingMiddleware,
@@ -5,12 +8,8 @@ import {
   modelCallLimitMiddleware,
   toolCallLimitMiddleware,
 } from "langchain";
-import { MemorySaver } from "@langchain/langgraph";
-import { ChatOpenRouter } from "@langchain/openrouter";
-import { createDeepAgent, StateBackend } from "deepagents";
-
-import { internet_search } from "./tools/internet_search";
 import { LIST_OF_MODELS } from "#/lib/ai/chat/models";
+import { internet_search } from "./tools/internet_search";
 
 export const checkpointer = new MemorySaver();
 // const backend = new FilesystemBackend({
@@ -94,7 +93,7 @@ export const agent = createDeepAgent({
       ],
     }),
   ],
-  // systemPrompt: SYSTEM_PROMPT,
+  systemPrompt: SYSTEM_PROMPT,
   checkpointer: checkpointer,
   tools: [internet_search],
   interruptOn: {

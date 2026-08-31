@@ -3,9 +3,8 @@ import {
   StreamProvider,
   useStreamContext,
 } from "@langchain/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SparklesIcon } from "lucide-react";
-import { LIST_OF_MODELS } from "#/lib/ai/chat/models";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Agent } from "#/agents/basic/agent";
 import {
   PromptInput,
@@ -22,6 +21,8 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "#/components/ui/combobox";
+import { InputGroupAddon } from "#/components/ui/input-group";
+import { LIST_OF_MODELS } from "#/lib/ai/chat/models";
 import {
   createThread,
   deleteThread,
@@ -29,9 +30,8 @@ import {
   getApiUrl,
   type ThreadSummary,
 } from "#/lib/ai/chat/threads-client";
-import { ThreadHistory } from "./ai.thread-history";
 import { MessageList } from "./ai.messages";
-import { InputGroupAddon } from "#/components/ui/input-group";
+import { ThreadHistory } from "./ai.thread-history";
 
 export function AIChat() {
   const [mounted, setMounted] = useState(false);
@@ -113,7 +113,7 @@ export function AIChat() {
   }
 
   return (
-    <div className="flex flex-row w-full">
+    <div className="flex flex-row">
       <ThreadHistory
         activeThreadId={threadId}
         onCreate={handleCreate}
@@ -151,7 +151,7 @@ function ChatComponent() {
 
   return (
     <div className="flex flex-1 flex-col h-dvh p-8">
-      <MessageList stream={stream} />
+      <MessageList />
       <div className="shrink-0 p-4 border-t">
         <PromptInput
           onSubmit={({ text }) => handleSubmit(text)}
@@ -161,14 +161,10 @@ function ChatComponent() {
             <PromptInputTextarea placeholder="Ask me something..." />
           </PromptInputBody>
           <PromptInputFooter>
-            <PromptInputSubmit
-              status={(isLoading && "streaming") || "ready"}
-              disabled={isLoading}
-            />
+            <PromptInputSubmit status={(isLoading && "streaming") || "ready"} />
             <Combobox
               items={LIST_OF_MODELS}
               autoHighlight
-              // defaultValue={LIST_OF_MODELS[0]}
               onValueChange={(model) =>
                 setSelectedModel(model as { label: string; value: string })
               }

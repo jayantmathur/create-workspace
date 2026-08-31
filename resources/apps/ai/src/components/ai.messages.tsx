@@ -1,26 +1,27 @@
 import type { BaseMessage } from "@langchain/core/messages";
-import { useMessages, type AnyStream } from "@langchain/react";
+import { useStreamContext } from "@langchain/react";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useMemo, useState } from "react";
+import { ToolCall } from "./ai.toolcalls";
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
-} from "./ai-elements/conversation";
+} from "#/components/ai-elements/conversation";
 import {
   Message,
   MessageAction,
   MessageActions,
   MessageContent,
   MessageResponse,
-} from "./ai-elements/message";
+} from "#/components/ai-elements/message";
 import {
   Reasoning,
   ReasoningContent,
   ReasoningTrigger,
-} from "./ai-elements/reasoning";
-import { Shimmer } from "./ai-elements/shimmer";
-import { ToolCall } from "./ai.toolcalls";
+} from "#/components/ai-elements/reasoning";
+import { Shimmer } from "#/components/ai-elements/shimmer";
+import type { Agent } from "#/agents/basic/agent";
 
 interface RenderedItem {
   id: string;
@@ -73,8 +74,6 @@ function buildRenderItems(
     });
   }
 
-  //   console.log(3, messages)
-
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i];
     const msgType = msg.type;
@@ -122,8 +121,6 @@ function buildRenderItems(
           });
         }
       }
-
-      continue;
     }
   }
 
@@ -139,14 +136,15 @@ function parseToolOutput(raw: string): unknown {
 }
 
 interface MessageListProps {
-  stream: AnyStream;
   onCopyLastMessage?: () => void;
 }
 
-export function MessageList({ stream, onCopyLastMessage }: MessageListProps) {
+export function MessageList({ onCopyLastMessage }: MessageListProps) {
+  const stream = useStreamContext<Agent>();
   const [copied, setCopied] = useState(false);
-  const messages = useMessages(stream);
-  const isLoading = stream.isLoading;
+
+  const { messages, isLoading, interrupt } = stream;
+
   const items = useMemo(
     () => buildRenderItems(messages, isLoading),
     [messages, isLoading],
@@ -158,7 +156,7 @@ export function MessageList({ stream, onCopyLastMessage }: MessageListProps) {
     isLoading && items.length > 0 && items[items.length - 1].kind === "human";
 
   function handleCopy() {
-    onCopyLastMessage && onCopyLastMessage();
+    onCopyLastMessage?.();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -184,6 +182,7 @@ export function MessageList({ stream, onCopyLastMessage }: MessageListProps) {
                 output={item.toolOutput}
                 error={item.toolError}
                 isStreaming={item.isStreaming}
+                interruptId={interrupt?.id}
               />
             );
           }
@@ -205,7 +204,7 @@ export function MessageList({ stream, onCopyLastMessage }: MessageListProps) {
                   </MessageContent>
                 </Message>
               )}
-              {/* {isLastAi && !isLoading && (
+              {isLastAi && !isLoading && (
                 <MessageActions>
                   <MessageAction
                     label={copied ? "Copied" : "Copy"}
@@ -219,7 +218,7 @@ export function MessageList({ stream, onCopyLastMessage }: MessageListProps) {
                     )}
                   </MessageAction>
                 </MessageActions>
-              )} */}
+              )}
             </div>
           );
         })}

@@ -148,7 +148,8 @@
       "deepagents"
     ],
     "postinstalls": [
-      "bunx --bun shadcn@latest add --silent --overwrite @ai-elements/conversation @ai-elements/message @ai-elements/prompt-input @ai-elements/tool @ai-elements/reasoning @ai-elements/suggestion @ai-elements/confirmation"
+      "bunx --bun shadcn@latest add --silent --overwrite @ai-elements/conversation @ai-elements/message @ai-elements/prompt-input @ai-elements/tool @ai-elements/reasoning @ai-elements/suggestion @ai-elements/confirmation",
+      "bunx --bun shadcn@latest add --silent --overwrite combobox"
     ],
     "extras": {
       "dependencies": [
