@@ -15,11 +15,15 @@ import {
 } from "#/components/ai-elements/prompt-input";
 import {
   Combobox,
+  ComboboxCollection,
   ComboboxContent,
   ComboboxEmpty,
+  ComboboxGroup,
   ComboboxInput,
   ComboboxItem,
+  ComboboxLabel,
   ComboboxList,
+  ComboboxSeparator,
 } from "#/components/ui/combobox";
 import { InputGroupAddon } from "#/components/ui/input-group";
 import { LIST_OF_MODELS } from "#/lib/ai/chat/models";
@@ -32,6 +36,17 @@ import {
 } from "#/lib/ai/chat/threads-client";
 import { MessageList } from "./ai.messages";
 import { ThreadHistory } from "./ai.thread-history";
+
+type SelectedModel = {
+  provider: string;
+  label: string;
+  value: string;
+};
+
+const modelsList = Object.keys(LIST_OF_MODELS).map((key) => ({
+  value: key,
+  items: LIST_OF_MODELS[key],
+}));
 
 export function AIChat() {
   const [mounted, setMounted] = useState(false);
@@ -129,10 +144,10 @@ export function AIChat() {
 }
 
 function ChatComponent() {
-  const [selectedModel, setSelectedModel] = useState<{
-    label: string;
-    value: string;
-  } | null>(LIST_OF_MODELS[0]);
+  const [selectedModel, setSelectedModel] = useState<SelectedModel | null>({
+    provider: "Openrouter",
+    ...LIST_OF_MODELS["Openrouter"][0],
+  });
   const stream = useStreamContext<Agent>();
   const { isLoading, submit } = stream;
 
@@ -163,11 +178,9 @@ function ChatComponent() {
           <PromptInputFooter>
             <PromptInputSubmit status={(isLoading && "streaming") || "ready"} />
             <Combobox
-              items={LIST_OF_MODELS}
+              items={modelsList}
               autoHighlight
-              onValueChange={(model) =>
-                setSelectedModel(model as { label: string; value: string })
-              }
+              onValueChange={(item) => setSelectedModel(item as SelectedModel)}
             >
               <ComboboxInput
                 placeholder="Select an AI model provider"
@@ -178,12 +191,23 @@ function ChatComponent() {
                 </InputGroupAddon>
               </ComboboxInput>
               <ComboboxContent>
-                <ComboboxEmpty>No items found.</ComboboxEmpty>
+                <ComboboxEmpty>No models found.</ComboboxEmpty>
                 <ComboboxList>
-                  {(model) => (
-                    <ComboboxItem key={model.value} value={model}>
-                      {model.label}
-                    </ComboboxItem>
+                  {(group, index) => (
+                    <ComboboxGroup key={group.value} items={group.items}>
+                      <ComboboxLabel>{group.value}</ComboboxLabel>
+                      <ComboboxCollection>
+                        {(item) => (
+                          <ComboboxItem
+                            key={item.value}
+                            value={{ provider: group.value, ...item }}
+                          >
+                            {item.label}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxCollection>
+                      {index < modelsList.length - 1 && <ComboboxSeparator />}
+                    </ComboboxGroup>
                   )}
                 </ComboboxList>
               </ComboboxContent>

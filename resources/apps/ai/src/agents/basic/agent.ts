@@ -1,5 +1,6 @@
 import { MemorySaver } from "@langchain/langgraph";
 import { ChatOpenRouter } from "@langchain/openrouter";
+import { ChatOpenAI } from "@langchain/openai";
 import { createDeepAgent, StateBackend } from "deepagents";
 import {
   ClearToolUsesEdit,
@@ -31,24 +32,47 @@ const configurableModel = createMiddleware({
   name: "ConfigurableModel",
   wrapModelCall: async (request: any, handler) => {
     const kwargs = request?.messages?.at(-1).additional_kwargs as
-      { model?: { label: string; value: string } } | undefined;
+      | { model?: { provider: string; label: string; value: string } }
+      | undefined;
     const model = kwargs?.model;
 
     if (!model) {
       return handler(request);
     }
 
-    const requestedModel = new ChatOpenRouter({
-      model: model.value,
-      ...modelConfig,
-    });
+    const { provider, value } = model;
 
-    return handler({ ...request, model: requestedModel });
+    switch (provider) {
+      case "Openrouter":
+        return handler({
+          ...request,
+          model: new ChatOpenRouter({
+            model: value,
+            ...modelConfig,
+          }),
+        });
+
+      case "Huggingface":
+        return handler({
+          ...request,
+          model: new ChatOpenAI({
+            model: value,
+            configuration: {
+              baseURL: "https://router.huggingface.co/v1",
+              apiKey: process.env.HF_TOKEN,
+            },
+            ...modelConfig,
+          }),
+        });
+
+      default:
+        return handler(request);
+    }
   },
 });
 
 const defaultModel = new ChatOpenRouter({
-  model: LIST_OF_MODELS[0].value,
+  model: LIST_OF_MODELS["Openrouter"][0].value,
   ...modelConfig,
 });
 
