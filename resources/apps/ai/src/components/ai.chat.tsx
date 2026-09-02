@@ -125,8 +125,8 @@ export function AIChat() {
 
   if (!mounted || !threadId || !transport) {
     return (
-      <div className="grid palce-content-center w-full h-dvh">
-        Preparing chat…
+      <div className="grid place-content-center w-full h-dvh">
+        <strong>Preparing chat…</strong>
       </div>
     );
   }
@@ -153,7 +153,7 @@ function ChatComponent() {
     ...LIST_OF_MODELS["Openrouter"][0],
   });
   const stream = useStreamContext<Agent>();
-  const { isLoading, submit } = stream;
+  const { isLoading, submit, stop } = stream;
 
   const handleSubmit = (text: string) =>
     submit({
@@ -173,7 +173,7 @@ function ChatComponent() {
       <MessageList />
       <div className="shrink-0 p-4 border-t">
         <PromptInput
-          onSubmit={({ text }) => handleSubmit(text)}
+          onSubmit={({ text }) => (isLoading ? stop() : handleSubmit(text))}
           className="w-full max-w-2xl mx-auto"
         >
           <PromptInputBody>

@@ -15,8 +15,7 @@ export const LIST_OF_MODELS: Record<
     { label: "MiniMax", value: "minimax/minimax-m3:free" },
   ],
   Huggingface: [
-    { label: "OpenAI", value: "openai/gpt-oss-20b:preferred" },
-    // { label: "OpenAI", value: "openai/gpt-oss-120b:preferred" },
+    { label: "OpenAI", value: "openai/gpt-oss-120b:preferred" },
     { label: "Google", value: "google/gemma-4-31B-it:preferred" },
     { label: "IBM", value: "ibm-granite/granite-4.2-30b:preferred" },
     // { label: "Moonshot AI", value: "moonshotai/Kimi-K3:preferred" },
