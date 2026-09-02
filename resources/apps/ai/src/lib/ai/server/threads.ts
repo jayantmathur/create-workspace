@@ -247,30 +247,64 @@ function deriveTitle(values: unknown): string {
  * keys of {@link MemorySaver.storage}, and each thread's title/timestamp is
  * derived from its latest checkpoint. Restarting the server clears all of this.
  */
+// export async function listThreads(
+// 	graph: LocalProtocolGraph,
+// 	checkpointer: MemorySaver,
+// ): Promise<ThreadSummary[]> {
+// 	const ids = Object.keys(checkpointer.storage);
+// 	const summaries: ThreadSummary[] = [];
+// 	for (const id of ids) {
+// 		try {
+// 			const state = await getThreadState(graph, id);
+// 			summaries.push({
+// 				id,
+// 				title: deriveTitle(state.values),
+// 				updatedAt:
+// 					typeof state.created_at === "string" ? state.created_at : null,
+// 			});
+// 		} catch {
+// 			// Skip threads without a readable checkpoint.
+// 		}
+// 	}
+// 	summaries.sort((a, b) =>
+// 		(b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""),
+// 	);
+// 	return summaries;
+// }
+
 export async function listThreads(
 	graph: LocalProtocolGraph,
 	checkpointer: MemorySaver,
+	threadIds?: string[],
 ): Promise<ThreadSummary[]> {
-	const ids = Object.keys(checkpointer.storage);
+	const ids = threadIds ?? Object.keys(checkpointer.storage);
+
 	const summaries: ThreadSummary[] = [];
+
 	for (const id of ids) {
 		try {
 			const state = await getThreadState(graph, id);
+
 			summaries.push({
 				id,
 				title: deriveTitle(state.values),
 				updatedAt:
-					typeof state.created_at === "string" ? state.created_at : null,
+					typeof state.created_at === "string"
+						? state.created_at
+						: null,
 			});
 		} catch {
-			// Skip threads without a readable checkpoint.
+			// Skip threads that don't exist anymore.
 		}
 	}
+
 	summaries.sort((a, b) =>
 		(b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""),
 	);
+
 	return summaries;
 }
+
 
 /**
  * Read checkpointed thread state for `GET /threads/$threadId/state`.
