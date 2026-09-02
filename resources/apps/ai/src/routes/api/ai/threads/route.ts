@@ -15,7 +15,6 @@ export const Route = createFileRoute("/api/ai/threads")({
         const threads = await listThreads(getAgentGraph(), getCheckpointer());
         return Response.json(threads);
       },
-      
       POST: async ({ request }) => {
         const body = (await request.json()) as {
           threadIds?: unknown;
