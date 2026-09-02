@@ -9,13 +9,14 @@ import {
   modelCallLimitMiddleware,
   toolCallLimitMiddleware,
 } from "langchain";
+import { join } from "path";
 import { LIST_OF_MODELS } from "#/lib/ai/chat/models";
 import { internet_search } from "./tools/internet_search";
 import { SYSTEM_PROMPT } from "./prompts";
 
 export const checkpointer = new MemorySaver();
 const backend = new FilesystemBackend({
-  rootDir: import.meta.dirname,
+  rootDir: process.env.NODE_ENV === "production" ? join(process.cwd(), ".output", "agent") : import.meta.dirname,
   virtualMode: true,
 });
 // const backend = new StateBackend();
