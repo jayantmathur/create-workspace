@@ -2,15 +2,15 @@
 // predicate from `@langchain/langgraph/stream` — the same one langgraph-api
 // uses, so this custom transport stays aligned with the production server.
 import {
-	matchesSubscription,
-	type ProtocolEvent,
-	StreamChannel,
+  matchesSubscription,
+  type ProtocolEvent,
+  StreamChannel,
 } from "@langchain/langgraph/stream";
 import type {
-	Command,
-	CommandResponse,
-	ErrorResponse,
-	SubscribeParams,
+  Command,
+  CommandResponse,
+  ErrorResponse,
+  SubscribeParams,
 } from "@langchain/protocol";
 import type { ReactAgent } from "langchain";
 
@@ -31,15 +31,15 @@ type AgentRunInput = Parameters<AnyReactAgent["streamEvents"]>[0];
  * the plain, role-keyed protocol message shape the SDK expects.
  */
 function sanitizeEvent(event: ProtocolEvent): ProtocolEvent {
-	const params = event.params as Record<string, unknown>;
-	const sanitizedParams: Record<string, unknown> = {
-		...params,
-		data: sanitizeForJson(params.data),
-	};
-	if ("interrupts" in params) {
-		sanitizedParams.interrupts = sanitizeForJson(params.interrupts);
-	}
-	return { ...event, params: sanitizedParams } as ProtocolEvent;
+  const params = event.params as Record<string, unknown>;
+  const sanitizedParams: Record<string, unknown> = {
+    ...params,
+    data: sanitizeForJson(params.data),
+  };
+  if ("interrupts" in params) {
+    sanitizedParams.interrupts = sanitizeForJson(params.interrupts);
+  }
+  return { ...event, params: sanitizedParams } as ProtocolEvent;
 }
 
 /**
@@ -51,12 +51,31 @@ function sanitizeEvent(event: ProtocolEvent): ProtocolEvent {
  * to `seq` as a stable frame id.
  */
 function encodeSse(event: ProtocolEvent) {
-	const eventId = (event as { event_id?: string }).event_id;
-	const id = eventId ?? (typeof event.seq === "number" ? `${event.seq}` : "");
-	const idLine = id ? `id: ${id}\n` : "";
-	return new TextEncoder().encode(
-		`${idLine}event: message\ndata: ${JSON.stringify(event)}\n\n`,
-	);
+  const eventId = (event as { event_id?: string }).event_id;
+  const id = eventId ?? (typeof event.seq === "number" ? `${event.seq}` : "");
+  const idLine = id ? `id: ${id}\n` : "";
+  return new TextEncoder().encode(
+    `${idLine}event: message\ndata: ${JSON.stringify(event)}\n\n`,
+  );
+}
+
+function isIntentionalTermination(error: unknown): boolean {
+  const candidates: unknown[] = [error];
+  let cause = error;
+  while (cause && typeof cause === "object" && "cause" in cause) {
+    const next = (cause as { cause?: unknown }).cause;
+    if (next === cause) break;
+    candidates.push(next);
+    cause = next;
+  }
+
+  return candidates.some((candidate) => {
+    if (!(candidate instanceof Error)) {
+      return typeof candidate === "string" && /terminated/i.test(candidate);
+    }
+    const message = `${candidate.name}: ${candidate.message}`;
+    return /terminated/i.test(message);
+  });
 }
 
 /**
@@ -77,134 +96,140 @@ function encodeSse(event: ProtocolEvent) {
  * replay buffers across workers.
  */
 export class LocalThreadSession {
-	readonly #agent: AnyReactAgent;
-	readonly #threadId: string;
+  readonly #agent: AnyReactAgent;
+  readonly #threadId: string;
 
-	/**
-	 * Per-thread protocol event log.
-	 *
-	 * A {@link StreamChannel} is LangGraph's buffered, append-only stream with
-	 * independent per-consumer cursors. Every event ever published stays
-	 * buffered, and each SSE subscription gets its own cursor via
-	 * {@link StreamChannel.iterate}, so buffered replay and live delivery are the
-	 * same iteration.
-	 */
-	readonly #log = StreamChannel.local<ProtocolEvent>();
+  /**
+   * Per-thread protocol event log.
+   *
+   * A {@link StreamChannel} is LangGraph's buffered, append-only stream with
+   * independent per-consumer cursors. Every event ever published stays
+   * buffered, and each SSE subscription gets its own cursor via
+   * {@link StreamChannel.iterate}, so buffered replay and live delivery are the
+   * same iteration.
+   */
+  readonly #log = StreamChannel.local<ProtocolEvent>();
 
-	/** Monotonic seq across all runs on this thread (graph runs reset at 0). */
-	#nextSeq = 0;
+  /** Monotonic seq across all runs on this thread (graph runs reset at 0). */
+  #nextSeq = 0;
 
-	#activeRun:
-		| {
-				abort(reason?: unknown): void;
-		  }
-		| undefined;
+  #activeRun:
+    | {
+        abort(reason?: unknown): void;
+      }
+    | undefined;
 
-	constructor(agent: AnyReactAgent, threadId: string) {
-		this.#agent = agent;
-		this.#threadId = threadId;
-	}
+  constructor(agent: AnyReactAgent, threadId: string) {
+    this.#agent = agent;
+    this.#threadId = threadId;
+  }
 
-	/**
-	 * Handle a thread command sent to the Agent Protocol `/commands` endpoint.
-	 *
-	 * The SDK sends `run.start` to start or resume a graph run on the current
-	 * thread. This starts the in-process v3 stream and immediately returns a
-	 * success response containing a generated `run_id`, while streamed events
-	 * flow asynchronously through active `/stream` subscriptions.
-	 */
-	async handleCommand(
-		command: Command,
-	): Promise<CommandResponse | ErrorResponse> {
-		if (command.method !== "run.start") {
-			return {
-				type: "error",
-				id: command.id,
-				error: "unknown_command",
-				message: `Unsupported command: ${command.method}`,
-			} as ErrorResponse;
-		}
+  /**
+   * Handle a thread command sent to the Agent Protocol `/commands` endpoint.
+   *
+   * The SDK sends `run.start` to start or resume a graph run on the current
+   * thread. This starts the in-process v3 stream and immediately returns a
+   * success response containing a generated `run_id`, while streamed events
+   * flow asynchronously through active `/stream` subscriptions.
+   */
+  async handleCommand(
+    command: Command,
+  ): Promise<CommandResponse | ErrorResponse> {
+    if (command.method !== "run.start") {
+      return {
+        type: "error",
+        id: command.id,
+        error: "unknown_command",
+        message: `Unsupported command: ${command.method}`,
+      } as ErrorResponse;
+    }
 
-		const params = isRecord(command.params)
-			? (command.params as { input?: unknown })
-			: {};
-		const runId = crypto.randomUUID();
-		void this.#startRun(params.input as AgentRunInput, runId);
+    const params = isRecord(command.params)
+      ? (command.params as { input?: unknown })
+      : {};
+    const runId = crypto.randomUUID();
+    void this.#startRun(params.input as AgentRunInput, runId);
 
-		return {
-			type: "success",
-			id: command.id,
-			result: { run_id: runId },
-		} as CommandResponse;
-	}
+    return {
+      type: "success",
+      id: command.id,
+      result: { run_id: runId },
+    } as CommandResponse;
+  }
 
-	/**
-	 * Open a connection-scoped SSE subscription for this thread.
-	 *
-	 * The returned `ReadableStream` first replays buffered events matching the
-	 * requested `channels`, `namespaces`, `depth`, and optional `since` cursor,
-	 * then stays attached for live events. Closing the HTTP connection releases
-	 * this subscription's event-log cursor.
-	 */
-	stream(params: SubscribeParams) {
-		const cursor = this.#log.iterate();
+  /**
+   * Open a connection-scoped SSE subscription for this thread.
+   *
+   * The returned `ReadableStream` first replays buffered events matching the
+   * requested `channels`, `namespaces`, `depth`, and optional `since` cursor,
+   * then stays attached for live events. Closing the HTTP connection releases
+   * this subscription's event-log cursor.
+   */
+  stream(params: SubscribeParams) {
+    const cursor = this.#log.iterate();
 
-		return new ReadableStream<Uint8Array>({
-			pull: async (controller) => {
-				// Scan forward until we find an event matching this subscription's
-				// filter, enqueue exactly one frame, and return so the channel honors
-				// the consumer's backpressure. `cursor.next()` resolves immediately for
-				// buffered events and suspends once the live edge is reached.
-				for (;;) {
-					const { value: event, done } = await cursor.next();
-					if (done) {
-						controller.close();
-						return;
-					}
-					if (matchesSubscription(event, params)) {
-						controller.enqueue(encodeSse(event));
-						return;
-					}
-				}
-			},
-			cancel: () => {
-				void cursor.return?.(undefined);
-			},
-		});
-	}
+    return new ReadableStream<Uint8Array>({
+      pull: async (controller) => {
+        // Scan forward until we find an event matching this subscription's
+        // filter, enqueue exactly one frame, and return so the channel honors
+        // the consumer's backpressure. `cursor.next()` resolves immediately for
+        // buffered events and suspends once the live edge is reached.
+        for (;;) {
+          const { value: event, done } = await cursor.next();
+          if (done) {
+            controller.close();
+            return;
+          }
+          if (matchesSubscription(event, params)) {
+            controller.enqueue(encodeSse(event));
+            return;
+          }
+        }
+      },
+      cancel: () => {
+        void cursor.return?.(undefined);
+      },
+    });
+  }
 
-	#publish(rawEvent: ProtocolEvent) {
-		const seq = this.#nextSeq;
-		this.#nextSeq += 1;
-		const event = sanitizeEvent({
-			...rawEvent,
-			type: "event",
-			seq,
-		} as ProtocolEvent);
-		this.#log.push(event);
-	}
+  #publish(rawEvent: ProtocolEvent) {
+    const seq = this.#nextSeq;
+    this.#nextSeq += 1;
+    const event = sanitizeEvent({
+      ...rawEvent,
+      type: "event",
+      seq,
+    } as ProtocolEvent);
+    this.#log.push(event);
+  }
 
-	async #startRun(input: AgentRunInput, runId: string) {
-		this.#activeRun?.abort("Starting a new run.");
-		// Thread the `thread_id` / `run_id` into the run config so the checkpointer
-		// persists conversation state per thread and downstream events carry the
-		// run identity.
-		const run = await this.#agent.streamEvents(input, {
-			version: "v3",
-			configurable: { thread_id: this.#threadId, run_id: runId },
-		});
-		this.#activeRun = run;
+  async #startRun(input: AgentRunInput, runId: string) {
+    const previousRun = this.#activeRun;
+    if (previousRun) {
+      previousRun.abort("Starting a new run.");
+    }
+    // Thread the `thread_id` / `run_id` into the run config so the checkpointer
+    // persists conversation state per thread and downstream events carry the
+    // run identity.
+    const run = await this.#agent.streamEvents(input, {
+      version: "v3",
+      configurable: { thread_id: this.#threadId, run_id: runId },
+    });
+    this.#activeRun = run;
 
-		try {
-			for await (const rawEvent of run) {
-				this.#publish(rawEvent as ProtocolEvent);
-			}
-		} catch (error) {
-			console.error(error);
-		} finally {
-			if (this.#activeRun === run) {
-				this.#activeRun = undefined;
-			}
-		}
-	}
+    try {
+      for await (const rawEvent of run) {
+        this.#publish(rawEvent as ProtocolEvent);
+      }
+    } catch (error) {
+      if (isIntentionalTermination(error)) {
+        return;
+      }
+      console.error(error);
+    } finally {
+      if (this.#activeRun === run) {
+        this.#activeRun = undefined;
+      }
+    }
+  }
 }
