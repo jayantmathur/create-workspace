@@ -124,7 +124,11 @@ export function AIChat() {
   );
 
   if (!mounted || !threadId || !transport) {
-    return <div className="empty-state center">Preparing chat…</div>;
+    return (
+      <div className="grid palce-content-center w-full h-dvh">
+        Preparing chat…
+      </div>
+    );
   }
 
   return (
@@ -183,6 +187,7 @@ function ChatComponent() {
               onValueChange={(item) => setSelectedModel(item as SelectedModel)}
             >
               <ComboboxInput
+                className="min-w-2/5"
                 placeholder="Select an AI model provider"
                 showClear
               >
