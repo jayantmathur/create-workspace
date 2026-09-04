@@ -1,8 +1,6 @@
 import { TavilySearch } from "@langchain/tavily";
 import { tool } from "langchain";
-import { interrupt } from "@langchain/langgraph";
 import { z } from "zod";
-import type { CustomInterrupt } from "./types";
 
 const toolName = "internet_search";
 
@@ -18,21 +16,13 @@ export const internet_search = tool(
     topic?: "general" | "news" | "finance";
     includeRawContent?: boolean;
   }) => {
-    const response = interrupt({
-      action: toolName,
-      message: "Approve sending this internet search request?",
-    } as CustomInterrupt["value"]);
-
-    if (response?.action === "approve") {
-      const tavilySearch = new TavilySearch({
-        maxResults,
-        tavilyApiKey: process.env.TAVILY_API_KEY,
-        includeRawContent,
-        topic,
-      });
-      return await tavilySearch._call({ query });
-    }
-    return "Internet search request was rejected by the user.";
+    const tavilySearch = new TavilySearch({
+      maxResults,
+      tavilyApiKey: process.env.TAVILY_API_KEY,
+      includeRawContent,
+      topic,
+    });
+    return await tavilySearch._call({ query });
   },
   {
     name: toolName,

@@ -6,8 +6,6 @@ import {
   ToolInput,
   ToolOutput,
 } from "#/components/ai-elements/tool";
-import type { CustomInterrupt } from "#/agents/basic/tools/types";
-import { HITLCard } from "./ai.hitl-card";
 
 interface ToolCallProps {
   toolName: string;
@@ -15,7 +13,6 @@ interface ToolCallProps {
   output?: unknown;
   error?: string;
   isStreaming?: boolean;
-  interrupt?: CustomInterrupt;
 }
 
 export function ToolCall({
@@ -24,7 +21,6 @@ export function ToolCall({
   output,
   error,
   isStreaming,
-  interrupt,
 }: ToolCallProps) {
   const state: ToolUIPart["state"] = error
     ? "output-error"
@@ -44,15 +40,7 @@ export function ToolCall({
       />
       <ToolContent>
         <ToolInput input={input} />
-        {interrupt && <HITLCard {...interrupt} />}
-
-        {hasResult && (
-          <ToolOutput
-            output={output}
-            errorText={error}
-            className="w-full max-w-2xl overflow-scroll"
-          />
-        )}
+        {/* {hasResult && <ToolOutput output={output} errorText={error} />} */}
       </ToolContent>
     </Tool>
   );

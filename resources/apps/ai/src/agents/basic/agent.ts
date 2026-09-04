@@ -8,6 +8,7 @@ import {
   createMiddleware,
   modelCallLimitMiddleware,
   toolCallLimitMiddleware,
+  humanInTheLoopMiddleware,
 } from "langchain";
 import { join } from "path";
 import { LIST_OF_MODELS } from "#/lib/ai/chat/models";
@@ -85,6 +86,14 @@ export const agent = createDeepAgent({
   model: defaultModel,
   middleware: [
     configurableModel,
+    humanInTheLoopMiddleware({
+      interruptOn: {
+        internet_search: {
+          allowedDecisions: ["approve", "reject"],
+          description: "Internet search request requires approval to proceed.",
+        },
+      },
+    }),
     modelCallLimitMiddleware({
       threadLimit: 10,
       runLimit: 5,
@@ -106,11 +115,6 @@ export const agent = createDeepAgent({
   systemPrompt: SYSTEM_PROMPT,
   checkpointer: checkpointer,
   tools: [internet_search],
-  // interruptOn: {
-  //   internet_search: {
-  //     allowedDecisions: ["approve", "reject"],
-  //   },
-  // },
   skills: ["/skills"],
   memory: ["/AGENTS.md"],
   backend: backend,

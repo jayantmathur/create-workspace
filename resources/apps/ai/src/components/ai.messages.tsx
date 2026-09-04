@@ -22,7 +22,6 @@ import {
 } from "#/components/ai-elements/reasoning";
 import { Shimmer } from "#/components/ai-elements/shimmer";
 import type { Agent } from "#/agents/basic/agent";
-import type { CustomInterrupt } from "#/agents/basic/tools/types";
 
 interface RenderedItem {
   id: string;
@@ -141,10 +140,8 @@ interface MessageListProps {
 }
 
 export function MessageList({ onCopyLastMessage }: MessageListProps) {
-  const stream = useStreamContext<Agent>();
+  const { messages, isLoading } = useStreamContext<Agent>();
   const [copied, setCopied] = useState(false);
-
-  const { messages, isLoading, values } = stream;
 
   const items = useMemo(
     () => buildRenderItems(messages, isLoading),
@@ -155,10 +152,6 @@ export function MessageList({ onCopyLastMessage }: MessageListProps) {
     lastAiIndex >= 0 ? items.length - 1 - lastAiIndex : -1;
   const showShimmer =
     isLoading && items.length > 0 && items[items.length - 1].kind === "human";
-
-  const pendingInterrupts: CustomInterrupt[] = values.__interrupt__ ?? [];
-
-  console.log(values);
 
   function handleCopy() {
     onCopyLastMessage?.();
@@ -179,11 +172,6 @@ export function MessageList({ onCopyLastMessage }: MessageListProps) {
           }
 
           if (item.kind === "tool-call") {
-            let checkInterruptMatch = false;
-            if (pendingInterrupts.length > 0) {
-              checkInterruptMatch =
-                item.toolName === pendingInterrupts[0].value?.action;
-            }
             return (
               <ToolCall
                 key={item.id}
@@ -192,9 +180,6 @@ export function MessageList({ onCopyLastMessage }: MessageListProps) {
                 output={item.toolOutput}
                 error={item.toolError}
                 isStreaming={item.isStreaming}
-                interrupt={
-                  checkInterruptMatch ? pendingInterrupts[0] : undefined
-                }
               />
             );
           }

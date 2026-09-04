@@ -5,7 +5,6 @@ import {
 } from "@langchain/react";
 import { SparklesIcon } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-
 import {
   PromptInput,
   PromptInputBody,
@@ -37,6 +36,7 @@ import {
 } from "#/lib/ai/chat/threads-client";
 import { MessageList } from "./ai.messages";
 import { ThreadHistory } from "./ai.thread-history";
+import { HITLCard } from "./ai.hitl-card";
 
 import type { Agent } from "#/agents/basic/agent";
 
@@ -162,7 +162,8 @@ function ChatComponent() {
     ...LIST_OF_MODELS["Openrouter"][0],
   });
   const stream = useStreamContext<Agent>();
-  const { isLoading, submit, stop } = stream;
+  const { isLoading, submit, stop, values } = stream;
+  const interrupted = values?.__interrupt__ ?? undefined;
 
   const handleSubmit = (text: string) =>
     submit({
@@ -185,7 +186,9 @@ function ChatComponent() {
     <div className="flex flex-1 flex-col h-dvh p-8">
       <MessageList />
 
-      <Suggestions className="w-full justify-center mb-4">
+      <Suggestions
+        className={`w-full justify-center mb-4 ${values?.messages?.length > 0 && "hidden"}`}
+      >
         {promptSuggestions.map((suggestion, index) => (
           <Suggestion
             key={`suggestion-${index}`}
@@ -195,9 +198,12 @@ function ChatComponent() {
         ))}
       </Suggestions>
       <div className="shrink-0 p-4 border-t">
+        <HITLCard
+          className={`w-full max-w-2xl mx-auto ${!interrupted && "hidden"}`}
+        />
         <PromptInput
           onSubmit={({ text }) => (isLoading ? stop() : handleSubmit(text))}
-          className="w-full max-w-2xl mx-auto"
+          className={`w-full max-w-2xl mx-auto ${interrupted && "hidden"}`}
         >
           <PromptInputBody>
             <PromptInputTextarea placeholder="Ask me something..." />
