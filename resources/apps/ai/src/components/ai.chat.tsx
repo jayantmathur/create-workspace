@@ -5,7 +5,7 @@ import {
 } from "@langchain/react";
 import { SparklesIcon } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Agent } from "#/agents/basic/agent";
+
 import {
   PromptInput,
   PromptInputBody,
@@ -13,6 +13,7 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
 } from "#/components/ai-elements/prompt-input";
+import { Suggestions, Suggestion } from "#/components/ai-elements/suggestion";
 import {
   Combobox,
   ComboboxCollection,
@@ -37,6 +38,8 @@ import {
 import { MessageList } from "./ai.messages";
 import { ThreadHistory } from "./ai.thread-history";
 
+import type { Agent } from "#/agents/basic/agent";
+
 type SelectedModel = {
   provider: string;
   label: string;
@@ -47,6 +50,12 @@ const modelsList = Object.keys(LIST_OF_MODELS).map((key) => ({
   value: key,
   items: LIST_OF_MODELS[key],
 }));
+
+const promptSuggestions = [
+  "What can you do?",
+  "What is the difference between apples and oranges?",
+  "I want to try a new fruit.",
+];
 
 export function AIChat() {
   const [mounted, setMounted] = useState(false);
@@ -161,9 +170,13 @@ function ChatComponent() {
         {
           type: "human",
           content: text,
-          additional_kwargs: {
-            model: selectedModel,
-          },
+          ...(selectedModel
+            ? {
+                additional_kwargs: {
+                  model: selectedModel,
+                },
+              }
+            : {}),
         },
       ],
     }).then(() => setSelectedModel(null));
@@ -171,6 +184,16 @@ function ChatComponent() {
   return (
     <div className="flex flex-1 flex-col h-dvh p-8">
       <MessageList />
+
+      <Suggestions className="w-full justify-center mb-4">
+        {promptSuggestions.map((suggestion, index) => (
+          <Suggestion
+            key={`suggestion-${index}`}
+            suggestion={suggestion}
+            onClick={handleSubmit}
+          />
+        ))}
+      </Suggestions>
       <div className="shrink-0 p-4 border-t">
         <PromptInput
           onSubmit={({ text }) => (isLoading ? stop() : handleSubmit(text))}

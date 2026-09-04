@@ -1,7 +1,7 @@
 import { MemorySaver } from "@langchain/langgraph";
 import { ChatOpenRouter } from "@langchain/openrouter";
 import { ChatOpenAI } from "@langchain/openai";
-import { createDeepAgent, FilesystemBackend StateBackend } from "deepagents";
+import { createDeepAgent, FilesystemBackend, StateBackend } from "deepagents";
 import {
   ClearToolUsesEdit,
   contextEditingMiddleware,
@@ -16,7 +16,10 @@ import { SYSTEM_PROMPT } from "./prompts";
 
 export const checkpointer = new MemorySaver();
 const backend = new FilesystemBackend({
-  rootDir: process.env.NODE_ENV === "production" ? join(process.cwd(), ".output", "agent") : import.meta.dirname,
+  rootDir:
+    process.env.NODE_ENV === "production"
+      ? join(process.cwd(), ".output", "agent")
+      : import.meta.dirname,
   virtualMode: true,
 });
 // const backend = new StateBackend();
@@ -103,11 +106,11 @@ export const agent = createDeepAgent({
   systemPrompt: SYSTEM_PROMPT,
   checkpointer: checkpointer,
   tools: [internet_search],
-  interruptOn: {
-    internet_search: {
-      allowedDecisions: ["approve", "reject"],
-    },
-  },
+  // interruptOn: {
+  //   internet_search: {
+  //     allowedDecisions: ["approve", "reject"],
+  //   },
+  // },
   skills: ["/skills"],
   memory: ["/AGENTS.md"],
   backend: backend,

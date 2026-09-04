@@ -12,6 +12,7 @@ import type {
   ErrorResponse,
   SubscribeParams,
 } from "@langchain/protocol";
+import { Command as LangGraphCommand } from "@langchain/langgraph";
 import type { ReactAgent } from "langchain";
 
 import { isRecord, sanitizeForJson } from "./serialize";
@@ -135,6 +136,24 @@ export class LocalThreadSession {
   async handleCommand(
     command: Command,
   ): Promise<CommandResponse | ErrorResponse> {
+    if (command.method === "input.respond") {
+      const params = isRecord(command.params) ? command.params : {};
+      const runId = crypto.randomUUID();
+      void this.#startRun(
+        new LangGraphCommand({
+          resume: params.response,
+          ...(isRecord(params.update) ? { update: params.update } : {}),
+        }) as AgentRunInput,
+        runId,
+      );
+
+      return {
+        type: "success",
+        id: command.id,
+        result: { run_id: runId },
+      } as CommandResponse;
+    }
+
     if (command.method !== "run.start") {
       return {
         type: "error",
