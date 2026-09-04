@@ -17,8 +17,11 @@ export function HITLCard({
   className,
   ...props
 }: Omit<ConfirmationProps, "state" | "approval">) {
-  const stream = useStreamContext<Agent>();
-  const { respond, values } = stream;
+  const { respond, values } = useStreamContext<Agent>();
+  const [response, setResponse] = useState<ConfirmationProps>({
+    approval: { id: "placeholder-id" },
+    state: "approval-requested",
+  });
   const interrupts: {
     id: string;
     value: HITLRequest;
@@ -27,11 +30,6 @@ export function HITLCard({
   const interrupt = interrupts[0];
 
   if (!interrupt) return null;
-
-  const [response, setResponse] = useState<ConfirmationProps>({
-    approval: { id: interrupt.id || "placeholder-id" },
-    state: "approval-requested",
-  });
 
   const { actionRequests } = interrupt.value as HITLRequest;
   const { description } = actionRequests[0];
