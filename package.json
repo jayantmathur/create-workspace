@@ -15,7 +15,7 @@
     "dev": "bun run --watch index.ts",
     "pull": "cnwx sync --restore",
     "prepush": "cnwx sync",
-    "create-link": "npm link;bun link;bun link create-workspace",
+    "create-link": "bun link;bun link create-workspace",
     "push": "cnwx git"
   },
   "devDependencies": {
