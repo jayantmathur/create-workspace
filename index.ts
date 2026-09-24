@@ -83,9 +83,8 @@ const cliOptions: CLIOptions = {
           callback: async (name: string, path: string) => {
             await spawn(
               [
-                // 'bunx',
-                // '@tanstack/cli',
-                "tanstack",
+                "bunx",
+                "@tanstack/cli",
                 "create",
                 name,
                 "--add-ons",
