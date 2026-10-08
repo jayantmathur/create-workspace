@@ -15,18 +15,24 @@ import {
 import { Suggestions, Suggestion } from "#/components/ai-elements/suggestion";
 import {
   Combobox,
-  ComboboxCollection,
   ComboboxContent,
   ComboboxEmpty,
-  ComboboxGroup,
   ComboboxInput,
   ComboboxItem,
-  ComboboxLabel,
   ComboboxList,
-  ComboboxSeparator,
 } from "#/components/ui/combobox";
+import {
+  Item,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+} from "#/components/ui/item";
 import { InputGroupAddon } from "#/components/ui/input-group";
-import { LIST_OF_MODELS } from "#/lib/ai/chat/models";
+import {
+  DEFAULT_MODEL,
+  LIST_OF_MODELS,
+  type SelectedModel,
+} from "#/lib/ai/chat/models";
 import {
   createThread,
   deleteThread,
@@ -39,17 +45,6 @@ import { ThreadHistory } from "./ai.thread-history";
 import { HITLCard } from "./ai.hitl-card";
 
 import type { Agent } from "#/agents/basic/agent";
-
-type SelectedModel = {
-  provider: string;
-  label: string;
-  value: string;
-};
-
-const modelsList = Object.keys(LIST_OF_MODELS).map((key) => ({
-  value: key,
-  items: LIST_OF_MODELS[key],
-}));
 
 const promptSuggestions = [
   "What can you do?",
@@ -157,10 +152,9 @@ export function AIChat() {
 }
 
 function ChatComponent() {
-  const [selectedModel, setSelectedModel] = useState<SelectedModel | null>({
-    provider: "Openrouter",
-    ...LIST_OF_MODELS["Openrouter"][0],
-  });
+  const [selectedModel, setSelectedModel] = useState<SelectedModel | null>(
+    DEFAULT_MODEL,
+  );
   const stream = useStreamContext<Agent>();
   const { isLoading, submit, stop, values } = stream;
   const interrupted = values?.__interrupt__ ?? undefined;
@@ -202,16 +196,21 @@ function ChatComponent() {
           className={`w-full max-w-2xl mx-auto ${!interrupted && "hidden"}`}
         />
         <PromptInput
-          onSubmit={({ text }) => (isLoading ? stop() : handleSubmit(text))}
+          onSubmit={({ text }) =>
+            text.length > 0 ? handleSubmit(text) : void 0
+          }
           className={`w-full max-w-2xl mx-auto ${interrupted && "hidden"}`}
         >
           <PromptInputBody>
             <PromptInputTextarea placeholder="Ask me something..." />
           </PromptInputBody>
           <PromptInputFooter>
-            <PromptInputSubmit status={(isLoading && "streaming") || "ready"} />
+            <PromptInputSubmit
+              status={!isLoading ? "ready" : "streaming"}
+              onStop={stop}
+            />
             <Combobox
-              items={modelsList}
+              items={LIST_OF_MODELS}
               autoHighlight
               onValueChange={(item) => setSelectedModel(item as SelectedModel)}
             >
@@ -227,21 +226,22 @@ function ChatComponent() {
               <ComboboxContent>
                 <ComboboxEmpty>No models found.</ComboboxEmpty>
                 <ComboboxList>
-                  {(group, index) => (
-                    <ComboboxGroup key={group.value} items={group.items}>
-                      <ComboboxLabel>{group.value}</ComboboxLabel>
-                      <ComboboxCollection>
-                        {(item) => (
-                          <ComboboxItem
-                            key={item.value}
-                            value={{ provider: group.value, ...item }}
-                          >
-                            {item.label}
-                          </ComboboxItem>
-                        )}
-                      </ComboboxCollection>
-                      {index < modelsList.length - 1 && <ComboboxSeparator />}
-                    </ComboboxGroup>
+                  {({ label, value, provider }: SelectedModel) => (
+                    <ComboboxItem
+                      key={`${provider}-${label}/${value}`.toLowerCase()}
+                      value={label}
+                    >
+                      <Item className="p-0">
+                        <ItemContent>
+                          <ItemTitle className="whitespace-nowrap">
+                            {label}
+                          </ItemTitle>
+                          <ItemDescription className="text-xs">
+                            {provider}
+                          </ItemDescription>
+                        </ItemContent>
+                      </Item>
+                    </ComboboxItem>
                   )}
                 </ComboboxList>
               </ComboboxContent>

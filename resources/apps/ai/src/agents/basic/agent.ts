@@ -1,7 +1,7 @@
 import { MemorySaver } from "@langchain/langgraph";
 import { ChatOpenRouter } from "@langchain/openrouter";
 import { ChatOpenAI } from "@langchain/openai";
-import { createDeepAgent, FilesystemBackend, StateBackend } from "deepagents";
+import { createDeepAgent, FilesystemBackend } from "deepagents";
 import {
   ClearToolUsesEdit,
   contextEditingMiddleware,
@@ -11,7 +11,7 @@ import {
   humanInTheLoopMiddleware,
 } from "langchain";
 import { join } from "path";
-import { LIST_OF_MODELS } from "#/lib/ai/chat/models";
+import { DEFAULT_MODEL, type SelectedModel } from "#/lib/ai/chat/models";
 import { internet_search } from "./tools/internet_search";
 import { SYSTEM_PROMPT } from "./prompts";
 
@@ -23,7 +23,6 @@ const backend = new FilesystemBackend({
       : import.meta.dirname,
   virtualMode: true,
 });
-// const backend = new StateBackend();
 
 const modelConfig = {
   maxTokens: 4096,
@@ -38,36 +37,53 @@ const configurableModel = createMiddleware({
   name: "ConfigurableModel",
   wrapModelCall: async (request: any, handler) => {
     const kwargs = request?.messages?.at(-1).additional_kwargs as
-      | { model?: { provider: string; label: string; value: string } }
-      | undefined;
+      { model?: SelectedModel } | undefined;
     const model = kwargs?.model;
 
     if (!model) {
       return handler(request);
     }
 
-    const { provider, value } = model;
+    const { provider, value, endpoint } = model;
+    const payload = {
+      model: value,
+      configuration: {
+        baseURL: endpoint,
+      },
+      ...modelConfig,
+    };
 
     switch (provider) {
       case "Openrouter":
         return handler({
           ...request,
-          model: new ChatOpenRouter({
-            model: value,
-            ...modelConfig,
-          }),
+          model: new ChatOpenRouter(payload),
         });
 
       case "Huggingface":
         return handler({
           ...request,
           model: new ChatOpenAI({
-            model: value,
-            configuration: {
-              baseURL: "https://router.huggingface.co/v1",
-              apiKey: process.env.HF_TOKEN,
-            },
-            ...modelConfig,
+            ...payload,
+            apiKey: process.env.HF_TOKEN,
+          }),
+        });
+
+      case "Requesty":
+        return handler({
+          ...request,
+          model: new ChatOpenAI({
+            ...payload,
+            apiKey: process.env.REQUESTY_API_KEY,
+          }),
+        });
+
+      case "Ollama":
+        return handler({
+          ...request,
+          model: new ChatOpenAI({
+            ...payload,
+            apiKey: process.env.OLLAMA_API_KEY,
           }),
         });
 
@@ -77,8 +93,13 @@ const configurableModel = createMiddleware({
   },
 });
 
-const defaultModel = new ChatOpenRouter({
-  model: LIST_OF_MODELS["Openrouter"][0].value,
+const defaultModel = new ChatOpenAI({
+  // Ollama Cloud model
+  model: DEFAULT_MODEL.value,
+  apiKey: process.env.OLLAMA_API_KEY,
+  configuration: {
+    baseURL: DEFAULT_MODEL.endpoint,
+  },
   ...modelConfig,
 });
 
