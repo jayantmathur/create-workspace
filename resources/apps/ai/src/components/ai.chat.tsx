@@ -147,11 +147,10 @@ export function AIChat() {
 }
 
 function ChatComponent() {
-  const [selectedModel, setSelectedModel] = useState<SelectedModel | null>(
-    DEFAULT_MODEL,
-  );
+  const [selectedModel, setSelectedModel] =
+    useState<SelectedModel>(DEFAULT_MODEL);
   const stream = useStreamContext<Agent>();
-  const { isLoading, submit, stop, values } = stream;
+  const { isLoading, submit, stop, values, error } = stream;
   const interrupted = values?.__interrupt__ ?? undefined;
 
   const handleSubmit = (text: string) =>
@@ -169,7 +168,27 @@ function ChatComponent() {
             : {}),
         },
       ],
-    }).then(() => setSelectedModel(null));
+    });
+
+  const handleError = useCallback(
+    (error: unknown) =>
+      submit({
+        messages: [
+          {
+            type: "ai",
+            content: `${error}`,
+          },
+        ],
+      }),
+    [],
+  );
+
+  useEffect(() => {
+    if (error) {
+      handleError(error);
+      stop();
+    }
+  }, [error]);
 
   return (
     <div className="flex flex-1 flex-col h-dvh p-8">
@@ -207,7 +226,9 @@ function ChatComponent() {
             <Combobox
               items={LIST_OF_MODELS}
               autoHighlight
-              onValueChange={(item) => setSelectedModel(item as SelectedModel)}
+              onValueChange={(value: SelectedModel | null) =>
+                value && setSelectedModel(value)
+              }
             >
               <ComboboxInput
                 className="min-w-2/5"
@@ -221,23 +242,26 @@ function ChatComponent() {
               <ComboboxContent>
                 <ComboboxEmpty>No models found.</ComboboxEmpty>
                 <ComboboxList>
-                  {({ label, value, provider }: SelectedModel) => (
-                    <ComboboxItem
-                      key={`${provider}-${label}/${value}`.toLowerCase()}
-                      value={label}
-                    >
-                      <Item className="p-0">
-                        <ItemContent>
-                          <ItemTitle className="whitespace-nowrap">
-                            {label}
-                          </ItemTitle>
-                          <ItemDescription className="text-xs">
-                            {provider}
-                          </ItemDescription>
-                        </ItemContent>
-                      </Item>
-                    </ComboboxItem>
-                  )}
+                  {(model: SelectedModel) => {
+                    const { label, value, provider } = model;
+                    return (
+                      <ComboboxItem
+                        key={`${provider}-${label}/${value}`.toLowerCase()}
+                        value={model}
+                      >
+                        <Item className="p-0">
+                          <ItemContent>
+                            <ItemTitle className="whitespace-nowrap">
+                              {label}
+                            </ItemTitle>
+                            <ItemDescription className="text-xs">
+                              {provider}
+                            </ItemDescription>
+                          </ItemContent>
+                        </Item>
+                      </ComboboxItem>
+                    );
+                  }}
                 </ComboboxList>
               </ComboboxContent>
             </Combobox>

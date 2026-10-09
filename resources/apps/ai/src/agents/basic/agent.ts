@@ -37,7 +37,8 @@ const configurableModel = createMiddleware({
   name: "ConfigurableModel",
   wrapModelCall: async (request: any, handler) => {
     const kwargs = request?.messages?.at(-1).additional_kwargs as
-      { model?: SelectedModel } | undefined;
+      | { model?: SelectedModel }
+      | undefined;
     const model = kwargs?.model;
 
     if (!model) {

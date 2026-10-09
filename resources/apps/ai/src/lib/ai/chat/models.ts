@@ -7,6 +7,22 @@ export type SelectedModel = {
 
 export const LIST_OF_MODELS: SelectedModel[] = [
   {
+    label: "Random (first available)",
+    value: "openrouter/free",
+    provider: "Openrouter",
+  },
+  {
+    label: "Cohere",
+    value: "cohere/north-mini-code:free",
+    provider: "Openrouter",
+  },
+  {
+    label: "Deepseek",
+    value: "deepseek-ai/DeepSeek-V4-Flash:cheapest",
+    provider: "Huggingface",
+    endpoint: "https://router.huggingface.co/v1",
+  },
+  {
     label: "Google",
     value: "gemma4",
     provider: "Ollama",
@@ -17,6 +33,23 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     value: "gemma-4-31b-it",
     provider: "Requesty",
     endpoint: "https://router.requesty.ai/v1",
+  },
+  {
+    label: "Google",
+    value: "google/gemma-4-31B-it:cheapest",
+    provider: "Huggingface",
+    endpoint: "https://router.huggingface.co/v1",
+  },
+  {
+    label: "IBM",
+    value: "ibm-granite/granite-4.2-30b:cheapest",
+    provider: "Huggingface",
+    endpoint: "https://router.huggingface.co/v1",
+  },
+  {
+    label: "InclusionAI",
+    value: "inclusionai/ling-3.0-flash:free",
+    provider: "Openrouter",
   },
   {
     label: "InclusionAI",
@@ -49,9 +82,22 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     endpoint: "https://ollama.com/v1",
   },
   {
-    label: "Random (first available)",
-    value: "openrouter/free",
-    provider: "Openrouter",
+    label: "OpenAI",
+    value: "openai/gpt-oss-120b:cheapest",
+    provider: "Huggingface",
+    endpoint: "https://router.huggingface.co/v1",
+  },
+  {
+    label: "PrismML",
+    value: "prism-ml/Ternary-Bonsai-27B-AWQ-4bit:cheapest",
+    provider: "Huggingface",
+    endpoint: "https://router.huggingface.co/v1",
+  },
+  {
+    label: "Qwen",
+    value: "Qwen/Qwen3-32B:cheapest",
+    provider: "Huggingface",
+    endpoint: "https://router.huggingface.co/v1",
   },
   {
     label: "Z.ai",
@@ -59,57 +105,8 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     provider: "Ollama",
     endpoint: "https://ollama.com/v1",
   },
-  // {
-  //   label: "InclusionAI",
-  //   value: "inclusionai/ling-3.0-flash:free",
-  //   provider: "Openrouter",
-  // },
-  // {
-  //   label: "Cohere",
-  //   value: "cohere/north-mini-code:free",
-  //   provider: "Openrouter",
-  // },
-  // {
-  //   label: "OpenAI",
-  //   value: "openai/gpt-oss-120b:cheapest",
-  //   provider: "Huggingface",
-  //   endpoint: "https://router.huggingface.co/v1",
-  // },
-  // {
-  //   label: "Google",
-  //   value: "google/gemma-4-31B-it:cheapest",
-  //   provider: "Huggingface",
-  //   endpoint: "https://router.huggingface.co/v1",
-  // },
-  // {
-  //   label: "IBM",
-  //   value: "ibm-granite/granite-4.2-30b:cheapest",
-  //   provider: "Huggingface",
-  //   endpoint: "https://router.huggingface.co/v1",
-  // },
-  // {
-  //   label: "Deepseek",
-  //   value: "deepseek-ai/DeepSeek-V4-Flash:cheapest",
-  //   provider: "Huggingface",
-  //   endpoint: "https://router.huggingface.co/v1",
-  // },
-  // {
-  //   label: "Qwen",
-  //   value: "Qwen/Qwen3-32B:cheapest",
-  //   provider: "Huggingface",
-  //   endpoint: "https://router.huggingface.co/v1",
-  // },
-  // {
-  //   label: "PrismML",
-  //   value: "prism-ml/Ternary-Bonsai-27B-AWQ-4bit:cheapest",
-  //   provider: "Huggingface",
-  //   endpoint: "https://router.huggingface.co/v1",
-  // },
 ];
 
 export const DEFAULT_MODEL: SelectedModel = LIST_OF_MODELS.find(
-  (model) =>
-    model.provider === "Ollama" &&
-    model.label === "OpenAI" &&
-    model.value === "gpt-oss:120b",
+  (model) => model.provider === "Ollama" && model.label === "OpenAI",
 ) as SelectedModel;
