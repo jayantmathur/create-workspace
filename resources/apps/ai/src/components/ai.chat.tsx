@@ -44,13 +44,8 @@ import { MessageList } from "./ai.messages";
 import { ThreadHistory } from "./ai.thread-history";
 import { HITLCard } from "./ai.hitl-card";
 
+import { SUGGESTION_PROMPTS } from "#/agents/basic/prompts";
 import type { Agent } from "#/agents/basic/agent";
-
-const promptSuggestions = [
-  "What can you do?",
-  "What is the difference between apples and oranges?",
-  "I want to try a new fruit.",
-];
 
 export function AIChat() {
   const [mounted, setMounted] = useState(false);
@@ -183,7 +178,7 @@ function ChatComponent() {
       <Suggestions
         className={`w-full justify-center mb-4 ${values?.messages?.length > 0 && "hidden"}`}
       >
-        {promptSuggestions.map((suggestion, index) => (
+        {SUGGESTION_PROMPTS.map((suggestion, index) => (
           <Suggestion
             key={`suggestion-${index}`}
             suggestion={suggestion}
