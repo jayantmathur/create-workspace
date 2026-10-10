@@ -13,25 +13,20 @@ import type { Agent } from "#/agents/basic/agent";
 import type { HITLRequest, HITLResponse } from "langchain";
 import { cn } from "#/lib/utils";
 
-export function HITLCard({
-  className,
-  ...props
-}: Omit<ConfirmationProps, "state" | "approval">) {
-  const { respond, values } = useStreamContext<Agent>();
+type HITLProps = Omit<ConfirmationProps, "state" | "approval"> & {
+  interrupt?: { id: string; value: HITLRequest };
+};
+
+export function HITLCard({ className, interrupt, ...props }: HITLProps) {
+  if (!interrupt) return null;
+
+  const { respond } = useStreamContext<Agent>();
   const [response, setResponse] = useState<ConfirmationProps>({
     approval: { id: "placeholder-id" },
     state: "approval-requested",
   });
-  const interrupts: {
-    id: string;
-    value: HITLRequest;
-  }[] = values.__interrupt__ ?? [];
-
-  const interrupt = interrupts[0];
-
-  if (!interrupt) return null;
-
-  const { actionRequests } = interrupt.value as HITLRequest;
+  const { id, value } = interrupt;
+  const { actionRequests } = value;
   const { description } = actionRequests[0];
 
   const handleApprove = async () =>
@@ -43,11 +38,11 @@ export function HITLCard({
           },
         ],
       } as HITLResponse,
-      { interruptId: interrupt.id },
+      { interruptId: id },
     ).then(() =>
       setResponse({
         approval: {
-          id: interrupt.id || nanoid(),
+          id: id || nanoid(),
           approved: true,
         },
         state: "approval-responded",
@@ -65,11 +60,11 @@ export function HITLCard({
           },
         ],
       } as HITLResponse,
-      { interruptId: interrupt.id },
+      { interruptId: id },
     ).then(() =>
       setResponse({
         approval: {
-          id: interrupt.id || nanoid(),
+          id: id || nanoid(),
           approved: false,
           reason: "Rejected by user.",
         },

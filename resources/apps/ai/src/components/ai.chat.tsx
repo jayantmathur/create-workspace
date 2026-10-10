@@ -1,10 +1,6 @@
-import {
-  HttpAgentServerAdapter,
-  StreamProvider,
-  useStreamContext,
-} from "@langchain/react";
+import { useStreamContext } from "@langchain/react";
 import { SparklesIcon } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   PromptInput,
   PromptInputBody,
@@ -33,161 +29,50 @@ import {
   LIST_OF_MODELS,
   type SelectedModel,
 } from "#/lib/ai/chat/models";
-import {
-  createThread,
-  deleteThread,
-  fetchThreads,
-  getApiUrl,
-  type ThreadSummary,
-} from "#/lib/ai/chat/threads-client";
 import { MessageList } from "./ai.messages";
-import { ThreadHistory } from "./ai.thread-history";
 import { HITLCard } from "./ai.hitl-card";
 
 import { SUGGESTION_PROMPTS } from "#/agents/basic/prompts";
 import type { Agent } from "#/agents/basic/agent";
 
-export function AIChat() {
-  const [mounted, setMounted] = useState(false);
-  const [threads, setThreads] = useState<ThreadSummary[]>([]);
-  const [threadId, setThreadId] = useState<string>("");
-  // Guards the one-time init against React Strict Mode's double-invoke in dev,
-  // which would otherwise create two threads when none exist yet.
-  const initStarted = useRef(false);
-
-  const refreshThreads = useCallback(async () => {
-    setThreads(await fetchThreads());
-  }, []);
-
-  // On mount, load threads from the server (single source of truth). If none
-  // exist yet, create one. All setState happens in an async callback, so the
-  // effect body never calls setState synchronously.
-  useEffect(() => {
-    if (initStarted.current) return;
-    initStarted.current = true;
-    void (async () => {
-      const list = await fetchThreads();
-      if (list.length > 0) {
-        setThreads(list);
-        setThreadId(list[0].id);
-      } else {
-        const id = await createThread();
-        setThreads(await fetchThreads());
-        setThreadId(id);
-      }
-      setMounted(true);
-    })();
-  }, []);
-
-  const transport = useMemo(() => {
-    if (!threadId) return null;
-    return new HttpAgentServerAdapter({
-      apiUrl: getApiUrl(),
-      threadId,
-      paths: {
-        commands: `/threads/${threadId}/commands`,
-        stream: `/threads/${threadId}/stream`,
-        state: `/threads/${threadId}/state`,
-      },
-    });
-  }, [threadId]);
-
-  const handleSelect = useCallback(
-    (id: string) => {
-      if (id !== threadId) setThreadId(id);
-    },
-    [threadId],
-  );
-
-  const handleCreate = useCallback(async () => {
-    const id = await createThread();
-    await refreshThreads();
-    setThreadId(id);
-  }, [refreshThreads]);
-
-  const handleDelete = useCallback(
-    async (id: string) => {
-      await deleteThread(id);
-      const list = await fetchThreads();
-      setThreads(list);
-      if (id !== threadId) return;
-      if (list.length > 0) {
-        setThreadId(list[0].id);
-      } else {
-        const freshId = await createThread();
-        setThreads(await fetchThreads());
-        setThreadId(freshId);
-      }
-    },
-    [threadId],
-  );
-
-  if (!mounted || !threadId || !transport) {
-    return (
-      <div className="grid place-content-center w-full h-dvh">
-        <strong>Preparing chat…</strong>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-row">
-      <ThreadHistory
-        activeThreadId={threadId}
-        onCreate={handleCreate}
-        onDelete={handleDelete}
-        onSelect={handleSelect}
-        threads={threads}
-      />
-      <StreamProvider key={threadId} threadId={threadId} transport={transport}>
-        <ChatComponent />
-      </StreamProvider>
-    </div>
-  );
-}
-
-function ChatComponent() {
+export function AIChatInterface() {
+  const { isLoading, submit, stop, values, error } = useStreamContext<Agent>();
   const [selectedModel, setSelectedModel] =
     useState<SelectedModel>(DEFAULT_MODEL);
-  const stream = useStreamContext<Agent>();
-  const { isLoading, submit, stop, values, error } = stream;
-  const interrupted = values?.__interrupt__ ?? undefined;
 
-  const handleSubmit = (text: string) =>
-    submit({
-      messages: [
-        {
-          type: "human",
-          content: text,
-          ...(selectedModel
-            ? {
-                additional_kwargs: {
-                  model: selectedModel,
-                },
-              }
-            : {}),
-        },
-      ],
-    });
+  const hitlInterrupt = values.__interrupt__?.[0] ?? undefined;
 
-  const handleError = useCallback(
-    (error: unknown) =>
+  const handleSubmit = (text: string) => {
+    if (text.length > 0) {
       submit({
         messages: [
           {
-            type: "ai",
-            content: `${error}`,
+            type: "human",
+            content: text,
+            ...(selectedModel
+              ? {
+                  additional_kwargs: {
+                    model: selectedModel,
+                  },
+                }
+              : {}),
           },
         ],
-      }),
-    [],
-  );
+      });
+    } else void 0;
+  };
 
   useEffect(() => {
-    if (error) {
-      handleError(error);
-      stop();
-    }
+    if (!error) return;
+    submit({
+      messages: [
+        {
+          type: "ai",
+          content: `${error}`,
+        },
+      ],
+    });
+    stop();
   }, [error]);
 
   return (
@@ -207,21 +92,24 @@ function ChatComponent() {
       </Suggestions>
       <div className="shrink-0 p-4 border-t">
         <HITLCard
-          className={`w-full max-w-2xl mx-auto ${!interrupted && "hidden"}`}
+          interrupt={hitlInterrupt}
+          className={`w-full max-w-2xl mx-auto ${!hitlInterrupt && "hidden"}`}
         />
         <PromptInput
-          onSubmit={({ text }) =>
-            text.length > 0 ? handleSubmit(text) : void 0
-          }
-          className={`w-full max-w-2xl mx-auto ${interrupted && "hidden"}`}
+          onSubmit={({ text }) => handleSubmit(text)}
+          className={`w-full max-w-2xl mx-auto ${hitlInterrupt && "hidden"}`}
         >
           <PromptInputBody>
             <PromptInputTextarea placeholder="Ask me something..." />
           </PromptInputBody>
           <PromptInputFooter>
             <PromptInputSubmit
-              status={!isLoading ? "ready" : "streaming"}
-              onStop={stop}
+              status={
+                isLoading && values?.messages?.length > 0
+                  ? "submitted"
+                  : "ready"
+              }
+              disabled={isLoading && values?.messages?.length > 0}
             />
             <Combobox
               items={LIST_OF_MODELS}
