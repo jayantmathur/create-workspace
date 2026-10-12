@@ -25,16 +25,17 @@ const backend = new FilesystemBackend({
 });
 
 const modelConfig = {
-  maxTokens: 4096,
+  maxTokens: 8192,
   temperature: 0.3,
-  reasoning: { effort: "minimal" as const, summary: "auto" as const },
+  reasoning: { effort: "low" as const, summary: "auto" as const },
 } as const;
 
 const configurableModel = createMiddleware({
   name: "ConfigurableModel",
   wrapModelCall: async (request: any, handler) => {
     const kwargs = request?.messages?.at(-1).additional_kwargs as
-      { model?: SelectedModel } | undefined;
+      | { model?: SelectedModel }
+      | undefined;
     const model = kwargs?.model;
 
     if (!model) {
