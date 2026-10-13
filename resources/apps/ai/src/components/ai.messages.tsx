@@ -155,7 +155,8 @@ export function MessageList({ onCopyLastMessage }: MessageListProps) {
 
   const interrupted = values.__interrupt__?.[0] ?? undefined;
 
-  function handleCopy() {
+  async function handleCopy(content: string) {
+    await navigator.clipboard.writeText(content);
     onCopyLastMessage?.();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -209,7 +210,7 @@ export function MessageList({ onCopyLastMessage }: MessageListProps) {
                   <MessageAction
                     label={copied ? "Copied" : "Copy"}
                     tooltip={copied ? "Copied!" : "Copy message"}
-                    onClick={handleCopy}
+                    onClick={() => handleCopy(item.content ?? "")}
                   >
                     {copied ? (
                       <CheckIcon className="size-3 text-green-500" />
