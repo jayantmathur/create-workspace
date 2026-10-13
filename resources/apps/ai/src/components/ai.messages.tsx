@@ -140,7 +140,7 @@ interface MessageListProps {
 }
 
 export function MessageList({ onCopyLastMessage }: MessageListProps) {
-  const { messages, isLoading } = useStreamContext<Agent>();
+  const { messages, isLoading, values } = useStreamContext<Agent>();
   const [copied, setCopied] = useState(false);
 
   const items = useMemo(
@@ -152,6 +152,8 @@ export function MessageList({ onCopyLastMessage }: MessageListProps) {
     lastAiIndex >= 0 ? items.length - 1 - lastAiIndex : -1;
   const showShimmer =
     isLoading && items.length > 0 && items[items.length - 1].kind === "human";
+
+  const interrupted = values.__interrupt__?.[0] ?? undefined;
 
   function handleCopy() {
     onCopyLastMessage?.();
@@ -180,6 +182,7 @@ export function MessageList({ onCopyLastMessage }: MessageListProps) {
                 output={item.toolOutput}
                 error={item.toolError}
                 isStreaming={item.isStreaming}
+                interrupt={interrupted}
               />
             );
           }

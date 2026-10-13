@@ -1,6 +1,4 @@
 import { MemorySaver } from "@langchain/langgraph";
-import { ChatOpenRouter } from "@langchain/openrouter";
-import { ChatOpenAI } from "@langchain/openai";
 import { createDeepAgent, FilesystemBackend } from "deepagents";
 import {
   ClearToolUsesEdit,
@@ -12,6 +10,7 @@ import {
 } from "langchain";
 import { join } from "path";
 import { DEFAULT_MODEL, type SelectedModel } from "#/lib/ai/chat/models";
+import { ChatAIModel } from "#/lib/ai/chat/adapter";
 import { internet_search } from "./tools/internet_search";
 import { SYSTEM_PROMPT } from "./prompts";
 
@@ -19,87 +18,30 @@ export const checkpointer = new MemorySaver();
 const backend = new FilesystemBackend({
   rootDir:
     process.env.NODE_ENV === "production"
-      ? join(process.cwd(), ".output", "agent")
+      ? join(process.cwd(), ".output", "agents", "basic")
       : import.meta.dirname,
   virtualMode: true,
 });
-
-const modelConfig = {
-  maxTokens: 8192,
-  temperature: 0.3,
-  reasoning: { effort: "low" as const, summary: "auto" as const },
-} as const;
 
 const configurableModel = createMiddleware({
   name: "ConfigurableModel",
   wrapModelCall: async (request: any, handler) => {
     const kwargs = request?.messages?.at(-1).additional_kwargs as
-      | { model?: SelectedModel }
-      | undefined;
+      { model?: SelectedModel } | undefined;
     const model = kwargs?.model;
 
     if (!model) {
       return handler(request);
     }
 
-    const { provider, value, endpoint } = model;
-    const payload = {
-      model: value,
-      configuration: {
-        baseURL: endpoint,
-      },
-      ...modelConfig,
-    };
-
-    switch (provider) {
-      case "Openrouter":
-        return handler({
-          ...request,
-          model: new ChatOpenRouter(payload),
-        });
-
-      case "Huggingface":
-        return handler({
-          ...request,
-          model: new ChatOpenAI({
-            ...payload,
-            apiKey: process.env.HF_TOKEN,
-          }),
-        });
-
-      case "Requesty":
-        return handler({
-          ...request,
-          model: new ChatOpenAI({
-            ...payload,
-            apiKey: process.env.REQUESTY_API_KEY,
-          }),
-        });
-
-      case "Ollama":
-        return handler({
-          ...request,
-          model: new ChatOpenAI({
-            ...payload,
-            apiKey: process.env.OLLAMA_API_KEY,
-          }),
-        });
-
-      default:
-        return handler(request);
-    }
+    return handler({
+      ...request,
+      model: new ChatAIModel(model),
+    });
   },
 });
 
-const defaultModel = new ChatOpenAI({
-  // Ollama Cloud model
-  model: DEFAULT_MODEL.value,
-  apiKey: process.env.OLLAMA_API_KEY,
-  configuration: {
-    baseURL: DEFAULT_MODEL.endpoint,
-  },
-  ...modelConfig,
-});
+const defaultModel = new ChatAIModel(DEFAULT_MODEL);
 
 export const agent = createDeepAgent({
   model: defaultModel,
@@ -120,7 +62,7 @@ export const agent = createDeepAgent({
     }),
     toolCallLimitMiddleware({
       threadLimit: 5,
-      runLimit: 3,
+      runLimit: 5,
     }),
     contextEditingMiddleware({
       edits: [

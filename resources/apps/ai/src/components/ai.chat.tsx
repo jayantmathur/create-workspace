@@ -30,7 +30,6 @@ import {
   type SelectedModel,
 } from "#/lib/ai/chat/models";
 import { MessageList } from "./ai.messages";
-import { HITLCard } from "./ai.hitl-card";
 
 import { SUGGESTION_PROMPTS } from "#/agents/basic/prompts";
 import type { Agent } from "#/agents/basic/agent";
@@ -40,7 +39,11 @@ export function AIChatInterface() {
   const [selectedModel, setSelectedModel] =
     useState<SelectedModel>(DEFAULT_MODEL);
 
+  // @ts-expect-error
   const hitlInterrupt = values.__interrupt__?.[0] ?? undefined;
+
+  const isRunning =
+    (isLoading && values?.messages?.length > 0) || hitlInterrupt;
 
   const handleSubmit = (text: string) => {
     if (text.length > 0) {
@@ -91,28 +94,21 @@ export function AIChatInterface() {
         ))}
       </Suggestions>
       <div className="shrink-0 p-4 border-t">
-        <HITLCard
-          interrupt={hitlInterrupt}
-          className={`w-full max-w-2xl mx-auto ${!hitlInterrupt && "hidden"}`}
-        />
         <PromptInput
           onSubmit={({ text }) => handleSubmit(text)}
-          className={`w-full max-w-2xl mx-auto ${hitlInterrupt && "hidden"}`}
+          className={`w-full max-w-2xl mx-auto ${isRunning && "pointer-events-none"}`}
         >
           <PromptInputBody>
             <PromptInputTextarea placeholder="Ask me something..." />
           </PromptInputBody>
           <PromptInputFooter>
             <PromptInputSubmit
-              status={
-                isLoading && values?.messages?.length > 0
-                  ? "submitted"
-                  : "ready"
-              }
-              disabled={isLoading && values?.messages?.length > 0}
+              status={isRunning ? "submitted" : "ready"}
+              disabled={isRunning}
             />
             <Combobox
               items={LIST_OF_MODELS}
+              itemToStringLabel={(model) => model?.provider || "Unknown"}
               autoHighlight
               onValueChange={(value: SelectedModel | null) =>
                 value && setSelectedModel(value)
@@ -131,19 +127,19 @@ export function AIChatInterface() {
                 <ComboboxEmpty>No models found.</ComboboxEmpty>
                 <ComboboxList>
                   {(model: SelectedModel) => {
-                    const { label, value, provider } = model;
+                    const { provider, value, inference } = model;
                     return (
                       <ComboboxItem
-                        key={`${provider}-${label}/${value}`.toLowerCase()}
+                        key={`${inference}-${provider}/${value}`.toLowerCase()}
                         value={model}
                       >
                         <Item className="p-0">
                           <ItemContent>
                             <ItemTitle className="whitespace-nowrap">
-                              {label}
+                              {provider}
                             </ItemTitle>
                             <ItemDescription className="text-xs">
-                              {provider}
+                              {inference}
                             </ItemDescription>
                           </ItemContent>
                         </Item>

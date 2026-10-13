@@ -7,8 +7,8 @@ export function copyAgentResources(): Plugin {
     name: "copy-agent-resources",
     apply: "build",
     async closeBundle() {
-      const sourceDir = resolve(__dirname, "src/agents/basic");
-      const destDir = resolve(__dirname, ".output/agent");
+      const sourceDir = resolve(import.meta.dirname, "src/agents");
+      const destDir = resolve(import.meta.dirname, ".output/agents");
 
       await Promise.all([
         cp(resolve(sourceDir, "AGENTS.md"), resolve(destDir, "AGENTS.md"), {
