@@ -143,16 +143,15 @@
       "@langchain/langgraph-sdk",
       "@langchain/react",
       "@langchain/protocol",
-      "@langchain/openai",
       "@langchain/tavily",
       "deepagents"
     ],
     "postinstalls": [
-      "bunx --bun shadcn@latest add --silent --overwrite @ai-elements/conversation @ai-elements/message @ai-elements/prompt-input @ai-elements/tool @ai-elements/reasoning @ai-elements/suggestion @ai-elements/confirmation",
-      "bunx --bun shadcn@latest add --silent --overwrite combobox item"
+      "bunx --bun shadcn@latest add --silent --overwrite @ai-elements/conversation @ai-elements/message @ai-elements/prompt-input @ai-elements/tool @ai-elements/reasoning @ai-elements/suggestion @ai-elements/confirmation @ai-elements/model-selector"
     ],
     "extras": {
       "dependencies": [
+        "@langchain/anthropic",
         "@tanstack/ai",
         "@tanstack/ai-react",
         "@tanstack/ai-openrouter"

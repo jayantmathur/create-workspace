@@ -1,5 +1,4 @@
 import { useStreamContext } from "@langchain/react";
-import { SparklesIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   PromptInput,
@@ -9,28 +8,9 @@ import {
   PromptInputTextarea,
 } from "#/components/ai-elements/prompt-input";
 import { Suggestions, Suggestion } from "#/components/ai-elements/suggestion";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "#/components/ui/combobox";
-import {
-  Item,
-  ItemContent,
-  ItemTitle,
-  ItemDescription,
-} from "#/components/ui/item";
-import { InputGroupAddon } from "#/components/ui/input-group";
-import {
-  DEFAULT_MODEL,
-  LIST_OF_MODELS,
-  type SelectedModel,
-} from "#/lib/ai/chat/models";
+import { DEFAULT_MODEL, type SelectedModel } from "#/lib/ai/chat/models";
 import { MessageList } from "./ai.messages";
-
+import { ModelList } from "./ai.model-list";
 import { SUGGESTION_PROMPTS } from "#/agents/basic/prompts";
 import type { Agent } from "#/agents/basic/agent";
 
@@ -106,49 +86,7 @@ export function AIChatInterface() {
               status={isRunning ? "submitted" : "ready"}
               disabled={isRunning}
             />
-            <Combobox
-              items={LIST_OF_MODELS}
-              itemToStringLabel={(model) => model?.provider || "Unknown"}
-              autoHighlight
-              onValueChange={(value: SelectedModel | null) =>
-                value && setSelectedModel(value)
-              }
-            >
-              <ComboboxInput
-                className="min-w-2/5"
-                placeholder="Select an AI model provider"
-                showClear
-              >
-                <InputGroupAddon>
-                  <SparklesIcon />
-                </InputGroupAddon>
-              </ComboboxInput>
-              <ComboboxContent>
-                <ComboboxEmpty>No models found.</ComboboxEmpty>
-                <ComboboxList>
-                  {(model: SelectedModel) => {
-                    const { provider, value, inference } = model;
-                    return (
-                      <ComboboxItem
-                        key={`${inference}-${provider}/${value}`.toLowerCase()}
-                        value={model}
-                      >
-                        <Item className="p-0">
-                          <ItemContent>
-                            <ItemTitle className="whitespace-nowrap">
-                              {provider}
-                            </ItemTitle>
-                            <ItemDescription className="text-xs">
-                              {inference}
-                            </ItemDescription>
-                          </ItemContent>
-                        </Item>
-                      </ComboboxItem>
-                    );
-                  }}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
+            <ModelList onModelSelect={setSelectedModel} />
           </PromptInputFooter>
         </PromptInput>
       </div>

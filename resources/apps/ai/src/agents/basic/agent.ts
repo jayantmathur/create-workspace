@@ -36,12 +36,12 @@ const configurableModel = createMiddleware({
 
     return handler({
       ...request,
-      model: new ChatAIModel(model),
+      model: new ChatAIModel(model).model,
     });
   },
 });
 
-const defaultModel = new ChatAIModel(DEFAULT_MODEL);
+const defaultModel = new ChatAIModel(DEFAULT_MODEL).model;
 
 export const agent = createDeepAgent({
   model: defaultModel,
