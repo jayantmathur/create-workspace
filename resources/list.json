@@ -49,6 +49,7 @@
     "type": "app",
     "folder": "shadcn",
     "postinstalls": [
+      "bunx --bun shadcn@latest apply --preset b0",
       "bunx --bun shadcn@latest add --silent --overwrite button dropdown-menu"
     ],
     "scripts": {
