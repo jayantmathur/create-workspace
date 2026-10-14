@@ -135,27 +135,35 @@
   },
   "ai": {
     "type": "app",
-    "folder": "ai",
+    "folder": "ai/tanstack",
+    "dependencies": [
+      "@tanstack/ai",
+      "@tanstack/ai-react",
+      "@tanstack/ai-openai"
+    ],
+    "postinstalls": [
+      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message input-group dropdown-menu trace code-block item button",
+      "cnwx padd --pack form"
+    ]
+  },
+  "ai:langchain": {
+    "type": "app",
+    "folder": "ai/langchain",
     "dependencies": [
       "langchain",
       "@langchain/core",
       "@langchain/langgraph",
       "@langchain/langgraph-sdk",
       "@langchain/react",
+      "@langchain/openai",
+      "@langchain/anthropic",
       "@langchain/protocol",
       "@langchain/tavily",
       "deepagents"
     ],
     "postinstalls": [
-      "bunx --bun shadcn@latest add --silent --overwrite @ai-elements/conversation @ai-elements/message @ai-elements/prompt-input @ai-elements/tool @ai-elements/reasoning @ai-elements/suggestion @ai-elements/confirmation @ai-elements/model-selector"
-    ],
-    "extras": {
-      "dependencies": [
-        "@langchain/anthropic",
-        "@tanstack/ai",
-        "@tanstack/ai-react",
-        "@tanstack/ai-openrouter"
-      ]
-    }
+      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message input-group dropdown-menu trace code-block item button",
+      "cnwx padd --pack form"
+    ]
   }
 }
