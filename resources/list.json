@@ -140,10 +140,11 @@
     "dependencies": [
       "@tanstack/ai",
       "@tanstack/ai-react",
-      "@tanstack/ai-openai"
+      "@tanstack/ai-openai",
+      "streamdown"
     ],
     "postinstalls": [
-      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message bubble tooltip empty input-group dropdown-menu trace code-block item button",
+      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message bubble tooltip empty input-group dropdown-menu trace code-block item button combobox spinner",
       "cnwx padd --pack form"
     ]
   },
@@ -160,10 +161,11 @@
       "@langchain/anthropic",
       "@langchain/protocol",
       "@langchain/tavily",
-      "deepagents"
+      "deepagents",
+      "streamdown"
     ],
     "postinstalls": [
-      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message input-group dropdown-menu trace code-block item button",
+      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message bubble tooltip empty input-group dropdown-menu trace code-block item button combobox spinner",
       "cnwx padd --pack form"
     ]
   }
