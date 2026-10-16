@@ -49,7 +49,7 @@
     "type": "app",
     "folder": "shadcn",
     "postinstalls": [
-      "bunx --bun shadcn@latest apply --preset bIkf0NM",
+      "bunx --bun shadcn@latest apply --silent --yes --preset bIkf0NM",
       "bunx --bun shadcn@latest add --silent --overwrite button dropdown-menu"
     ],
     "scripts": {
@@ -143,7 +143,7 @@
       "@tanstack/ai-openai"
     ],
     "postinstalls": [
-      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message input-group dropdown-menu trace code-block item button",
+      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message bubble tooltip empty input-group dropdown-menu trace code-block item button",
       "cnwx padd --pack form"
     ]
   },

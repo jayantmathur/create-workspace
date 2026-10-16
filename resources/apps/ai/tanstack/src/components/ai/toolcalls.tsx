@@ -38,7 +38,7 @@ export function ToolCall({
   const hasResult = state === "output-available" || state === "output-error";
 
   return (
-    <Tool defaultOpen={state==="approval-requested"}>
+    <Tool defaultOpen={state === "approval-requested"}>
       <ToolHeader
         type={`tool-${toolName}` as ToolUIPart["type"]}
         state={state}
@@ -47,7 +47,7 @@ export function ToolCall({
         <ToolInput input={input} />
         <HITLCard
           interrupt={interrupt}
-          className={`w-full min-w-0 ${!interrupt || hasResult && "hidden"}`}
+          className={`w-full min-w-0 ${!interrupt || (hasResult && "hidden")}`}
         />
         {error && <ToolOutput output={undefined} errorText={error} />}
       </ToolContent>

@@ -5,7 +5,7 @@ const definition = toolDefinition({
   name: "get_weather",
   description: "Get the current weather for a location",
   inputSchema: z.object({
-    location: z.string().meta({ description: "The city, e.g. Tokyo" }),
+    location: z.string().describe("The city, e.g. Tokyo"),
     unit: z.enum(["celsius", "fahrenheit"]).optional(),
   }),
   outputSchema: z.object({

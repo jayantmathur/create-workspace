@@ -1,21 +1,12 @@
-import type { ModelSelectorLogoProps } from "#/components/ai-elements/model-selector";
+import type { SelectableModel } from "#/lib/ai/types";
 
-export type SelectedModel = {
-  chef: string;
-  chefSlug: string;
-  name: string;
-  providers: {
-    id: string;
-    inference: ModelSelectorLogoProps["provider"];
-    endpoint: string;
-  }[];
-};
-
-export const LIST_OF_MODELS: SelectedModel[] = [
+export const LIST_OF_MODELS: SelectableModel[] = [
   {
-    chef: "Openrouter",
-    chefSlug: "openrouter",
-    name: "Free Model Router",
+    metadata: {
+      chef: "Openrouter",
+      chefSlug: "openrouter",
+      name: "Free Model Router",
+    },
     providers: [
       {
         id: "openrouter/free",
@@ -25,9 +16,7 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "Cohere",
-    chefSlug: "cohere",
-    name: "North Mini Code",
+    metadata: { chef: "Cohere", chefSlug: "cohere", name: "North Mini Code" },
     providers: [
       {
         id: "cohere/north-mini-code:free",
@@ -37,9 +26,11 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "DeepSeek",
-    chefSlug: "deepseek",
-    name: "DeepSeek V4 Flash",
+    metadata: {
+      chef: "DeepSeek",
+      chefSlug: "deepseek",
+      name: "DeepSeek V4 Flash",
+    },
     providers: [
       {
         id: "deepseek-ai/DeepSeek-V4-Flash:cheapest",
@@ -49,9 +40,7 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "Google",
-    chefSlug: "google",
-    name: "Gemma 4",
+    metadata: { chef: "Google", chefSlug: "google", name: "Gemma 4" },
     providers: [
       {
         id: "gemma4",
@@ -71,9 +60,7 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "IBM",
-    chefSlug: "ibm",
-    name: "Granite 4.2",
+    metadata: { chef: "IBM", chefSlug: "ibm", name: "Granite 4.2" },
     providers: [
       {
         id: "ibm-granite/granite-4.2-30b:cheapest",
@@ -83,9 +70,11 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "InclusionAI",
-    chefSlug: "inclusionai",
-    name: "Ling 3.0/3.1 Flash",
+    metadata: {
+      chef: "InclusionAI",
+      chefSlug: "inclusionai",
+      name: "Ling 3.0/3.1 Flash",
+    },
     providers: [
       {
         id: "inclusionai/ling-3.0-flash:free",
@@ -100,9 +89,7 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "Meta",
-    chefSlug: "meta",
-    name: "Muse Glimmer",
+    metadata: { chef: "Meta", chefSlug: "meta", name: "Muse Glimmer" },
     providers: [
       {
         id: "muse-glimmer-30b",
@@ -112,9 +99,7 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "NVIDIA",
-    chefSlug: "nvidia",
-    name: "Nemotron 3 Super",
+    metadata: { chef: "NVIDIA", chefSlug: "nvidia", name: "Nemotron 3 Super" },
     providers: [
       {
         id: "nemotron-3-super",
@@ -129,9 +114,7 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "OpenAI",
-    chefSlug: "openai",
-    name: "GPT OSS",
+    metadata: { chef: "OpenAI", chefSlug: "openai", name: "GPT OSS" },
     providers: [
       {
         id: "gpt-oss:120b",
@@ -146,9 +129,7 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "PrismML",
-    chefSlug: "prismml",
-    name: "Ternary Bonsai",
+    metadata: { chef: "PrismML", chefSlug: "prismml", name: "Ternary Bonsai" },
     providers: [
       {
         id: "prism-ml/Ternary-Bonsai-27B-AWQ-4bit:cheapest",
@@ -158,9 +139,7 @@ export const LIST_OF_MODELS: SelectedModel[] = [
     ],
   },
   {
-    chef: "Qwen",
-    chefSlug: "qwen",
-    name: "Qwen3",
+    metadata: { chef: "Qwen", chefSlug: "qwen", name: "Qwen3" },
     providers: [
       {
         id: "Qwen/Qwen3-32B:cheapest",
@@ -171,6 +150,6 @@ export const LIST_OF_MODELS: SelectedModel[] = [
   },
 ];
 
-export const DEFAULT_MODEL: SelectedModel = LIST_OF_MODELS.find(
-  (model) => model.name === "GPT OSS",
-)!;
+export const DEFAULT_MODEL: SelectableModel = LIST_OF_MODELS.find(
+  ({ metadata }) => metadata.name === "Free Model Router",
+) as SelectableModel;
