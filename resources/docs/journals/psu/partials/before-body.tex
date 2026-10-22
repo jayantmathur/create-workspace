@@ -1,0 +1,32 @@
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+$if(title)$
+$if(beamer)$
+\frame{\titlepage}
+$else$
+\maketitle
+$endif$
+$endif$
+
+\setcounter{page}{2}
+
+\noindent The \lowercase{$if(institute.degree.type)$$institute.degree.type$$endif$} of $if(author/first)$$author/first$$endif$ was reviewed and approved by the following:
+
+\vspace{\baselineskip}
+
+\mbox{}\hfill
+\parbox{\textwidth - 0.5in}{
+    $if(by-author)$
+    ${  by-author/rest:_authors.tex()[\\ ] }\vspace{2\baselineskip}\\
+    $endif$
+}
+
+
+$if(abstract)$
+\chapter{Abstract}
+\begin{doublespace}
+    $abstract$
+\end{doublespace}
+$endif$
+

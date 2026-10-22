@@ -1,0 +1,41 @@
+\usepackage[none]{hyphenat}%%%%% to prevent mid-word breaks
+\usepackage{float}
+
+
+\usepackage{indentfirst}
+\setlength\parindent{0.25in}
+\usepackage{fancyhdr}
+
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{Copyright \copyright~\the\year~by ASME}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\pagestyle{fancy}
+
+\usepackage[labelfont={sf,bf},hypcap=false, justification=raggedright]{caption}
+\usepackage[hypcap=false,list=true]{subcaption}
+
+\DeclareCaptionLabelFormat{uppercase}{\MakeTextUppercase{#1} #2}
+\captionsetup[figure]{labelformat=uppercase, labelfont={sf,bf,small},textfont={sf,bf,small}, labelsep=colon}
+\captionsetup[table]{labelformat=uppercase, labelfont={sf,bf,small},textfont={sf,bf,small}, labelsep=colon,skip=0.5\baselineskip} %name=TABLE,
+
+% \setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0pt}
+
+
+\usepackage{textcase} %% Allows uppercase titles and captions without errors from math and citations
+
+\usepackage[raggedright,indentafter]{titlesec}
+
+%% ASME specifies 10 pt headings
+\titleformat{\section}{\bfseries\sffamily\raggedright}{\thesection .}{0.5em}{\MakeTextUppercase}
+
+\titleformat{\subsection}{\bfseries\sffamily\raggedright}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}[runin]{\bfseries\sffamily}{\thesubsubsection}{0.5em}{}[.\hspace*{0.5em}]
+
+\titlespacing\section{0pt}{14pt}{1pt} % from 2 pt 2 pt 1 pt, 7/7/19
+\titlespacing\subsection{0pt}{14pt}{1pt}
+\titlespacing\subsubsection{\parindent}{7pt}{1pt} % from 12 4 3, 7/7/19
+
+\setlength{\parskip}{0pt}

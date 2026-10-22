@@ -1,0 +1,28 @@
+title: Resume/Curriculum Vitae Template
+version: 0.1.0
+contributes:
+    formats:
+        common:
+            title: Jayant Mathur
+
+            date-format: long
+            colorlinks: true
+            # urlcolor: cyan
+            # linkcolor: cyan
+            fontsize: 11pt
+            mainfont: Calibri
+            sansfont: Calibri
+
+            csl: apa.csl
+
+            nocite: |
+                @*
+
+        typst:
+            margin: 
+                x: 0.75in
+                y: 0.5in
+            papersize: us-letter
+            template-partials:
+                - partials/typst/typst-template.typ
+                - partials/typst/typst-show.typ

@@ -1,0 +1,35 @@
+title: Resume Template
+version: 0.1.0
+contributes:
+    formats:
+        common:
+            title: Jayant Mathur's Resume
+            subtitle: Resume
+
+            date-format: long
+            colorlinks: true
+            # urlcolor: cyan
+            # linkcolor: cyan
+            fontsize: 11pt
+            papersize: letter
+            mainfont: Calibri
+            sansfont: Calibri
+
+            csl: apa.csl
+
+            nocite: |
+                @*
+
+        pdf:
+            geometry:
+                - margin=.375in
+
+            pdf-engine: lualatex
+
+            block-headings: false
+
+            template-partials:
+                - 'partials/before-body.tex'
+                - 'partials/title.tex'
+
+            include-in-header: 'partials/_header.tex'

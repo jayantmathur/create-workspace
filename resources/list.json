@@ -1,0 +1,176 @@
+{
+  "gtie": {
+    "type": "doc",
+    "folder": "gtie"
+  },
+  "rjs": {
+    "type": "doc",
+    "folder": "rjs",
+    "postinstalls": ["quarto add quarto-ext/attribution --quiet --no-prompt"]
+  },
+  "main": {
+    "type": "doc",
+    "folder": "main"
+  },
+  "springernature": {
+    "type": "doc",
+    "folder": "journals/springernature"
+  },
+  "elsevier": {
+    "type": "doc",
+    "folder": "journals/elsevier"
+  },
+  "3dpam": {
+    "type": "doc",
+    "folder": "journals/3dpam"
+  },
+  "jmd": {
+    "type": "doc",
+    "folder": "journals/jmd"
+  },
+  "idetc": {
+    "type": "doc",
+    "folder": "journals/idetc"
+  },
+  "psu": {
+    "type": "doc",
+    "folder": "journals/psu"
+  },
+  "resume": {
+    "type": "doc",
+    "folder": "portfolio"
+  },
+  "juvpyr": {
+    "type": "doc",
+    "folder": "juvpyr",
+    "destination": "./"
+  },
+  "shadcn": {
+    "type": "app",
+    "folder": "shadcn",
+    "postinstalls": [
+      "bunx --bun shadcn@latest apply --silent --yes --preset bIkf0NM",
+      "bunx --bun shadcn@latest add --silent --overwrite button dropdown-menu"
+    ],
+    "scripts": {
+      "shadd": "bunx --bun shadcn@latest add --silent --overwrite"
+    }
+  },
+  "auth": {
+    "type": "app",
+    "folder": "auth",
+    "dependencies": ["better-auth", "drizzle-orm", "postgres", "dotenv"],
+    "devDependencies": ["drizzle-kit", "tsx"],
+    "scripts": {
+      "db:studio": "bun drizzle-kit studio"
+    },
+    "postinstalls": ["cnwx padd --pack form"]
+  },
+  "db": {
+    "type": "app",
+    "folder": "db",
+    "dependencies": [
+      "@tanstack/react-query",
+      "drizzle-orm",
+      "postgres",
+      "dotenv"
+    ],
+    "devDependencies": ["drizzle-kit", "tsx"],
+    "scripts": {
+      "db:generate": "bun drizzle-kit generate",
+      "db:migrate": "bun drizzle-kit migrate",
+      "db:studio": "bun drizzle-kit studio"
+    },
+    "extras": {
+      "dependencies": [
+        "@tanstack/react-db",
+        "@tanstack/query-db-collection",
+        "@tanstack/electric-db-collection"
+      ]
+    }
+  },
+  "form": {
+    "type": "app",
+    "folder": "form",
+    "dependencies": ["@tanstack/react-form"],
+    "postinstalls": [
+      "bunx --bun shadcn@latest add --silent --overwrite sonner button card field input input-group"
+    ]
+  },
+  "tauri": {
+    "type": "app",
+    "devDependencies": ["@tauri-apps/cli"],
+    "postinstalls": [
+      "bunx --bun tauri init && bunx --bun tauri icon .\\public\\icons\\icon.ico"
+    ],
+    "scripts": {
+      "taurize": "bun exec tauri build"
+    }
+  },
+  "r3f": {
+    "type": "app",
+    "folder": "r3f",
+    "dependencies": [
+      "@react-three/xr@latest",
+      "@react-three/drei",
+      "@react-three/fiber",
+      "@react-three/uikit",
+      "r3f-perf",
+      "@types/three",
+      "three",
+      "three-stdlib"
+    ],
+    "scripts": {
+      "r3add": "bunx --bun uikit component add --overwrite --path components/r3f default"
+    },
+    "extras": {
+      "dependencies": [
+        "@react-three/flex",
+        "@react-three/rapier",
+        "@react-three/offscreen",
+        "@react-three/csg",
+        "@react-three/postprocessing",
+        "three-bvh-csg"
+      ]
+    }
+  },
+  "ai": {
+    "type": "app",
+    "folder": "ai/tanstack",
+    "dependencies": [
+      "@tanstack/ai",
+      "@tanstack/ai-react",
+      "@tanstack/ai-openai",
+      "@tanstack/ai-typesafe",
+      "@tanstack/ai-skills",
+      "@tanstack/ai-persistence",
+      "@tanstack/react-store",
+      "streamdown"
+    ],
+    "postinstalls": [
+      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message bubble tooltip empty input-group trace code-block item combobox spinner sidebar badge",
+      "cnwx padd --pack form"
+    ]
+  },
+  "ai:langchain": {
+    "type": "app",
+    "folder": "ai/langchain",
+    "dependencies": [
+      "langchain",
+      "@langchain/core",
+      "@langchain/langgraph",
+      "@langchain/langgraph-sdk",
+      "@langchain/react",
+      "@langchain/openai",
+      "@langchain/anthropic",
+      "@langchain/protocol",
+      "@langchain/tavily",
+      "deepagents",
+      "streamdown"
+    ],
+    "postinstalls": [
+      "bunx --bun shadcn@latest add --silent --overwrite message-scroller message bubble tooltip empty input-group trace code-block item combobox spinner sidebar badge",
+      "cnwx padd --pack form"
+    ]
+  }
+}

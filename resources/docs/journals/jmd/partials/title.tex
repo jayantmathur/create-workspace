@@ -1,0 +1,12 @@
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@maketitle}{\begin{center}}{\begin{flushleft}}{}{}
+\patchcmd{\@maketitle}{\begin{tabular}[t]{c}}{\begin{tabular}[t]{@{}l}}{}{}
+\patchcmd{\@maketitle}{\end{center}}{\end{flushleft}}{}{}
+\makeatother
+
+$if(title)$
+\title{\begin{center}\textbf{$title$}$if(subtitle)$\\\vspace{\baselineskip}\large\uppercase{$subtitle$}\vspace{\baselineskip}$endif$\end{center}}
+$endif$
+\author{  ${ by-author:_authors.tex()[\\ ] }}
+\date{ }

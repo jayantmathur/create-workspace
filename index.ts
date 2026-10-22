@@ -1,0 +1,644 @@
+#!/usr/bin/env bun
+
+import { exists, mkdir, rename, rm } from "node:fs/promises";
+import { basename, resolve } from "node:path";
+import {
+  confirm,
+  group,
+  intro,
+  isCancel,
+  multiselect,
+  type Option,
+  outro,
+  select,
+  tasks,
+  text,
+} from "@clack/prompts";
+import { file, sleep, spawn, write } from "bun";
+import color from "picocolors";
+import { description, version } from "./package.json";
+import {
+  editJson,
+  editYaml,
+  getAvailableFolderName,
+  handleCancel,
+} from "./utils";
+
+import type { CLIOptions, ResponseType } from "./utils/types";
+
+//
+// Destructure text styles for easier access
+//
+
+const {
+  bold: BOLD,
+  // italic: ITALIC,
+  underline: UNDERLINE,
+  dim: DIM,
+  // strikethrough: STRIKE,
+} = color;
+
+const __cwd = process.cwd();
+const cliOptions: CLIOptions = {
+  objective: [
+    { value: "create", label: "Create a new workspace" },
+    { value: "update", label: "Update an existing workspace" },
+    { value: "exit", label: "Exit" },
+  ],
+  projects: [
+    {
+      value: "apps",
+      label: "Create new web apps.",
+      // hint: "React, Vite, Tanstack",
+      types: [
+        // {
+        //   value: 'react',
+        //   label: 'React',
+        //   hint: '👍 minimal',
+        //   callback: async (name: string, path: string) => {
+        //     await spawn(['bun', 'init', '--react=shadcn', name], {
+        //       cwd: path,
+        //       stdio: ['ignore', 'ignore', 'ignore'],
+        //     }).exited
+        //   },
+        // },
+        {
+          value: "vite",
+          label: "Vite",
+          hint: "SPA 👍 for minimal and WebXR",
+          callback: async (name: string, path: string) => {
+            await spawn(
+              ["bun", "create", "vite", name, "--template", "react-ts"],
+              {
+                cwd: path,
+                stdio: ["ignore", "ignore", "ignore"],
+              },
+            ).exited;
+          },
+        },
+        {
+          value: "tanstack",
+          label: "Tanstack",
+          hint: "SSR 👍 full-stack",
+          callback: async (name: string, path: string) => {
+            await spawn(
+              [
+                "bunx",
+                "@tanstack/cli",
+                "create",
+                name,
+                "--add-ons",
+                "shadcn",
+                "--package-manager",
+                "bun",
+                "--framework",
+                "React",
+                // "--toolchain",
+                // "biome",
+                "--deployment",
+                "nitro",
+                "--no-git",
+                "--no-examples",
+              ],
+              {
+                cwd: path,
+                stdio: ["ignore", "ignore", "ignore"],
+              },
+            ).exited.then(
+              async () =>
+                await editJson(resolve(path, name, "package.json"), {
+                  scripts: {
+                    start: "node .output/server/index.mjs",
+                  },
+                }).then(
+                  async () =>
+                    await spawn(["cnwx", "padd", "--pack", "shadcn"], {
+                      cwd: resolve(path, name),
+                      stdio: ["ignore", "ignore", "ignore"],
+                    }).exited,
+                ),
+            );
+          },
+        },
+      ],
+    },
+    {
+      value: "docs",
+      label: "Create new documentation.",
+      // hint: "via Quarto",
+      types: [
+        {
+          value: "default",
+          label: "Default",
+          hint: "👍 minimal document",
+          callback: async (name: string, path: string) => {
+            await spawn(
+              [
+                "quarto",
+                "create",
+                "project",
+                "default",
+                name,
+                "--no-open",
+                "--no-prompt",
+                "--quiet",
+              ],
+              {
+                cwd: path,
+                stdio: ["ignore", "ignore", "ignore"],
+              },
+            ).exited.then(async () => {
+              await rename(
+                resolve(path, name, `${name}.qmd`),
+                resolve(path, name, "index.qmd"),
+              );
+            });
+          },
+        },
+        {
+          value: "juvpyr",
+          label: "JuvPyR",
+          hint: "👍 for data science",
+          callback: async (name: string, path: string) => {
+            await spawn(
+              [
+                "quarto",
+                "create",
+                "project",
+                "default",
+                name,
+                "--no-open",
+                "--no-prompt",
+                "--quiet",
+              ],
+              {
+                cwd: path,
+                stdio: ["ignore", "ignore", "ignore"],
+              },
+            ).exited.then(async () => {
+              await rename(
+                resolve(path, name, `${name}.qmd`),
+                resolve(path, name, "index.qmd"),
+              ).then(async () => {
+                await spawn(["quarto", "convert", "index.qmd"], {
+                  cwd: resolve(path, name),
+                  stdio: ["ignore", "ignore", "ignore"],
+                }).exited;
+              });
+
+              await spawn(["uv", "init", "--bare"], {
+                cwd: resolve(path, name),
+                stdio: ["ignore", "ignore", "ignore"],
+              }).exited.then(async () => {
+                await spawn(["uv", "add", "--dev", "ipykernel"], {
+                  cwd: resolve(path, name),
+                  stdio: ["ignore", "ignore", "ignore"],
+                }).exited;
+              });
+
+              await spawn(["cnwx", "padd", "--pack", "juvpyr"], {
+                cwd: resolve(path, name),
+                stdio: ["ignore", "ignore", "ignore"],
+              }).exited;
+            });
+          },
+        },
+        {
+          value: "revealjs",
+          label: "Reveal.js",
+          hint: "👍 for presentations",
+          callback: async (name: string, path: string) => {
+            await spawn(
+              [
+                "quarto",
+                "create",
+                "project",
+                "default",
+                name,
+                "--no-open",
+                "--no-prompt",
+                "--quiet",
+              ],
+              {
+                cwd: path,
+                stdio: ["ignore", "ignore", "ignore"],
+              },
+            ).exited.then(async () => {
+              await rename(
+                resolve(path, name, `${name}.qmd`),
+                resolve(path, name, "index.qmd"),
+              );
+
+              await editYaml(resolve(path, name, "_quarto.yml"), {
+                "revealjs-plugins": ["attribution"],
+                format: "rjs-revealjs",
+              });
+
+              await spawn(["cnwx", "padd", "--pack", "rjs"], {
+                cwd: resolve(path, name),
+                stdio: ["ignore", "ignore", "ignore"],
+              }).exited;
+            });
+          },
+        },
+      ],
+    },
+  ],
+};
+
+//
+// Main function
+//
+
+async function main() {
+  // Welcome message
+  console.clear();
+  console.info(DIM(`Welcome! ${description}\n`));
+
+  // Start of CLI process
+  intro(color.bgCyan(BOLD(` create-workspace `)) + DIM(` v${version}`));
+
+  const { objective, name, overwrite, projects } = (await group(
+    {
+      objective: () =>
+        select({
+          message: "What would you like to do?",
+          options: cliOptions.objective as Option<string>[],
+          initialValue: "create",
+        }).then((result) => {
+          // Exit if user wants to
+          result === "exit" && handleCancel();
+          return result;
+        }),
+      name: ({ results: { objective } }) =>
+        text({
+          message: "Enter the workspace name:",
+          placeholder: objective === "update" ? "./" : "my-workspace",
+          validate(value) {
+            if (value.length === 0) return `Value is required!`;
+            if (value.length > 20) return `Value is too long!`;
+            if (value.includes(" ")) return `Value cannot contain spaces!`;
+            if (
+              objective === "update" &&
+              !file(resolve(__cwd, value, "package.json")).size
+            )
+              return `Workspace does not exist!`;
+          },
+        }),
+      overwrite: async ({ results: { objective, name } }) => {
+        if (objective === "update") return false;
+
+        if (!file(resolve(__cwd, name as string, "package.json")).size)
+          return false;
+
+        const response = await confirm({
+          message: `${color.yellowBright(BOLD("WARNING:"))} Workspace "${name}" already exists. Do you want to ${UNDERLINE("overwrite")} it?`,
+          initialValue: false,
+        });
+
+        !response && handleCancel(); // Exit if user does not want to overwrite
+
+        return response;
+      },
+      projects: async ({ results: { name } }) => {
+        const types = (await multiselect({
+          message: `Add projects to the workspace (${name})?`,
+          options: cliOptions.projects as unknown as Option<string>[],
+          required: false,
+        })) as string[];
+
+        if (types.length === 0) return [];
+
+        isCancel(types) && handleCancel();
+
+        const apps =
+          types.includes("apps") &&
+          ((await multiselect({
+            message: "Select web app framework(s)",
+            options: cliOptions.projects?.find(
+              (option) => option.value === "apps",
+            )?.types as Option<string>[],
+            required: true,
+          })) as string[]);
+
+        isCancel(apps) && handleCancel();
+
+        const docs =
+          types.includes("docs") &&
+          ((await multiselect({
+            message: "Select document framework(s)",
+            options: cliOptions.projects?.find(
+              (option) => option.value === "docs",
+            )?.types as Option<string>[],
+            required: true,
+          })) as string[]);
+
+        isCancel(docs) && handleCancel();
+
+        return {
+          apps: apps || [],
+          docs: docs || [],
+        };
+      },
+    },
+    { onCancel: handleCancel },
+  )) as ResponseType;
+
+  // Confirm workspace creation
+  const proceed = await confirm({
+    message: color.inverse(
+      `Proceed with ${
+        objective === "create" ? "creating" : "updating"
+      } workspace?`,
+    ),
+  });
+
+  // Exit if workspace creation is cancelled
+  (isCancel(proceed) || !proceed) && handleCancel();
+
+  const workspacePath = resolve(__cwd, name);
+  const workspaceName = basename(workspacePath);
+
+  // Create workspace
+  const taskExecutions = await tasks([
+    {
+      title: "Deleting existing workspace",
+      task: async () => {
+        await rm(workspacePath, { recursive: true, force: true }).finally(
+          async () => await sleep(1000),
+        );
+        return "Old workspace deleted.";
+      },
+      enabled: objective === "create" && overwrite,
+    },
+    {
+      title: "Creating new workspace repository",
+      task: async () => {
+        await mkdir(workspacePath, { recursive: true }).finally(
+          async () => await sleep(1000),
+        );
+        return "New workspace repository created.";
+      },
+      enabled: objective === "create",
+    },
+    {
+      title: "Initializing workspace",
+      task: async () => {
+        await write(
+          resolve(workspacePath, "package.json"),
+          JSON.stringify({
+            name: name,
+            version: "0.1.0",
+            private: true,
+            // workspaces: [],
+            scripts: {
+              // check: 'biome migrate --write;biome check --write --error-on-warnings --diagnostic-level=warn',
+              // do: 'bun run --filter',
+              // 'do:all': "bun run --filter='*'",
+              pull: "cnwx sync --restore",
+              push: "cnwx sync",
+              init: "cnw",
+              // prepush: 'bun check',
+            },
+            // devDependencies: {
+            //   '@biomejs/biome': 'latest',
+            // },
+          }),
+        ).then(async () => {
+          const tasks = [
+            // write(
+            //   resolve(workspacePath, 'biome.json'),
+            //   await file(resolve(__dirname, 'biome.json')).text(),
+            // ).finally(async () => await sleep(1000)),
+
+            write(
+              resolve(workspacePath, ".gitignore"),
+              await file(resolve(__dirname, ".gitignore")).text(),
+            ),
+
+            write(
+              resolve(workspacePath, ".vscode", "tasks.json"),
+              JSON.stringify({
+                tasks: [
+                  {
+                    label:
+                      "Check saved version in .backup and import changes if they exist",
+                    type: "shell",
+                    command: "cnwx sync --restore",
+                    runOptions: {
+                      runOn: "folderOpen",
+                    },
+                  },
+                ],
+              }),
+            ).finally(async () => await sleep(1000)),
+
+            write(
+              resolve(
+                workspacePath,
+                ".vscode",
+                `${workspaceName}.code-workspace`,
+              ),
+              JSON.stringify(
+                {
+                  folders: [{ path: ".." }],
+                  settings: {},
+                },
+                null,
+                2,
+              ),
+            ).finally(async () => await sleep(1000)),
+          ];
+          await Promise.all(tasks);
+        });
+
+        return "Workspace initialized.";
+      },
+      enabled: objective === "create",
+    },
+    {
+      title: "Creating project(s)",
+      task: async (message) => {
+        await sleep(2000);
+
+        const { apps, docs } = projects || { apps: [], docs: [] };
+
+        if (apps.length > 0) {
+          message("Creating web app(s)");
+
+          const path = resolve(workspacePath, "apps");
+          (await exists(path)) || (await mkdir(path, { recursive: true }));
+
+          await Promise.all(
+            apps.map(async (entry) => {
+              const callback = cliOptions.projects
+                ?.find((option) => option.value === "apps")
+                ?.types?.find((option) => option.value === entry)?.callback;
+
+              if (!callback) return;
+
+              const projectRepo = getAvailableFolderName(path, entry);
+
+              await callback(projectRepo, path).then(async () => {
+                await editJson(
+                  resolve(
+                    workspacePath,
+                    ".vscode",
+                    `${workspaceName}.code-workspace`,
+                  ),
+                  {
+                    folders: [{ path: `../apps/${projectRepo}` }],
+                  },
+                );
+              });
+            }),
+          );
+        }
+
+        // Wait for clean finish
+        await sleep(1000);
+
+        if (docs.length > 0) {
+          message("Creating documentation");
+
+          const path = resolve(workspacePath, "docs");
+          (await exists(path)) || (await mkdir(path, { recursive: true }));
+
+          await Promise.all(
+            docs.map(async (entry) => {
+              const callback = cliOptions.projects
+                ?.find((option) => option.value === "docs")
+                ?.types?.find((option) => option.value === entry)?.callback;
+
+              if (!callback) return;
+
+              const projectRepo = getAvailableFolderName(path, entry);
+
+              await callback(projectRepo, path).then(async () => {
+                await editJson(
+                  resolve(
+                    workspacePath,
+                    ".vscode",
+                    `${workspaceName}.code-workspace`,
+                  ),
+                  {
+                    folders: [{ path: `../docs/${projectRepo}` }],
+                  },
+                );
+              });
+
+              await Promise.all(
+                [
+                  "mcanouil/quarto-highlight-text",
+                  "mcanouil/quarto-external",
+                  // 'jmgirard/honeypot',
+                  "quarto-ext/fontawesome",
+                ].map(async (extension) => {
+                  await spawn(
+                    ["quarto", "add", extension, "--quiet", "--no-prompt"],
+                    {
+                      cwd: resolve(path, projectRepo),
+                      stdio: ["ignore", "ignore", "ignore"],
+                    },
+                  ).exited;
+                }),
+              );
+
+              await write(
+                resolve(path, projectRepo, "package.json"),
+                JSON.stringify({
+                  name: projectRepo,
+                  version: "0.0.1",
+                  description: "A quarto project",
+                  scripts: {
+                    dev: "quarto preview index.qmd",
+                    render: "quarto render",
+                  },
+                  prettier: {
+                    overrides: [
+                      {
+                        files: "*.qmd",
+                        options: {
+                          parser: "markdown",
+                        },
+                      },
+                    ],
+                  },
+                }),
+              );
+
+              await editYaml(resolve(path, projectRepo, "_quarto.yml"), {
+                project: {
+                  "execute-dir": "file",
+                  "output-dir": "render",
+                  // render: ["pages"],
+                  // resources: ['public'],
+                },
+                execute: { echo: false, output: false, enabled: true },
+                // bibliography: ['references.bib', 'extra-references.bib'],
+                "cite-method": "citeproc",
+                crossref: {
+                  "thm-prefix": "RQ",
+                  "thm-title": "Research Question",
+                },
+                filters: [
+                  // 'custom-callout',
+                  "highlight-text",
+                ],
+                "callout-appearance": "simple",
+                // 'custom-callout': {
+                //   todo: {
+                //     title: 'TODO',
+                //     'icon-symbol': 'fa-note-sticky',
+                //     color: '#ffc400ff',
+                //   },
+                // },
+                colorlinks: true,
+                "number-sections": true,
+                mermaid: { theme: "neutral" },
+              });
+            }),
+          );
+        }
+
+        // Wait for clean finish
+        await sleep(1000);
+
+        return "Projects created.";
+      },
+      enabled:
+        (projects && (projects?.apps?.length ?? 0) > 0) ||
+        (projects?.docs?.length ?? 0) > 0,
+    },
+  ]);
+
+  isCancel(taskExecutions) && handleCancel();
+
+  // Run final `bun install` task
+
+  await spawn(["bun", "install"], {
+    cwd: workspacePath,
+    stdio: ["ignore", "ignore", "ignore"],
+  }).exited;
+
+  // End of CLI process
+  outro(`Your workspace is ready! Opening in ${color.blue("VSCode")}.`);
+
+  await spawn(
+    ["code", `${workspacePath}/.vscode/${workspaceName}.code-workspace`],
+    {
+      stdio: ["ignore", "ignore", "ignore"],
+    },
+  ).exited;
+}
+
+//
+// Run the main function and close cleanly
+//
+
+main()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

@@ -1,0 +1,19 @@
+## jupyter stuff
+
+# ipykernel
+# ipywidgets
+
+## stats packages
+
+# rpy2
+# numpy
+# pandas
+# matplotlib
+
+## huggingface and other AI packages
+
+# huggingface_hub[hf_xet]
+# llama-cpp-python
+# llama-cpp-python @ git+https://github.com/JamePeng/llama-cpp-python.git
+# langchain
+# langchain-huggingface

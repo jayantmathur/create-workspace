@@ -1,0 +1,21 @@
+title: Nature Journal Template
+author: Christopher Kenny, Cameron Smith
+version: 1.0.1
+quarto-required: ">=1.4.0"
+contributes:
+  formats:
+    common:
+      toc: false
+      biblio-config: false
+      csl: https://www.zotero.org/styles/springer-basic-author-date
+    pdf:
+      pdf-engine: lualatex
+      include-in-header: header.tex
+      format-resources:
+        - sn-jnl.cls
+      template-partials:
+        - "partials/doc-class.tex"
+        - "partials/title.tex"
+        - "partials/_author.tex"
+        - "partials/_affiliation.tex"
+        - "partials/before-body.tex"

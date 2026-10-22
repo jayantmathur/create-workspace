@@ -1,0 +1,45 @@
+title: 3D Printing and Additive Manufacturing
+version: 0.1.0
+contributes:
+    formats:
+        common:
+            date-format: long
+            fontsize: 12pt
+            papersize: letter
+            mainfont: Times New Roman
+
+            number-sections: true
+
+            csl: https://zotero.org/styles/3d-printing-and-additive-manufacturing
+
+            fig-width: 5.5
+            fig-height: 5.5
+        
+        html: 
+            table-of-contents: true
+
+        pdf:
+            classoption:
+                - twoside
+            geometry:
+                - hmargin=1.8cm
+                - vmargin=2.2cm
+
+            fig-pos: '!htb'
+
+            pdf-engine: lualatex
+
+            block-headings: false
+
+            template-partials:
+                - 'partials/_authors.tex'
+                - 'partials/_affiliations.tex'
+                - 'partials/before-body.tex'
+                - 'partials/tables.tex'
+                - 'partials/title.tex'
+
+            include-in-header: 'partials/_header.tex'
+
+            knitr:
+                opts_chunk:
+                    out.width: "3.5in"

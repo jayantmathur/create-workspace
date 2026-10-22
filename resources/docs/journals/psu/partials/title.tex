@@ -1,0 +1,59 @@
+\usepackage{advdate}
+$if(date)$
+\SetDate[$date$]
+\FixDate
+$endif$
+
+\newcommand{\longmonth}{
+    \ifcase \the\month \or January\or February\or March\or %
+        April\or May \or June\or July\or August\or September\or October\or November\or %
+        December
+    \fi
+}
+
+\title{
+    \normalsize
+    \vspace*{-0.25in}
+    \begin{center}
+        $if(institute)$
+        $if(institute.name)$$institute.name$$endif$\\
+        $if(institute.department)$$institute.department$$endif$
+        $endif$
+
+        \vfill
+
+
+        $if(title)$
+        \begin{doublespace}
+            \bfseries\uppercase\expandafter{$title$}
+        \end{doublespace}
+        $endif$
+
+        \vfill
+
+        A $if(institute.degree.type)$$institute.degree.type$$endif$ in\\
+        $if(institute.degree.field)$$institute.degree.field$$endif$\\
+        by\\
+        $if(author/first)$$author/first$$endif$
+
+        \vfill
+
+        \copyright\ \the\year~$if(author/first)$$author/first$$endif$
+
+        \vfill
+
+        Submitted in Partial Fulfillment\\
+        of the Requirements\\
+        for the Degree of
+
+        \vfill
+
+        $if(institute.degree.name)$$institute.degree.name$$endif$
+
+        \vfill
+
+        \longmonth \the\year
+    \end{center}
+}
+
+\date{ }

@@ -1,0 +1,32 @@
+title: Reveal.js Template
+version: 0.1.0
+contributes:
+  formats:
+    common:
+      date-format: long
+      mainfont: Calibri
+
+      suppress-bibliography: true
+
+      # remember to put the citation in [] to actually make it work
+      csl: chicago-note-author-date.csl
+
+    revealjs:
+      width: 960
+      height: 720
+      transition: fade
+      progress: false
+
+      navigation-mode: vertical
+      controls: false
+
+      pdf-separate-fragments: true
+
+      theme: [default, index.scss]
+      menu:
+        side: left
+
+      fig-format: svg
+      slideNumber: c
+
+      output-file: presentation

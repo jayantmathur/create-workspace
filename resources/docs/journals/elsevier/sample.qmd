@@ -1,0 +1,20 @@
+---
+elsevier-pdf:
+pdf-engine: lualatex
+output-file: print
+journal:
+    name: Additive Manufacturing
+    formatting: preprint
+    model: 3p
+    # model: 5p
+include-in-header:
+    text: |
+    \usepackage[none]{hyphenat}
+    \usepackage{float}
+include-before-body:
+    text: |
+    \ifdefined\thetheorem
+        \renewcommand{\thetheorem}{\arabic{theorem}}
+    \else
+    \fi
+---

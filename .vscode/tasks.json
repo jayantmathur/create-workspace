@@ -1,0 +1,13 @@
+{
+  "tasks": [
+    {
+      "label": "Check saved version in .backup and import changes if they exist",
+      "type": "shell",
+      // "command": "cnwx sync --restore",
+      "command": "git pull",
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    }
+  ]
+}
