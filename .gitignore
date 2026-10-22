@@ -1,0 +1,42 @@
+# my ignores
+.backup
+.venv
+src-tauri
+
+# dependencies (bun install)
+node_modules
+
+# output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+_.log
+
+# dotenv environment variable files
+.env
+*.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+.env.*
+
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# IntelliJ based IDEs
+.idea
+
+# Finder (MacOS) folder config
+.DS_Store
+
+/.luarc.json
