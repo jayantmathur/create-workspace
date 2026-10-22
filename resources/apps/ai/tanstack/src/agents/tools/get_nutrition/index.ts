@@ -30,7 +30,7 @@ const definition = toolDefinition({
       sugar_g: z.number().describe("Sugar in grams"),
     }),
   ),
-  // needsApproval: true,
+  needsApproval: true,
 });
 
 // Create server implementation

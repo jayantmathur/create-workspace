@@ -6,7 +6,7 @@ export const LIST_OF_MODELS: SelectableModel[] = [
       chef: "Openrouter",
       chefSlug: "openrouter",
       name: "Free Model Router",
-      default: true,
+      // default: true,
     },
     providers: [
       {
@@ -100,6 +100,16 @@ export const LIST_OF_MODELS: SelectableModel[] = [
     ],
   },
   {
+    metadata: { chef: "Mistral", chefSlug: "mistral", name: "Leanstral" },
+    providers: [
+      {
+        id: "leanstral-1-5",
+        inference: "requesty",
+        endpoint: "https://router.requesty.ai/v1",
+      },
+    ],
+  },
+  {
     metadata: { chef: "NVIDIA", chefSlug: "nvidia", name: "Nemotron 3 Super" },
     providers: [
       {
@@ -115,7 +125,12 @@ export const LIST_OF_MODELS: SelectableModel[] = [
     ],
   },
   {
-    metadata: { chef: "OpenAI", chefSlug: "openai", name: "GPT OSS" },
+    metadata: {
+      chef: "OpenAI",
+      chefSlug: "openai",
+      name: "GPT OSS",
+      default: true,
+    },
     providers: [
       {
         id: "gpt-oss:120b",

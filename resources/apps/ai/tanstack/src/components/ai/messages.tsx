@@ -38,6 +38,7 @@ import { ReasoningLine } from "#/components/ai/reasoning-line";
 import { ToolCall } from "#/components/ai/tool-call";
 import { SubagentDetails } from "#/components/ai/subagent-details";
 import { getMessageText } from "#/lib/ai/utils";
+import type { ToolCallPart } from "@tanstack/ai/client";
 
 export function SuggestionsHero({
   className,
@@ -147,8 +148,11 @@ export function Messages() {
                               );
                             case "tool-call":
                               const interrupt = interrupts.find(
-                                ({ interruptId }) => interruptId === part.id,
+                                (interrupt) =>
+                                  interrupt.interruptId ===
+                                  (part as ToolCallPart).approval?.id,
                               );
+
                               return (
                                 <ToolCall
                                   key={partKey}

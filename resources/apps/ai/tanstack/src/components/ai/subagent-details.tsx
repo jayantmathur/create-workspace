@@ -1,5 +1,5 @@
 import type { SubagentHandleData } from "@tanstack/ai";
-import type { BoundInterrupts } from "@tanstack/ai-client";
+import type { BoundInterrupts, ToolCallPart } from "@tanstack/ai-client";
 import { Fragment } from "react/jsx-runtime";
 import { CircleCheckIcon, LoaderCircleIcon } from "lucide-react";
 import {
@@ -86,7 +86,9 @@ export function SubagentDetails({
                       );
                     case "tool-call":
                       const interrupt = interrupts.find(
-                        ({ interruptId }) => interruptId === part.id,
+                        (interrupt) =>
+                          interrupt.interruptId ===
+                          (part as ToolCallPart).approval?.id,
                       );
                       return (
                         <ToolCall

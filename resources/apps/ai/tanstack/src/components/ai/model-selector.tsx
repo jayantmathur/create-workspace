@@ -17,6 +17,7 @@ import {
   ItemDescription,
 } from "#/components/ui/item";
 import { actions } from "#/components/ai/stream-provider";
+import { Badge } from "#/components/ui/badge";
 
 type ModelSelectorProps = {
   disabled?: boolean;
@@ -62,11 +63,11 @@ export const ModelSelector = ({
               <ComboboxItem key={`${chefSlug}-${name}`} value={item}>
                 <Item size="xs" className="p-0">
                   <ItemContent>
-                    <ItemTitle className="whitespace-nowrap">{chef}</ItemTitle>
+                    <ItemTitle className="whitespace-nowrap">
+                      {chef}
+                      {isDefault && <Badge variant="outline">Default</Badge>}
+                    </ItemTitle>
                     <ItemDescription>{name}</ItemDescription>
-                    {isDefault && (
-                      <span className="text-xs text-muted">(Default)</span>
-                    )}
                   </ItemContent>
                 </Item>
               </ComboboxItem>
