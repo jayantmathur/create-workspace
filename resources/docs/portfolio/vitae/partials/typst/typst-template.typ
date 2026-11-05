@@ -41,7 +41,8 @@
   )
   set text(lang: lang,
            region: region,
-           size: fontsize)
+           size: fontsize,
+           hyphenate: false)
   set text(font: font) if font != none
   show math.equation: set text(font: mathfont) if mathfont != none
   show raw: set text(font: codefont) if codefont != none
