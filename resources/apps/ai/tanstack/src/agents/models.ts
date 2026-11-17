@@ -6,14 +6,13 @@ export const LIST_OF_MODELS: SelectableModel[] = [
       chef: "Openrouter",
       chefSlug: "openrouter",
       name: "Free Model Router",
-      // default: true,
+      default: true,
     },
     providers: [
       {
         id: "openrouter/free",
         inference: "openrouter",
         endpoint: "https://openrouter.ai/api/v1",
-        default: true,
       },
     ],
   },
