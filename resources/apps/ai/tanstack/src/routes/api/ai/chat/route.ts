@@ -6,7 +6,7 @@ import {
   subagentRoute,
   toServerSentEventsResponse,
 } from "@tanstack/ai";
-import { createOpenaiChat } from "@tanstack/ai-openai";
+import { createOpenaiChatCompletions } from "@tanstack/ai-openai";
 import { typesafeDecider } from "@tanstack/ai-typesafe";
 import { memoryPersistence, withPersistence } from "@tanstack/ai-persistence";
 
@@ -57,7 +57,7 @@ async function POST({ request }: { request: Request }) {
     cloudflare: process.env.CLOUDFLARE_API_KEY,
   }[inference];
 
-  const adapter = createOpenaiChat(
+  const adapter = createOpenaiChatCompletions(
     // @ts-expect-error Using OpenAI compatible endpoints which don't have the same ids as expected by createOpenAiChat
     id,
     apiKey,

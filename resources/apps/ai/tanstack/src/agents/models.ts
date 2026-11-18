@@ -26,21 +26,34 @@ export const LIST_OF_MODELS: SelectableModel[] = [
   },
   {
     metadata: {
-      chef: "DeepSeek",
-      chefSlug: "deepseek",
-      name: "DeepSeek V4 Flash",
+      chef: "SwissAI",
+      chefSlug: "swiss-ai",
+      name: "Apertus V1.5",
     },
     providers: [
       {
-        id: "@cf/deepseek-ai/deepseek-v4-flash-0731",
+        id: "@cf/swiss-ai/apertus-v1.5-8b",
         inference: "cloudflare",
-      },
-      {
-        id: "deepseek-ai/DeepSeek-V4-Flash:cheapest",
-        inference: "huggingface",
       },
     ],
   },
+  // {
+  //   metadata: {
+  //     chef: "DeepSeek",
+  //     chefSlug: "deepseek",
+  //     name: "DeepSeek V4 Flash",
+  //   },
+  //   providers: [
+  //     {
+  //       id: "@cf/deepseek-ai/deepseek-v4-flash-0731",
+  //       inference: "cloudflare",
+  //     },
+  //     {
+  //       id: "deepseek-ai/DeepSeek-V4-Flash:cheapest",
+  //       inference: "huggingface",
+  //     },
+  //   ],
+  // },
   {
     metadata: { chef: "Google", chefSlug: "google", name: "Gemma 4" },
     providers: [
@@ -49,12 +62,12 @@ export const LIST_OF_MODELS: SelectableModel[] = [
         inference: "cloudflare",
       },
       {
-        id: "gemma4",
-        inference: "ollama",
-      },
-      {
         id: "gemma-4-31b-it",
         inference: "requesty",
+      },
+      {
+        id: "gemma4",
+        inference: "ollama",
       },
       {
         id: "google/gemma-4-31b-it:cheapest",
@@ -92,15 +105,15 @@ export const LIST_OF_MODELS: SelectableModel[] = [
       },
     ],
   },
-  {
-    metadata: { chef: "Meta", chefSlug: "meta", name: "Muse Glimmer" },
-    providers: [
-      {
-        id: "muse-glimmer-30b",
-        inference: "requesty",
-      },
-    ],
-  },
+  // {
+  //   metadata: { chef: "Meta", chefSlug: "meta", name: "Muse Glimmer" },
+  //   providers: [
+  //     {
+  //       id: "muse-glimmer-30b",
+  //       inference: "requesty",
+  //     },
+  //   ],
+  // },
   {
     metadata: { chef: "Mistral", chefSlug: "mistral", name: "Leanstral" },
     providers: [
@@ -111,14 +124,14 @@ export const LIST_OF_MODELS: SelectableModel[] = [
     ],
   },
   {
-    metadata: { chef: "NVIDIA", chefSlug: "nvidia", name: "Nemotron 3 Super" },
+    metadata: {
+      chef: "NVIDIA",
+      chefSlug: "nvidia",
+      name: "Nemotron 3.5 Lightning",
+    },
     providers: [
       {
-        id: "nemotron-3-super",
-        inference: "ollama",
-      },
-      {
-        id: "nemotron-3-super-120b-a12b",
+        id: "nemotron-3.5-lightning-30b-a3b",
         inference: "requesty",
       },
     ],
@@ -149,15 +162,15 @@ export const LIST_OF_MODELS: SelectableModel[] = [
       },
     ],
   },
-  {
-    metadata: { chef: "PrismML", chefSlug: "prismml", name: "Ternary Bonsai" },
-    providers: [
-      {
-        id: "prism-ml/Ternary-Bonsai-27B-AWQ-4bit:cheapest",
-        inference: "huggingface",
-      },
-    ],
-  },
+  // {
+  //   metadata: { chef: "PrismML", chefSlug: "prismml", name: "Ternary Bonsai" },
+  //   providers: [
+  //     {
+  //       id: "prism-ml/Ternary-Bonsai-27B-AWQ-4bit:cheapest",
+  //       inference: "huggingface",
+  //     },
+  //   ],
+  // },
   {
     metadata: { chef: "Qwen", chefSlug: "qwen", name: "Qwen3" },
     providers: [

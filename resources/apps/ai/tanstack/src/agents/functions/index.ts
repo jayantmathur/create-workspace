@@ -1,4 +1,4 @@
-import { createOpenaiChat } from "@tanstack/ai-openai";
+import { createOpenaiChatCompletions } from "@tanstack/ai-openai";
 import { DEFAULT_MODEL, LIST_OF_MODELS } from "#/agents/models";
 import { store } from "#/components/ai/stream-provider";
 
@@ -28,7 +28,7 @@ export function getAgent(chefSlug?: string) {
     cloudflare: process.env.CLOUDFLARE_API_KEY,
   }[inference];
 
-  const adapter = createOpenaiChat(
+  const adapter = createOpenaiChatCompletions(
     // @ts-expect-error Using OpenAI compatible endpoints which don't have the same ids as expected by createOpenAiChat
     id,
     apiKey,
