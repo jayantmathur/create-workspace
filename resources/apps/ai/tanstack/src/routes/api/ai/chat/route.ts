@@ -37,7 +37,17 @@ async function POST({ request }: { request: Request }) {
   };
 
   const { providers } = model ?? DEFAULT_MODEL;
-  const { id, inference, endpoint } = providers[0];
+  const { id, inference } = providers[0];
+
+  const endpoint = {
+    openrouter: process.env.OPENROUTER_BASE_URL,
+    ollama: process.env.OLLAMA_BASE_URL,
+    huggingface: process.env.HF_TOKEN,
+    requesty: process.env.REQUESTY_BASE_URL,
+    groq: process.env.GROQ_BASE_URL,
+    cloudflare: process.env.CLOUDFLARE_BASE_URL,
+  }[inference];
+
   const apiKey = {
     openrouter: process.env.OPENROUTER_API_KEY,
     ollama: process.env.OLLAMA_API_KEY,
