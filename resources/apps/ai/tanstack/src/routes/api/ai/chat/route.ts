@@ -37,14 +37,14 @@ async function POST({ request }: { request: Request }) {
   };
 
   const { providers } = model ?? DEFAULT_MODEL;
-  const { id, inference, endpoint } = providers[0];
-  const apiKey = {
-    openrouter: process.env.OPENROUTER_API_KEY,
-    ollama: process.env.OLLAMA_API_KEY,
-    huggingface: process.env.HF_TOKEN,
-    requesty: process.env.REQUESTY_API_KEY,
-    groq: process.env.GROQ_API_KEY,
-  }[inference];
+  const { id, inference, endpoint, apiKey } = providers[0];
+  // const apiKey = {
+  //   openrouter: process.env.OPENROUTER_API_KEY,
+  //   ollama: process.env.OLLAMA_API_KEY,
+  //   huggingface: process.env.HF_TOKEN,
+  //   requesty: process.env.REQUESTY_API_KEY,
+  //   groq: process.env.GROQ_API_KEY,
+  // }[inference];
 
   const adapter = createOpenaiChat(
     // @ts-expect-error Using OpenAI compatible endpoints which don't have the same ids as expected by createOpenAiChat

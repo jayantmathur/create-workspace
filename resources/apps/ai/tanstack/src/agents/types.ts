@@ -3,12 +3,14 @@ type InferenceSource =
   | "ollama"
   | "huggingface"
   | "requesty"
-  | "groq";
+  | "groq"
+  | "cloudflare";
 
 export type AIProvider = {
   id: string;
   inference: InferenceSource;
   endpoint: string;
+  apiKey: string;
 };
 
 export type Thread = {
