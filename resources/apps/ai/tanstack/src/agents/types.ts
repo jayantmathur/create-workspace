@@ -1,4 +1,9 @@
-type InferenceSource = "openrouter" | "ollama" | "huggingface" | "requesty";
+type InferenceSource =
+  | "openrouter"
+  | "ollama"
+  | "huggingface"
+  | "requesty"
+  | "groq";
 
 export type AIProvider = {
   id: string;

@@ -43,6 +43,7 @@ async function POST({ request }: { request: Request }) {
     ollama: process.env.OLLAMA_API_KEY,
     huggingface: process.env.HF_TOKEN,
     requesty: process.env.REQUESTY_API_KEY,
+    groq: process.env.GROQ_API_KEY,
   }[inference];
 
   const adapter = createOpenaiChat(

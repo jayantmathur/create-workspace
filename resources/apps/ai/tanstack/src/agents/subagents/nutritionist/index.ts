@@ -4,7 +4,7 @@ import { linkAbort } from "#/agents/subagents/link-abort";
 import { toolsSelector } from "#/agents/tools/provider";
 
 import SYSTEM_PROMPT from "./prompts/system.md?raw";
-import { getAgent } from "#/agents/agent";
+import { getAgent } from "#/agents/functions/agent";
 
 export const nutritionist = defineAgent({
   name: "nutritionist",
