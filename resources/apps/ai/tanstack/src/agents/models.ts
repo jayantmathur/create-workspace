@@ -3,6 +3,32 @@ import type { SelectableModel } from "#/agents/types";
 export const LIST_OF_MODELS: SelectableModel[] = [
   {
     metadata: {
+      chef: "Anthropic",
+      chefSlug: "anthropic",
+      name: "Claude Sonnet 5",
+    },
+    providers: [
+      {
+        id: "claude-sonnet-5",
+        inference: "microsoft foundry",
+      },
+    ],
+  },
+  {
+    metadata: {
+      chef: "OpenAI",
+      chefSlug: "openai",
+      name: "GPT 6 Luna",
+    },
+    providers: [
+      {
+        id: "gpt-6-luna",
+        inference: "microsoft foundry",
+      },
+    ],
+  },
+  {
+    metadata: {
       chef: "Openrouter",
       chefSlug: "openrouter",
       name: "Free Model Router",

@@ -1,13 +1,11 @@
 import { createOpenaiChatCompletions } from "@tanstack/ai-openai";
 import { DEFAULT_MODEL, LIST_OF_MODELS } from "#/agents/models";
-import { store } from "#/components/ai/stream-provider";
 
 export function getAgent(chefSlug?: string) {
-  const { model: current } = store.get();
   const model = LIST_OF_MODELS.find(
     ({ metadata }) => metadata.chefSlug === chefSlug,
   );
-  const { providers } = model ?? current ?? DEFAULT_MODEL;
+  const { providers } = model ?? DEFAULT_MODEL;
   const { id, inference } = providers[0];
 
   const endpoint = {
@@ -17,6 +15,7 @@ export function getAgent(chefSlug?: string) {
     requesty: process.env.REQUESTY_BASE_URL,
     groq: process.env.GROQ_BASE_URL,
     cloudflare: process.env.CLOUDFLARE_BASE_URL,
+    "microsoft foundry": `${process.env.AZURE_AI_ENDPOINT}/${chefSlug === "anthropic" ? "anthropic" : "openai/v1"}`,
   }[inference];
 
   const apiKey = {
@@ -26,8 +25,10 @@ export function getAgent(chefSlug?: string) {
     requesty: process.env.REQUESTY_API_KEY,
     groq: process.env.GROQ_API_KEY,
     cloudflare: process.env.CLOUDFLARE_API_KEY,
+    "microsoft foundry": process.env.AZURE_OPENAI_API_KEY,
   }[inference];
 
+  // Use @tanstack/ai-anthropic adapter(s) for anthropic calls
   const adapter = createOpenaiChatCompletions(
     // @ts-expect-error Using OpenAI compatible endpoints which don't have the same ids as expected by createOpenAiChat
     id,

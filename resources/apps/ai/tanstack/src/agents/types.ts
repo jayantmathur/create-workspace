@@ -4,7 +4,8 @@ type InferenceSource =
   | "huggingface"
   | "requesty"
   | "groq"
-  | "cloudflare";
+  | "cloudflare"
+  | "microsoft foundry";
 
 export type AIProvider = {
   id: string;

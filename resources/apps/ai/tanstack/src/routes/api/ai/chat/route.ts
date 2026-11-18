@@ -36,7 +36,10 @@ async function POST({ request }: { request: Request }) {
     reasoning: ReasoningEffort;
   };
 
-  const { providers } = model ?? DEFAULT_MODEL;
+  const {
+    metadata: { chefSlug },
+    providers,
+  } = model ?? DEFAULT_MODEL;
   const { id, inference } = providers[0];
 
   const endpoint = {
@@ -46,6 +49,7 @@ async function POST({ request }: { request: Request }) {
     requesty: process.env.REQUESTY_BASE_URL,
     groq: process.env.GROQ_BASE_URL,
     cloudflare: process.env.CLOUDFLARE_BASE_URL,
+    "microsoft foundry": `${process.env.AZURE_AI_ENDPOINT}/${chefSlug === "anthropic" ? "anthropic" : "openai/v1"}`,
   }[inference];
 
   const apiKey = {
@@ -55,8 +59,10 @@ async function POST({ request }: { request: Request }) {
     requesty: process.env.REQUESTY_API_KEY,
     groq: process.env.GROQ_API_KEY,
     cloudflare: process.env.CLOUDFLARE_API_KEY,
+    "microsoft foundry": process.env.AZURE_OPENAI_API_KEY,
   }[inference];
 
+  // Use @tanstack/ai-anthropic adapter(s) for anthropic calls
   const adapter = createOpenaiChatCompletions(
     // @ts-expect-error Using OpenAI compatible endpoints which don't have the same ids as expected by createOpenAiChat
     id,
@@ -101,7 +107,11 @@ async function POST({ request }: { request: Request }) {
     },
     // toolExecution: "sequential",
     retry: { maxRetries: 2, maxWaitMs: 300000 },
-    reasoning: { level: reasoning ?? "minimal", summary: true },
+    reasoning: {
+      level:
+        inference === "microsoft foundry" ? "off" : (reasoning ?? "minimal"),
+      summary: true,
+    },
   });
   return toServerSentEventsResponse(stream);
 }
