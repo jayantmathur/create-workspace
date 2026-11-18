@@ -10,7 +10,6 @@ export type AIProvider = {
   id: string;
   inference: InferenceSource;
   endpoint: string;
-  apiKey: string;
 };
 
 export type Thread = {
