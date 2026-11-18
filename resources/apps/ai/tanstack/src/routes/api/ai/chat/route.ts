@@ -89,7 +89,7 @@ async function POST({ request }: { request: Request }) {
         const route = subagentRoute(agents);
         const result = await decide({
           adapter: typesafeDecider("openjev-latest", {
-            baseURL: "https://api.codiv.ai",
+            baseURL: process.env.TYPESAFE_BASE_URL,
           }),
           state,
           questions: route.questions,
