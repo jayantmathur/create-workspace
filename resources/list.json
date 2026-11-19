@@ -59,12 +59,8 @@
   "auth": {
     "type": "app",
     "folder": "auth",
-    "dependencies": ["better-auth", "drizzle-orm", "postgres", "dotenv"],
-    "devDependencies": ["drizzle-kit", "tsx"],
-    "scripts": {
-      "db:studio": "bun drizzle-kit studio"
-    },
-    "postinstalls": ["cnwx padd --pack form"]
+    "dependencies": ["better-auth"],
+    "postinstalls": ["cnwx padd --pack db --pack form"]
   },
   "db": {
     "type": "app",
@@ -83,6 +79,8 @@
     },
     "extras": {
       "dependencies": [
+        "mysql2",
+        "@azure/identity",
         "@tanstack/react-db",
         "@tanstack/query-db-collection",
         "@tanstack/electric-db-collection"
